@@ -34,9 +34,11 @@ android {
         jvmTarget = "1.8"
     }
 
-    viewBinding {
-        enable = true
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
     }
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
@@ -49,4 +51,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //캘린더 라이브러리
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
 }
