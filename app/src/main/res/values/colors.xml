@@ -5,4 +5,8 @@
     <color name="gray">#969696</color>
     <color name="select_gray">#EBEBEB</color>
     <color name="main_gray">#D9D9D9</color>
+    <color name="red">#FF4949</color>
+    <color name="blue">#4671FF</color>
+    <color name="select_blue">#C6DCF0</color>
+
 </resources>

@@ -29,6 +29,16 @@
     <style name="CalendarWidgetHeader">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--년도 선택 spinner 스타일-->
+    <style name="SpinnerTheme">
+        <item name="android:dropDownListViewStyle">@style/SpinnerDivideStyle</item>
+    </style>
+    <style name="SpinnerDivideStyle" parent="android:style/Widget.ListView.DropDown">
+        <item name="android:divider">@color/white</item> <!-- divider 색 -->
+        <item name="android:dividerHeight">2dp</item> <!-- divider 높이 -->
     </style>
 
 

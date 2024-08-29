@@ -1,12 +1,17 @@
 package com.example.z_project.chat.calendar
 
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.z_project.R
+import com.example.z_project.chat.calendar.CalendarDecorators.otherMonthDecorator
 import com.example.z_project.databinding.ActivityGroupCalendarBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
+import com.prolificinteractive.materialcalendarview.format.TitleFormatter
 import java.util.Calendar
 
 
@@ -28,8 +33,11 @@ class GroupCalendarActivity : AppCompatActivity() {
     private lateinit var dayDecorator: DayViewDecorator
     private lateinit var todayDecorator: DayViewDecorator
     private lateinit var selectedMonthDecorator: DayViewDecorator
+    private lateinit var otherMonthDecorator: DayViewDecorator
     private lateinit var sundayDecorator: DayViewDecorator
     private lateinit var saturdayDecorator: DayViewDecorator
+    private lateinit var customDayViewDecorator: DayViewDecorator
+    private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,24 +54,35 @@ class GroupCalendarActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         //recyclerViewSchedule.adapter = scheduleListAdapter
+        val exampleDate = CalendarDay.today()
         with(calendarView) {
             // 데코레이터 초기화
             dayDecorator = CalendarDecorators.dayDecorator(this@GroupCalendarActivity)
             todayDecorator = CalendarDecorators.todayDecorator(this@GroupCalendarActivity)
-            sundayDecorator = CalendarDecorators.sundayDecorator()
-            saturdayDecorator = CalendarDecorators.saturdayDecorator()
+            sundayDecorator = CalendarDecorators.sundayDecorator(this@GroupCalendarActivity)
+            saturdayDecorator = CalendarDecorators.saturdayDecorator(this@GroupCalendarActivity)
+            otherMonthDecorator = CalendarDecorators.otherMonthDecorator(
+                this@GroupCalendarActivity,
+                Calendar.getInstance().get(Calendar.MONTH) + 1)
             selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
                 this@GroupCalendarActivity,
-                Calendar.getInstance().get(Calendar.MONTH) + 1 // Adjusting month index
-            )
+                Calendar.getInstance().get(Calendar.MONTH) + 1)
+            //customDayViewDecorator = CalendarDecorators.PaddingDayViewDecorator(this@GroupCalendarActivity, exampleDate)
+
             // 캘린더뷰에 데코레이터 추가
             addDecorators(
+                //customDayViewDecorator,
                 dayDecorator,
                 todayDecorator,
+                selectedMonthDecorator,
+                otherMonthDecorator,
                 sundayDecorator,
                 saturdayDecorator,
-                selectedMonthDecorator
             )
+
+            // 월 표시 부분 커스텀
+            setTitleFormatter(CalendarDecorators.koreanMonthTitleFormatter())
+
             // 월 변경 리스너 설정
             setOnMonthChangedListener { widget, date ->
                 // 캘린더 위젯에서 현재 선택된 날짜를 모두 선택 해제
@@ -81,17 +100,14 @@ class GroupCalendarActivity : AppCompatActivity() {
                     )
                 // 새로 생성한 데코레이터를 캘린더 위젯에 추가
                 addDecorators(
+                    //customDayViewDecorator,
                     dayDecorator,
                     todayDecorator,
+                    selectedMonthDecorator,
+                    otherMonthDecorator(this@GroupCalendarActivity, date.month),
                     sundayDecorator,
                     saturdayDecorator,
-                    selectedMonthDecorator
                 )
-
-                // 현재 월의 첫 번째 날을 나타내는 CalendarDay 객체를 생성
-                val clickedDay = CalendarDay.from(date.year, date.month, 1)
-                // 캘린더 위젯에서 clickedDay를 선택하도록 지정
-                widget.setDateSelected(clickedDay, true)
 
                 // 변경 된 일에 해당하는 일정 목록을 필터링하고 업데이트
 //                viewModel.filterScheduleListByDate(calendarDayToDate(date))
@@ -110,6 +126,34 @@ class GroupCalendarActivity : AppCompatActivity() {
                 val calendar = calendarDayToDate(date)
                 //viewModel.filterScheduleListByDate(calendar)
             }
+
+            // Year Spinner Adapter 연결
+            val years = (2000..2050).toList() // 원하는 년도 범위를 설정
+            var isInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+
+            val yearSpinnerAdapter = YearSpinnerAdapter(this@GroupCalendarActivity, R.layout.item_spinner_year, years, currentYear)
+            binding.selectYearSpinner.setAdapter(yearSpinnerAdapter)
+            binding.selectYearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    if (isInitialSelected) {
+                        yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
+
+                        val selectedYear = years[position]
+                        binding.calendarView.currentDate = CalendarDay.from(selectedYear, binding.calendarView.currentDate.month, 1)
+
+                        val value = parent.getItemAtPosition(position).toString()
+                        Toast.makeText(this@GroupCalendarActivity, value, Toast.LENGTH_SHORT).show()
+                    } else{
+                        isInitialSelected = true
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
+            // Spinner 초기화 시 currentYear를 기본으로 설정
+            val currentYearPosition = years.indexOf(currentYear.toInt())
+            binding.selectYearSpinner.setSelection(currentYearPosition)
         }
     }
 

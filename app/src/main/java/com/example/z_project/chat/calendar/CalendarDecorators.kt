@@ -1,13 +1,20 @@
 package com.example.z_project.chat.calendar
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.z_project.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
+import com.prolificinteractive.materialcalendarview.format.TitleFormatter
 import java.util.Calendar
 
 object CalendarDecorators {
@@ -46,7 +53,7 @@ object CalendarDecorators {
                         ForegroundColorSpan(
                             ContextCompat.getColor(
                                 context,
-                                R.color.black
+                                R.color.white
                             )
                         )
                     )
@@ -63,13 +70,29 @@ object CalendarDecorators {
      */
     fun selectedMonthDecorator(context: Context, selectedMonth: Int): DayViewDecorator {
         return object : DayViewDecorator {
+            override fun shouldDecorate(day: CalendarDay): Boolean = day.month == selectedMonth
+            override fun decorate(view: DayViewFacade) {
+                view.addSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.black //선택된 달의 날짜들을 black으로
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    fun otherMonthDecorator(context: Context, selectedMonth: Int): DayViewDecorator {
+        return object : DayViewDecorator {
             override fun shouldDecorate(day: CalendarDay): Boolean = day.month != selectedMonth
             override fun decorate(view: DayViewFacade) {
                 view.addSpan(
                     ForegroundColorSpan(
                         ContextCompat.getColor(
                             context,
-                            R.color.black
+                            R.color.gray // 선택되지 않은 달의 날짜들을 회색으로 변경
                         )
                     )
                 )
@@ -81,7 +104,7 @@ object CalendarDecorators {
      * 일요일을 강조하는 데코레이터를 생성하기 위한 함수
      * @return DayViewDecorator 객체
      */
-    fun sundayDecorator(): DayViewDecorator {
+    fun sundayDecorator(context: Context): DayViewDecorator {
         return object : DayViewDecorator {
             override fun shouldDecorate(day: CalendarDay): Boolean {
                 val calendar = Calendar.getInstance()
@@ -90,7 +113,12 @@ object CalendarDecorators {
             }
 
             override fun decorate(view: DayViewFacade) {
-                view.addSpan(ForegroundColorSpan(Color.BLACK))
+                view.addSpan(ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.red
+                    )
+                ))
             }
         }
     }
@@ -99,7 +127,7 @@ object CalendarDecorators {
      * 토요일을 강조하는 데코레이터를 생성하기 위한 함수
      * @return DayViewDecorator 객체
      */
-    fun saturdayDecorator(): DayViewDecorator {
+    fun saturdayDecorator(context: Context): DayViewDecorator {
         return object : DayViewDecorator {
             override fun shouldDecorate(day: CalendarDay): Boolean {
                 val calendar = Calendar.getInstance()
@@ -108,8 +136,64 @@ object CalendarDecorators {
             }
 
             override fun decorate(view: DayViewFacade) {
-                view.addSpan(ForegroundColorSpan(Color.BLACK))
+                view.addSpan(ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.blue
+                    )
+                ))
             }
+        }
+    }
+
+    fun PaddingDayViewDecorator(context: Context, calendarDay: CalendarDay): DayViewDecorator{
+        return object : DayViewDecorator{
+            private val inflater: LayoutInflater = LayoutInflater.from(context)
+
+            override fun decorate(view: DayViewFacade) {
+                // 날짜 커스텀 레이아웃으로 설정
+                val dayView = inflater.inflate(R.layout.custom_day_view, null)
+                val dayText: TextView = dayView.findViewById(R.id.dayText)
+
+                dayText.text = calendarDay.day.toString()
+
+                // 뷰의 사이즈 측정
+                dayView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                dayView.layout(0, 0, dayView.measuredWidth, dayView.measuredHeight)
+
+                // 뷰를 비트맵으로 변환
+                val bitmap = viewToBitmap(dayView)
+                val drawable = bitmapToDrawable(context, bitmap)
+
+                // 날짜 뷰 설정
+                view.apply {
+                    // 커스텀 스타일 적용
+                    setBackgroundDrawable(drawable)
+                }
+            }
+
+            override fun shouldDecorate(day: CalendarDay): Boolean = true
+        }
+    }
+    fun viewToBitmap(view: View): Bitmap {
+        val width = view.width
+        val height = view.height
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        return bitmap
+    }
+    fun bitmapToDrawable(context: Context, bitmap: Bitmap): BitmapDrawable {
+        return BitmapDrawable(context.resources, bitmap)
+    }
+
+    fun koreanMonthTitleFormatter(): TitleFormatter {
+        return TitleFormatter { day: CalendarDay ->
+            val monthNames = arrayOf(
+                "1월", "2월", "3월", "4월", "5월", "6월",
+                "7월", "8월", "9월", "10월", "11월", "12월"
+            )
+            monthNames[day.month - 1]
         }
     }
 
