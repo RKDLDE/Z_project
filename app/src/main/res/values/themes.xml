@@ -7,6 +7,10 @@
 
     <style name="Theme.Z_project" parent="Base.Theme.Z_project" />
 
+    <style name="CustomDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <!-- 커스텀 공동 캘린더 스타일 -->
     <style name="CalenderViewCustom" parent="Theme.AppCompat">
         <item name="android:textColor">@color/black</item>

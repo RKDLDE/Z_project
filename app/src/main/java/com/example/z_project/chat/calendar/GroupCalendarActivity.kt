@@ -1,5 +1,8 @@
 package com.example.z_project.chat.calendar
 
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -8,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.z_project.R
 import com.example.z_project.chat.calendar.CalendarDecorators.otherMonthDecorator
 import com.example.z_project.databinding.ActivityGroupCalendarBinding
+import com.example.z_project.databinding.DialogAddEventBinding
+import com.example.z_project.databinding.DialogEventDetailsBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
@@ -47,6 +53,7 @@ class GroupCalendarActivity : AppCompatActivity() {
         initView()
         initViewModel()
 
+        // X 아이콘 클릭 시 (캘린더 나가기)
         binding.groupCalenderExit.setOnClickListener {
             finish()
         }
@@ -120,11 +127,19 @@ class GroupCalendarActivity : AppCompatActivity() {
             // 헤더 텍스트 모양 설정
             setHeaderTextAppearance(R.style.CalendarWidgetHeader)
             // 범위 선택 리스너 설정
-            setOnRangeSelectedListener { widget, dates -> }
+            setOnRangeSelectedListener { widget, dates ->
+                if (dates.isNotEmpty()) {
+                    // 날짜 범위가 선택되었을 때 showAddCalendarDialog 호출
+                    showAddCalendarDialog()
+                }
+            }
             // 날짜 변경 리스너 설정
             setOnDateChangedListener { widget, date, selected ->
                 val calendar = calendarDayToDate(date)
                 //viewModel.filterScheduleListByDate(calendar)
+                if(selected){
+                    showAddCalendarDialog()
+                }
             }
 
             // Year Spinner Adapter 연결
@@ -227,4 +242,49 @@ class GroupCalendarActivity : AppCompatActivity() {
             set(calendarDay.year, calendarDay.month - 1, calendarDay.day) // Adjust month index
         }
     }
+
+    private fun showAddCalendarDialog() { //일정 목록 확인 및 추가 버튼
+        val dialog = Dialog(this, R.style.CustomDialog)
+        val bindingDialog = DialogAddEventBinding.inflate(layoutInflater)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+        dialog.setContentView(bindingDialog.root)
+        dialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+
+        bindingDialog.addCalendarIcon.setOnClickListener {
+            // 추가 버튼 클릭 시 수행할 작업
+            showEventDetailsDialog() // 일정 작성 dialog 호출
+        }
+
+        // 다이얼로그가 닫힐 때 날짜 선택을 해제
+        dialog.setOnDismissListener {
+            binding.calendarView.clearSelection() // 선택 해제
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
+    private fun showEventDetailsDialog() { //일정 작성 dialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bindingDialog = DialogEventDetailsBinding.inflate(layoutInflater)
+        bottomSheetDialog.setContentView(bindingDialog.root)
+        bottomSheetDialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+
+        bindingDialog.dialogEventDetailsContent.requestFocus() //포커스 On
+
+        //일정 확인 버튼
+        bindingDialog.dialogEventDetailsCheckIcon.setOnClickListener {
+            // 확인 버튼 클릭 시 수행할 작업
+            bottomSheetDialog.dismiss() // 다이얼로그 닫기
+        }
+
+        // 다이얼로그가 닫힐 때 날짜 선택을 해제
+        bottomSheetDialog.setOnDismissListener {
+            binding.calendarView.clearSelection() // 선택 해제
+        }
+
+        // 다이얼로그 표시
+        bottomSheetDialog.show()
+    }
+
 }
