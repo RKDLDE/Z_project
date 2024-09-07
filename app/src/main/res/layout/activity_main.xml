@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
     <FrameLayout
         android:id="@+id/main_frm"
         android:layout_width="match_parent"
+        android:background="#FFFFFF"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/main_bnv"
         app:layout_constraintTop_toTopOf="parent" />
@@ -16,6 +18,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/main_bnv"
+        android:background="#FFFFFF"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:itemIconSize="20dp"

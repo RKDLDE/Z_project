@@ -1,15 +1,19 @@
 package com.example.z_project
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.z_project.chat.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
+import com.example.z_project.login.LoginFragment
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
 import com.example.z_project.upload.UploadFragment
+import com.example.z_project.mypage.LogoutFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -18,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         initBottomNavigation()
 
@@ -62,4 +65,17 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
+
+    private fun openFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.main_frm, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+//    btn1.setOnClickListener {
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.view, LoginFragment())
+//            .commit()
+//    }
 }
