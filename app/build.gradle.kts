@@ -54,6 +54,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // ViewPager2
+    implementation ("androidx.viewpager2:viewpager2:1.1.0-beta01")
 
     //캘린더 라이브러리
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
