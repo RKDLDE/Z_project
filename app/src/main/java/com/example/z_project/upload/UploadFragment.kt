@@ -78,6 +78,7 @@ class UploadFragment : Fragment() {
         }
     }
 
+
     private fun checkPermission(permissions: Array<out String>, type: Int): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             for (permission in permissions) {
@@ -135,4 +136,5 @@ class UploadFragment : Fragment() {
             startActivityResult.launch(intent)
         }
     }
+
 }

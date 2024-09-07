@@ -59,4 +59,8 @@ dependencies {
 
     //캘린더 라이브러리
     implementation("com.github.prolificinteractive:material-calendarview:2.0.1")
+
+    //이미지 접근 권한
+    implementation("androidx.activity:activity-ktx:1.5.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.2")
 }
