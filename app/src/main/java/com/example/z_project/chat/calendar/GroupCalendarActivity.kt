@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Toast
@@ -19,6 +20,9 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
 import java.util.Calendar
+import com.example.z_project.chat.calendar.ScheduleModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class GroupCalendarActivity : AppCompatActivity() {
@@ -42,8 +46,36 @@ class GroupCalendarActivity : AppCompatActivity() {
     private lateinit var otherMonthDecorator: DayViewDecorator
     private lateinit var sundayDecorator: DayViewDecorator
     private lateinit var saturdayDecorator: DayViewDecorator
+    private lateinit var eventDecorator: DayViewDecorator
     private lateinit var customDayViewDecorator: DayViewDecorator
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
+
+    private var dummyScheduleList = listOf(
+        ScheduleModel(
+            authId = 1,
+            groupId = 1,
+            title = "회의",
+            startDate = "2024.09.07",
+            endDate = "2024.09.07",
+            calendarColor = ColorEnum.getByColor(Color.RED)
+        ),
+        ScheduleModel(
+            authId = 2,
+            groupId = 1,
+            title = "개강",
+            startDate = "2024.09.02",
+            endDate = "2024.09.02",
+            calendarColor = ColorEnum.getByColor(Color.BLUE)
+        ),
+        ScheduleModel(
+            authId = 3,
+            groupId = 1,
+            title = "출근",
+            startDate = "2024.09.02",
+            endDate = "2024.09.02",
+            calendarColor = ColorEnum.getByColor(Color.YELLOW)
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +106,10 @@ class GroupCalendarActivity : AppCompatActivity() {
             selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
                 this@GroupCalendarActivity,
                 Calendar.getInstance().get(Calendar.MONTH) + 1)
+            eventDecorator = CalendarDecorators.eventDecorator(
+                this@GroupCalendarActivity,
+                dummyScheduleList
+            )
             //customDayViewDecorator = CalendarDecorators.PaddingDayViewDecorator(this@GroupCalendarActivity, exampleDate)
 
             // 캘린더뷰에 데코레이터 추가
@@ -85,6 +121,7 @@ class GroupCalendarActivity : AppCompatActivity() {
                 otherMonthDecorator,
                 sundayDecorator,
                 saturdayDecorator,
+                eventDecorator,
             )
 
             // 월 표시 부분 커스텀
@@ -114,6 +151,7 @@ class GroupCalendarActivity : AppCompatActivity() {
                     otherMonthDecorator(this@GroupCalendarActivity, date.month),
                     sundayDecorator,
                     saturdayDecorator,
+                    eventDecorator,
                 )
 
                 // 변경 된 일에 해당하는 일정 목록을 필터링하고 업데이트
@@ -135,8 +173,8 @@ class GroupCalendarActivity : AppCompatActivity() {
             }
             // 날짜 변경 리스너 설정
             setOnDateChangedListener { widget, date, selected ->
-                val calendar = calendarDayToDate(date)
-                //viewModel.filterScheduleListByDate(calendar)
+//                val filteredEvents = filterEventsByDate(date)
+//                EventRVAdapter.submitList(filteredEvents)
                 if(selected){
                     showAddCalendarDialog()
                 }
@@ -244,24 +282,40 @@ class GroupCalendarActivity : AppCompatActivity() {
     }
 
     private fun showAddCalendarDialog() { //일정 목록 확인 및 추가 버튼
-        val dialog = Dialog(this, R.style.CustomDialog)
-        val bindingDialog = DialogAddEventBinding.inflate(layoutInflater)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
-        dialog.setContentView(bindingDialog.root)
-        dialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+//        val dialog = Dialog(this, R.style.CustomDialog)
+//        val bindingDialog = DialogAddEventBinding.inflate(layoutInflater)
+//        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT)) // 기존 다이어그램 배경 투명으로 적용(커스텀한 배경이 보이게 하기 위함)
+//        dialog.setContentView(bindingDialog.root)
+//        dialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+//
+//        bindingDialog.addCalendarIcon.setOnClickListener {
+//            // 추가 버튼 클릭 시 수행할 작업
+//            showEventDetailsDialog() // 일정 작성 dialog 호출
+//        }
+//
+//        // 다이얼로그가 닫힐 때 날짜 선택을 해제
+//        dialog.setOnDismissListener {
+//            binding.calendarView.clearSelection() // 선택 해제
+//        }
+//
+//        // 다이얼로그 표시
+//        dialog.show()
 
-        bindingDialog.addCalendarIcon.setOnClickListener {
-            // 추가 버튼 클릭 시 수행할 작업
-            showEventDetailsDialog() // 일정 작성 dialog 호출
+        val selectedDate = binding.calendarView.selectedDate // 또는 적절히 선택된 날짜 가져오기
+        val filteredEvents = filterEventsByDate(selectedDate!!)
+
+        Log.d("선택날짜", "${selectedDate}")
+        Log.d("스케줄내용", "${filteredEvents}")
+
+        //Dialog 정의
+        val dialogAddEvent = DialogAddEvent(this) {
+            binding.calendarView.clearSelection() // 날짜 선택 해제
         }
 
-        // 다이얼로그가 닫힐 때 날짜 선택을 해제
-        dialog.setOnDismissListener {
-            binding.calendarView.clearSelection() // 선택 해제
+        //Dialog 표시 (더미데이터)
+        dialogAddEvent.show(filteredEvents) {
+            showEventDetailsDialog() // 일정 작성 다이얼로그 호출
         }
-
-        // 다이얼로그 표시
-        dialog.show()
     }
 
     private fun showEventDetailsDialog() { //일정 작성 dialog
@@ -286,5 +340,48 @@ class GroupCalendarActivity : AppCompatActivity() {
         // 다이얼로그 표시
         bottomSheetDialog.show()
     }
+
+    //날짜 확인 및 필터링 함수
+    private fun filterEventsByDate(selectedDate: CalendarDay): List<ScheduleModel> {
+        // 선택된 날짜를 Calendar로 변환
+        val selectedCalendar = Calendar.getInstance().apply {
+            set(selectedDate.year, selectedDate.month - 1, selectedDate.day, 0, 0, 0) // 시간 부분을 00:00:00으로 설정
+            set(Calendar.MILLISECOND, 0) // 밀리초를 0으로 설정
+        }
+        val selectedDateTime = selectedCalendar.time
+
+        return dummyScheduleList.filter { schedule ->
+            schedule.startDate?.let { startDate ->
+                schedule.endDate?.let { endDate ->
+                    try {
+                        // startDate와 endDate를 Calendar로 변환
+                        val startCalendar = Calendar.getInstance().apply {
+                            setTime(SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(startDate))
+                            set(Calendar.HOUR_OF_DAY, 0)
+                            set(Calendar.MINUTE, 0)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }
+                        val endCalendar = Calendar.getInstance().apply {
+                            setTime(SimpleDateFormat("yyyy.MM.dd", Locale.getDefault()).parse(endDate))
+                            set(Calendar.HOUR_OF_DAY, 23)
+                            set(Calendar.MINUTE, 59)
+                            set(Calendar.SECOND, 59)
+                            set(Calendar.MILLISECOND, 999)
+                        }
+
+                        // 선택된 날짜가 startDate와 endDate 범위 내에 있는지 확인
+                        selectedDateTime in startCalendar.time..endCalendar.time
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        false
+                    }
+                } ?: false
+            } ?: false
+        }
+    }
+
+
+
 
 }

@@ -3,7 +3,7 @@ package com.example.z_project.chat.calendar
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
+import java.util.Date
 import android.graphics.drawable.BitmapDrawable
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
@@ -15,7 +15,10 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 object CalendarDecorators {
     /**
@@ -197,76 +200,97 @@ object CalendarDecorators {
         }
     }
 
-//    /**
-//     * 이벤트가 있는 날짜를 표시하는 데코레이터를 생성하기 위한 함수
-//     * @param context 리소스에 액세스하기 위해 사용되는 컨텍스트
-//     * @param scheduleList 이벤트 날짜를 포함하는 스케줄 목록
-//     * @return DayViewDecorator 객체
-//     */
-//    fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
-//        return object : DayViewDecorator {
-//            private val eventDates = HashSet<CalendarDay>()
+    /**
+     * 이벤트가 있는 날짜를 표시하는 데코레이터를 생성하기 위한 함수
+     * @param context 리소스에 액세스하기 위해 사용되는 컨텍스트
+     * @param scheduleList 이벤트 날짜를 포함하는 스케줄 목록
+     * @return DayViewDecorator 객체
+     */
+    fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
+        return object : DayViewDecorator {
+            private val eventDates = HashSet<CalendarDay>()
+
+            init {
+                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+
+                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
+                scheduleList.forEach { schedule ->
+                    schedule.startDate?.let { startDate ->
+//                        try {
+//                            // 시작 날짜를 파싱
+//                            val startDateTime = dateFormat.parse(startDate)
+//                            val endDateTime = schedule.endDate?.let { endDate ->
+//                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
+//                                dateFormat.parse(endDate)
+//                            } ?: startDateTime
 //
-//            init {
-//                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
-//                scheduleList.forEach { schedule ->
-//                    schedule.startDate?.let { startDate ->
-//                        val startDateTime = LocalDate.parse(
-//                            startDate,
-//                            DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
-//                        )
-//                        val endDateTime = schedule.endDate?.let { endDate ->
-//                            LocalDate.parse(
-//                                endDate,
-//                                DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm")
-//                            )
-//                        } ?: startDateTime
-//
-//                        val datesInRange = getDateRange(startDateTime, endDateTime)
-//                        eventDates.addAll(datesInRange)
-//                    }
-//                }
-//            }
-//
-//            override fun shouldDecorate(day: CalendarDay?): Boolean {
+//                            // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
+//                            val datesInRange = getDateRange(startDateTime!!, endDateTime)
+//                            eventDates.addAll(datesInRange)
+//                        } catch (e: Exception) {
+//                            e.printStackTrace()
+//                        }
+
+                        try {
+                            // 시작 날짜를 파싱
+                            val startDateTime = dateFormat.parse(startDate)
+                            val endDateTime = schedule.endDate?.let { endDate ->
+                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
+                                dateFormat.parse(endDate)
+                            } ?: startDateTime
+
+                            if (startDateTime!! <= endDateTime) {
+                                // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
+                                val datesInRange = getDateRange(startDateTime, endDateTime)
+                                eventDates.addAll(datesInRange)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+
+            override fun shouldDecorate(day: CalendarDay?): Boolean {
 //                return eventDates.contains(day)
-//            }
-//
-//            override fun decorate(view: DayViewFacade) {
-//                // 이벤트가 있는 날짜에 점을 추가하여 표시한다.
-//                view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
-//            }
-//
-//            /**
-//             * 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져오는 함수
-//             * @param startDate 시작 날짜
-//             * @param endDate 종료 날짜
-//             * @return 날짜 범위 목록
-//             */
-//            private fun getDateRange(startDate: Date, endDate: Date): List<CalendarDay> {
-//                val datesInRange = mutableListOf<CalendarDay>()
-//                val calendar = Calendar.getInstance()
-//                calendar.time = startDate
-//
-//                while (calendar.time.before(endDate)) {
-//                    datesInRange.add(
-//                        CalendarDay.from(
-//                            calendar.get(Calendar.YEAR),
-//                            calendar.get(Calendar.MONTH) + 1,
-//                            calendar.get(Calendar.DAY_OF_MONTH)
-//                        )
-//                    )
-//                    calendar.add(Calendar.DAY_OF_MONTH, 1)
-//                }
-//                datesInRange.add(
-//                    CalendarDay.from(
-//                        calendar.get(Calendar.YEAR),
-//                        calendar.get(Calendar.MONTH) + 1,
-//                        calendar.get(Calendar.DAY_OF_MONTH)
-//                    )
-//                ) // Add the end date itself
-//                return datesInRange
-//            }
-//        }
-//    }
+                return day != null && eventDates.contains(day)
+            }
+
+            override fun decorate(view: DayViewFacade) {
+                // 이벤트가 있는 날짜에 점을 추가하여 표시한다.
+                view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
+            }
+
+            /**
+             * 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져오는 함수
+             * @param startDate 시작 날짜
+             * @param endDate 종료 날짜
+             * @return 날짜 범위 목록
+             */
+            private fun getDateRange(startDate: Date, endDate: Date): List<CalendarDay> {
+                val datesInRange = mutableListOf<CalendarDay>()
+                val calendar = Calendar.getInstance()
+                calendar.time = startDate
+
+                while (calendar.time.before(endDate)) {
+                    datesInRange.add(
+                        CalendarDay.from(
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH) + 1,
+                            calendar.get(Calendar.DAY_OF_MONTH)
+                        )
+                    )
+                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+                }
+                datesInRange.add(
+                    CalendarDay.from(
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH) + 1,
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    )
+                ) // Add the end date itself
+                return datesInRange
+            }
+        }
+    }
 }
