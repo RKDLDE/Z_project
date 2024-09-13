@@ -61,7 +61,6 @@ class UploadFragment : Fragment() {
                 requireActivity().finish()
             }
         }
-
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 openCamera()
@@ -69,19 +68,12 @@ class UploadFragment : Fragment() {
                 Toast.makeText(requireContext(), "권한을 승인해야 카메라를 사용할 수 있습니다.",Toast.LENGTH_SHORT).show()
             }
         }
-
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) {
             if (it) {
                 binding.imagePreview.setImageURI(photoUri)
             }
         }
-
-        galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()){
-            binding.imagePreview.setImageURI(it)
-        }
-
         storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
 
         return binding.root
     }
@@ -89,10 +81,6 @@ class UploadFragment : Fragment() {
     private fun setViews() {
         binding.cameraBtn.setOnClickListener {
             cameraPermission.launch(Manifest.permission.CAMERA)
-        }
-
-        binding.buttonGallery.setOnClickListener {
-            openGallery()
         }
     }
 
