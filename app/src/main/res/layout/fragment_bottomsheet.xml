@@ -18,14 +18,18 @@
         android:orientation="vertical"
         >
 
-        <TextView
+        <Button
+            android:id="@+id/select"
             android:layout_width="match_parent"
+            style="drawable/dialog_custombutton"
+            android:background="#00ff0000"
             android:layout_height="80dp"
             android:clickable="true"
             android:fontFamily="@font/noto_sans_kr_semibold"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="라이브러리에서 선택"
+            android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -39,14 +43,18 @@
             android:layout_width="match_parent"
             android:layout_height="1.5dp"/>
 
-        <TextView
+        <Button
+            android:id="@+id/delete"
             android:layout_width="match_parent"
+            style="drawable/dialog_custombutton"
+            android:background="#00ff0000"
             android:layout_height="80dp"
             android:clickable="true"
             android:fontFamily="@font/noto_sans_kr_semibold"
             android:gravity="center"
             android:includeFontPadding="false"
             android:text="프로필 사진 삭제"
+            android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="20sp"
             android:textStyle="bold"
