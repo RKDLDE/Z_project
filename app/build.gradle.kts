@@ -15,6 +15,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -51,6 +53,8 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.emoji2.emojipicker)
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,4 +67,7 @@ dependencies {
     //이미지 접근 권한
     implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
+
+    //업로드 이모티콘
+//    implementation("androidx.emoji2:emojipicker:$version")
 }

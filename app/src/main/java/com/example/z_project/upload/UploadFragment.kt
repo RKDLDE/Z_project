@@ -43,7 +43,7 @@ class UploadFragment : Fragment() {
     lateinit var cameraLauncher: ActivityResultLauncher<Uri>
     lateinit var galleryLauncher: ActivityResultLauncher<String>
 
-    var photoUri:Uri? = null
+    private var photoUri:Uri? = null
 
 
     override fun onCreateView(
@@ -69,9 +69,7 @@ class UploadFragment : Fragment() {
             }
         }
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) {
-            if (it) {
-                binding.imagePreview.setImageURI(photoUri)
-            }
+
         }
         storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
