@@ -257,7 +257,7 @@ object CalendarDecorators {
             }
 
             override fun decorate(view: DayViewFacade) {
-                // 이벤트가 있는 날짜에 점을 추가하여 표시한다.
+                // 이벤트가 있는 날짜에 점을 추가하여 표시
                 view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
             }
 
