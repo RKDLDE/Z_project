@@ -24,4 +24,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="103dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_spinner_option"
+        android:overlapAnchor="false"
+        android:popupBackground="@color/main_gray"
+        android:textColor="@color/black"
+        android:theme="@style/SpinnerTheme"
+        android:spinnerMode="dropdown"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,4 +9,19 @@
     <color name="blue">#4671FF</color>
     <color name="select_blue">#C6DCF0</color>
 
+    <!-- calender -->
+    <color name="enabled_date_color">#D7D7D9</color>
+    <color name="selected_color">#F6F6F6</color>
+    <color name="calendar_fab">#727272</color>
+    <color name="calendar_color_red">#FF5B5B</color>
+    <color name="calendar_color_orange">#E19F02</color>
+    <color name="calendar_color_yellow">#FFEAA7</color>
+    <color name="calendar_color_green">#CEFFCE</color>
+    <color name="calendar_color_blue">#D9EDFF</color>
+    <color name="calendar_color_pink">#FCEAFF</color>
+    <color name="calendar_color_purple">#B07FFC</color>
+    <color name="calendar_color_gray">#CECECE</color>
+    <color name="enabled_color">#7B7C80</color>
+    <color name="today_color">#C9EFE8</color>
+
 </resources>
