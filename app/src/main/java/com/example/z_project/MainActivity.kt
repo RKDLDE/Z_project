@@ -1,8 +1,12 @@
 package com.example.z_project
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,6 +21,7 @@ import com.example.z_project.mypage.LogoutFragment
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,9 +78,4 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-//    btn1.setOnClickListener {
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.view, LoginFragment())
-//            .commit()
-//    }
 }
