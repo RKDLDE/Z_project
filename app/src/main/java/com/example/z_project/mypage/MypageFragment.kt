@@ -1,30 +1,22 @@
 package com.example.z_project.mypage
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.example.z_project.databinding.FragmentMypageBinding
-import android.content.Intent
-import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.MainActivity
-import com.example.z_project.databinding.FragmentLoginBinding
-import com.example.z_project.login.LoginFragment
 import com.example.z_project.R
-import com.example.z_project.databinding.FragmentChatBinding
+import com.example.z_project.databinding.FragmentMypageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.example.z_project.mypage.BottomsheetFragment
-import com.example.z_project.mypage.FriendFragment
-import com.google.android.material.dialog.MaterialDialogs
-import com.example.z_project.mypage.LogoutFragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.z_project.mypage.DeleteFragment
+import com.example.z_project.mypage.RenameFragment
+
 class MypageFragment : Fragment() {
 
 
@@ -42,16 +34,17 @@ class MypageFragment : Fragment() {
 
     //친구관리 버튼 클릭
     lateinit var binding: FragmentMypageBinding
+    private lateinit var tv_name: TextView
     //private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         binding=FragmentMypageBinding.inflate(inflater,container,false)
         val view3 = binding.root
 
         binding.llFriend.setOnClickListener {
-            (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm,FriendFragment()).commitAllowingStateLoss()
+            (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm,FriendFragment()).addToBackStack(null).commitAllowingStateLoss()
         }
+
         return view3
     }
 
@@ -87,6 +80,13 @@ class MypageFragment : Fragment() {
             showDeleteDialog()
         }
 
+        tv_name = view.findViewById(R.id.tv_name)
+        val button4: ImageButton = view.findViewById(R.id.ib_rename)
+        button4.setOnClickListener {
+            // 버튼 1 클릭 이벤트 처리
+            showRenameDialog()
+        }
+
 //        val button4: LinearLayout = view.findViewById(R.id.ib_back)
 //        button4.setOnClickListener {
 //            // 버튼 1 클릭 이벤트 처리
@@ -103,6 +103,16 @@ class MypageFragment : Fragment() {
         DeleteFragment(requireContext()).show()
     }
 
+
+
+    private fun showRenameDialog() {
+        val renameDialog = RenameFragment(requireContext()) { newName ->
+            // 다이얼로그에서 변경된 이름을 TextView에 표시
+            tv_name.text = newName
+        }
+        renameDialog.show()
+    }
+
     //bottonsheet 전용 함수
     private fun showBottomSheet() {
         // BottomSheetDialog 생성
@@ -115,6 +125,7 @@ class MypageFragment : Fragment() {
         // BottomSheet 표시
         bottomSheetDialog.show()
     }
+
 
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
