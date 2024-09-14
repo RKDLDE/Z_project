@@ -26,6 +26,7 @@
         android:textColor="@color/black"
         android:theme="@style/SpinnerTheme"
         android:spinnerMode="dropdown"
+        android:spinnerDropDownItemStyle="@style/CustomSpinnerDropdown"
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.example.z_project.R
 import com.example.z_project.databinding.ItemSpinnerYearBinding
+
 import java.util.Calendar
 
 class YearSpinnerAdapter (
@@ -38,6 +40,9 @@ class YearSpinnerAdapter (
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding =
             ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        binding.root.background = ContextCompat.getDrawable(parent.context, R.drawable.spinner_dropdown_background)
+
         binding.itemSpinnerYearTv.text = yearList[position].toString()
 
         return binding.root

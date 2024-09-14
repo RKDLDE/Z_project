@@ -7,7 +7,7 @@ data class ScheduleModel(
     val startDate: String?,
     val endDate: String?,
     val userColor: ColorEnum?,
-    val title: String?, //일정 내용
+    var title: String?, //일정 내용
     //val description: String?,
     //val buttonUiState: CalendarButtonUiState?
 )

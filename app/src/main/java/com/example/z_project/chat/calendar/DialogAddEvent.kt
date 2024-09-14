@@ -33,7 +33,7 @@ class DialogAddEvent(private val context: Context, private val calendarClearSele
         itemTouchHelper.attachToRecyclerView(bindingDialog.addCalendarEventContentRv)
 
         // 다른 곳 터치 시 기존 선택했던 삭제 뷰 닫기
-        bindingDialog.addCalendarEventContentRv.setOnTouchListener { _, _ ->
+        bindingDialog.addCalendarDialog.setOnTouchListener { _, _ ->
             swipeHelperCallback.removePreviousClamp(bindingDialog.addCalendarEventContentRv)
             false
         }

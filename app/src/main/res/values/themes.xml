@@ -42,7 +42,12 @@
     </style>
     <style name="SpinnerDivideStyle" parent="android:style/Widget.ListView.DropDown">
         <item name="android:divider">@color/white</item> <!-- divider 색 -->
-        <item name="android:dividerHeight">2dp</item> <!-- divider 높이 -->
+        <item name="android:dividerHeight">1dp</item> <!-- divider 높이 -->
+    </style>
+
+    <!-- 년도 선택 spinner 드롭다운 메뉴 배경 스타일 -->
+    <style name="CustomSpinnerDropdown" parent="Widget.AppCompat.Spinner.DropDown">
+        <item name="android:background">@drawable/spinner_dropdown_background</item>
     </style>
 
 
