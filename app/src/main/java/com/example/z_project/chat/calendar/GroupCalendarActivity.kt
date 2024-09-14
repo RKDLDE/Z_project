@@ -57,7 +57,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "회의",
             startDate = "2024.09.07",
             endDate = "2024.09.07",
-            calendarColor = ColorEnum.getByColor(Color.RED)
+            userColor = ColorEnum.getByColor(R.color.calendar_color_red)
         ),
         ScheduleModel(
             authId = 2,
@@ -65,7 +65,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "개강",
             startDate = "2024.09.02",
             endDate = "2024.09.02",
-            calendarColor = ColorEnum.getByColor(Color.BLUE)
+            userColor = ColorEnum.getByColor(R.color.calendar_color_blue)
         ),
         ScheduleModel(
             authId = 3,
@@ -73,7 +73,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "출근",
             startDate = "2024.09.02",
             endDate = "2024.09.02",
-            calendarColor = ColorEnum.getByColor(Color.YELLOW)
+            userColor = ColorEnum.getByColor(R.color.calendar_color_yellow)
         )
     )
 

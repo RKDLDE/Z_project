@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import java.util.Date
 import android.graphics.drawable.BitmapDrawable
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -208,6 +209,7 @@ object CalendarDecorators {
      */
     fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
         return object : DayViewDecorator {
+            private val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>() // 이벤트 날짜마다 여러 색상을 저장하는 맵
             private val eventDates = HashSet<CalendarDay>()
 
             init {
@@ -239,10 +241,18 @@ object CalendarDecorators {
                                 dateFormat.parse(endDate)
                             } ?: startDateTime
 
-                            if (startDateTime!! <= endDateTime) {
+                            if (startDateTime != null && startDateTime <= endDateTime) {
                                 // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
                                 val datesInRange = getDateRange(startDateTime, endDateTime)
-                                eventDates.addAll(datesInRange)
+                                //eventDates.addAll(datesInRange)
+
+                                datesInRange.forEach { date ->
+                                    // 유저의 색상 추가
+                                    val userColor = schedule.userColor?.color ?: ContextCompat.getColor(context, R.color.select_blue)
+
+                                    // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
+                                    eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
+                                }
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -253,12 +263,21 @@ object CalendarDecorators {
 
             override fun shouldDecorate(day: CalendarDay?): Boolean {
 //                return eventDates.contains(day)
-                return day != null && eventDates.contains(day)
+                return day != null && eventMap.containsKey(day)
+                //return eventMap.containsKey(day)
             }
 
             override fun decorate(view: DayViewFacade) {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
-                view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
+                //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
+
+                // 해당 날짜에 여러 색상의 점을 표시
+                eventMap.forEach { (calendarDay, colors) ->
+                    colors.forEach { color ->
+                        Log.d("dot 색상", "${color}")
+                        view.addSpan(DotSpan(5F, color))
+                    }
+                }
             }
 
             /**
