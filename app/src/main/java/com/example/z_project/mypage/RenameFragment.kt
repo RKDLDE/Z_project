@@ -23,7 +23,7 @@ import com.example.z_project.databinding.FragmentDeleteBinding
 import com.example.z_project.databinding.FragmentLogoutBinding
 
 class RenameFragment(
-    context: Context,
+    context: Context, private val onNameChanged: (String) -> Unit
 ) : Dialog(context) { // 뷰를 띄워야하므로 Dialog 클래스는 context를 인자로 받는다.
 
     private lateinit var binding: FragmentRenameBinding
@@ -45,6 +45,13 @@ class RenameFragment(
         // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        yesButton.setOnClickListener{
+            val newName = editname.text.toString()
+            if (newName.isNotBlank()) {
+                onNameChanged(newName)  // 이름 변경 콜백 호출
+                dismiss()  // 다이얼로그 닫기
+            }
+        }
         noButton.setOnClickListener {
             dismiss()
         }

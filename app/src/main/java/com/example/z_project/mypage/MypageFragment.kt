@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +15,7 @@ import com.example.z_project.MainActivity
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentMypageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-
+import com.example.z_project.mypage.RenameFragment
 
 class MypageFragment : Fragment() {
 
@@ -32,6 +34,7 @@ class MypageFragment : Fragment() {
 
     //친구관리 버튼 클릭
     lateinit var binding: FragmentMypageBinding
+    private lateinit var tv_name: TextView
     //private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,6 +80,7 @@ class MypageFragment : Fragment() {
             showDeleteDialog()
         }
 
+        tv_name = view.findViewById(R.id.tv_name)
         val button4: ImageButton = view.findViewById(R.id.ib_rename)
         button4.setOnClickListener {
             // 버튼 1 클릭 이벤트 처리
@@ -99,8 +103,14 @@ class MypageFragment : Fragment() {
         DeleteFragment(requireContext()).show()
     }
 
+
+
     private fun showRenameDialog() {
-        RenameFragment(requireContext()).show()
+        val renameDialog = RenameFragment(requireContext()) { newName ->
+            // 다이얼로그에서 변경된 이름을 TextView에 표시
+            tv_name.text = newName
+        }
+        renameDialog.show()
     }
 
     //bottonsheet 전용 함수
