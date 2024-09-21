@@ -18,10 +18,6 @@ android {
 
 
         vectorDrawables.useSupportLibrary = true
-        vectorDrawbles{
-            var useSupportLibrary = true
-
-        }
 
     }
 
@@ -95,11 +91,5 @@ dependencies {
 
     //업로드 이모티콘
 //    implementation("androidx.emoji2:emojipicker:$version")
-}
-
-}
-
-fun vectorDrawbles(function: () -> Unit) {
-
 }
 

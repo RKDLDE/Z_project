@@ -1,14 +1,17 @@
 package com.example.z_project.chat.calendar
 
 import android.graphics.Canvas
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import kotlin.math.min
 
 // 롱터치 후 드래그, 스와이프 동작 제어
-class SwipeHelperCallback(private val recyclerViewAdapter : EventRVAdapter)  : ItemTouchHelper.Callback() {
+class SwipeHelperCallback(private val recyclerView: RecyclerView, private val recyclerViewAdapter : EventRVAdapter)
+    : ItemTouchHelper.Callback() {
 
     // swipe_view 를 swipe 했을 때 <삭제> 화면이 보이도록 고정하기 위한 변수들
     var currentPosition: Int? = null    // 현재 선택된 recycler view의 position
@@ -45,6 +48,28 @@ class SwipeHelperCallback(private val recyclerViewAdapter : EventRVAdapter)  : I
         // recyclerViewAdapter.removeData(viewHolder.layoutPosition)
     }
 
+    // 다른 영역 클릭시 스와이프 초기화
+    fun attachClickListener() {
+        recyclerView.setOnClickListener {
+            removePreviousClamp() // 활성화된 스와이프 상태 리셋
+        }
+        recyclerView.setOnTouchListener { _, _ ->
+            removePreviousClamp() // 활성화된 스와이프 상태 리셋
+            false
+        }
+//        recyclerView.setOnClickListener {
+//            removePreviousClamp() // 활성화된 스와이프 상태 리셋
+//        }
+//
+//        // 특정 뷰 (예: erase_item_view) 클릭 리스너 추가
+//        recyclerView.findViewById<View>(R.id.erase_item_view).setOnClickListener { view ->
+//            val viewHolder = recyclerView.getChildViewHolder(view.parent as View) // erase_item_view의 부모로부터 ViewHolder 가져오기
+//            if (getTag(viewHolder)) { // 스와이프가 완료된 상태인지 확인
+//                recyclerViewAdapter.removeData(viewHolder.layoutPosition)
+//            }
+//        }
+    }
+
     // -------------swipe 됐을 때 일어날 동작---------------
     // swipe_view만 슬라이드 되도록 + 일정 범위를 swipe하면 <삭제> 화면 보이게 하기
 
@@ -77,8 +102,31 @@ class SwipeHelperCallback(private val recyclerViewAdapter : EventRVAdapter)  : I
     ) {
         if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
             val view = getView(viewHolder)
+            val eraseView = getEraseView(viewHolder)
             val isClamped = getTag(viewHolder)      // 고정할지 말지 결정, true : 고정함 false : 고정 안 함
             val newX = clampViewPositionHorizontal(dX, isClamped, isCurrentlyActive)  // newX 만큼 이동(고정 시 이동 위치/고정 해제 시 이동 위치 결정)
+
+//            // 스와이프 완료 상태를 관리
+//            if (dX < -clamp) {
+//                setTag(viewHolder, true) // 스와이프가 완료된 상태
+//            } else {
+//                setTag(viewHolder, false) // 스와이프가 완료되지 않은 상태
+//            }
+
+            // 스와이프 완료 여부에 따라 erase_item_view 클릭 가능 여부 설정
+            Log.d("완료여부", "${isClamped}")
+            eraseView.isClickable = isClamped
+
+            // 클릭 리스너를 상태에 따라 동적으로 설정/제거
+            if (isClamped) {
+                eraseView.setOnClickListener { view ->
+                    // 스와이프가 완료된 경우에만 삭제 처리
+                    recyclerViewAdapter.removeData(viewHolder.layoutPosition)
+                    Toast.makeText(viewHolder.itemView.context, "일정이 삭제됐습니다", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                eraseView.setOnClickListener(null)  // 스와이프가 완료되지 않았을 때는 클릭 불가
+            }
 
             // 고정시킬 시 애니메이션 추가
             if (newX == -clamp) {
@@ -113,6 +161,11 @@ class SwipeHelperCallback(private val recyclerViewAdapter : EventRVAdapter)  : I
     // swipe_view 반환 -> swipe_view만 이동할 수 있게 해줌
     private fun getView(viewHolder: RecyclerView.ViewHolder) : View = viewHolder.itemView.findViewById(
         R.id.item_calendar_event)
+
+    // erase_item_view 찾는 함수 추가
+    private fun getEraseView(viewHolder: RecyclerView.ViewHolder): View {
+        return viewHolder.itemView.findViewById(R.id.erase_item_view)
+    }
 
     // swipe_view 를 swipe 했을 때 <삭제> 화면이 보이도록 고정
     private fun clampViewPositionHorizontal(
@@ -154,8 +207,8 @@ class SwipeHelperCallback(private val recyclerViewAdapter : EventRVAdapter)  : I
     // view가 swipe 되었을 때 고정될 크기 설정
     fun setClamp(clamp: Float) { this.clamp = clamp }
 
-    // 다른 View가 swipe 되거나 터치되면 고정 해제
-    fun removePreviousClamp(recyclerView: RecyclerView) {
+    // 다른 View가 swipe되거나 터치되면 고정 해제
+    internal fun removePreviousClamp() {
         // 현재 선택한 view가 이전에 선택한 view와 같으면 패스
         if (currentPosition == previousPosition) return
 

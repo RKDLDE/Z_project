@@ -57,7 +57,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "회의",
             startDate = "2024.09.07",
             endDate = "2024.09.07",
-            userColor = ColorEnum.getByColor(R.color.calendar_color_red)
+            userColor = ColorEnum.getByColor(R.color.calendar_color_pink)
         ),
         ScheduleModel(
             authId = 2,
