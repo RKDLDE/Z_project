@@ -210,6 +210,7 @@ object CalendarDecorators {
     fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
         return object : DayViewDecorator {
             private val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>() // 이벤트 날짜마다 여러 색상을 저장하는 맵
+            private lateinit var colors: IntArray
             private val eventDates = HashSet<CalendarDay>()
 
             init {
@@ -271,13 +272,33 @@ object CalendarDecorators {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
                 //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
 
-                // 해당 날짜에 여러 색상의 점을 표시
-                eventMap.forEach { (calendarDay, colors) ->
-                    colors.forEach { color ->
-                        Log.d("dot 색상", "${color}")
-                        view.addSpan(DotSpan(5F, color))
-                    }
+                Log.d("이벤트내역", "${eventMap}")
+
+                val dotList = mutableListOf<Int>()
+                // eventMap을 순회하며 색상을 추가
+                eventMap.forEach { (_, colorList) ->
+                    dotList.addAll(colorList) // 각 날짜의 색상을 colorsList에 추가
                 }
+                colors = dotList.toIntArray()
+                Log.d("색깔리스트", "${colors.contentToString()}")
+                view.addSpan(CustomMultipleDotSpan(6f, colors))
+
+//                // 해당 날짜에 여러 색상의 점을 표시
+//                eventMap.forEach { (calendarDay, colors) ->
+//                    eventMap.keys.forEach { day ->
+//                        if (view.toString() == calendarDay.toString()) {
+//                            val colors = eventMap[day] // 현재 날짜에 대한 색상 목록을 가져옴
+//                            colors?.forEach { color ->
+//                                Log.d("dot 색상", "$color")
+//                                view.addSpan(DotSpan(6F, ContextCompat.getColor(context, color))) // 각 색상에 대해 점 추가
+//                            }
+//                        }
+//                    }
+////                    colors.forEach { color ->
+////                        Log.d("dot 색상", "${color}")
+////                        view.addSpan(DotSpan(6F, ContextCompat.getColor(context, color)))
+////                    }
+//                }
             }
 
             /**
@@ -308,6 +329,17 @@ object CalendarDecorators {
                         calendar.get(Calendar.DAY_OF_MONTH)
                     )
                 ) // Add the end date itself
+
+//                while (calendar.time.before(endDate) || calendar.time == endDate) {
+//                    datesInRange.add(
+//                        CalendarDay.from(
+//                            calendar.get(Calendar.YEAR),
+//                            calendar.get(Calendar.MONTH) + 1,
+//                            calendar.get(Calendar.DAY_OF_MONTH)
+//                        )
+//                    )
+//                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+//                }
                 return datesInRange
             }
         }
