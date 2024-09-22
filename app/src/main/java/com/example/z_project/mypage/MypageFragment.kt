@@ -1,11 +1,13 @@
 package com.example.z_project.mypage
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -19,22 +21,10 @@ import com.example.z_project.mypage.RenameFragment
 
 class MypageFragment : Fragment() {
 
-
-//    lateinit var binding: FragmentMypageBinding
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        binding = FragmentMypageBinding.inflate(inflater, container, false)
-//
-//        return binding.root
-//    }
-
     //친구관리 버튼 클릭
     lateinit var binding: FragmentMypageBinding
     private lateinit var tv_name: TextView
+    private lateinit var profileImageView: ImageView
     //private lateinit var callback: OnBackPressedCallback
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,13 +38,6 @@ class MypageFragment : Fragment() {
         return view3
     }
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        // Fragment의 레이아웃을 설정
-//        return inflater.inflate(R.layout.fragment_mypage, container, false)
-//    }
 
     //흠 작은 버튼 관리
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,11 +70,15 @@ class MypageFragment : Fragment() {
             showRenameDialog()
         }
 
-//        val button4: LinearLayout = view.findViewById(R.id.ib_back)
-//        button4.setOnClickListener {
-//            // 버튼 1 클릭 이벤트 처리
-//            onAttach(context)
-//        }
+        // 프로필 이미지 및 변경 버튼 참조
+        profileImageView = view.findViewById(R.id.iv_profile)
+        val changeProfileButton = view.findViewById<ImageButton>(R.id.ib_change_profile)
+
+        // 프로필 변경 버튼 클릭 시 BottomSheetDialogFragment 호출
+        changeProfileButton.setOnClickListener {
+            val bottomSheetFragment = BottomsheetFragment()
+            bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
+        }
 
     }
 
@@ -126,19 +113,13 @@ class MypageFragment : Fragment() {
         bottomSheetDialog.show()
     }
 
+    // BottomSheet에서 선택된 이미지 처리
+    fun onImageSelected(imageUri: Uri) {
+        profileImageView.setImageURI(imageUri)
+    }
+    interface ImageSelectionListener {
+        fun onImageSelected(imageUri: Uri)
+    }
 
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//
-//        callback = object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                // 뒤로가기 클릭시 동작하는 로직
-//                requireActivity().supportFragmentManager.beginTransaction()
-//                    .remove(FriendFragment())
-//                    .commit()
-//            }
-//        }
-//        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-//    }
 
 }
