@@ -18,10 +18,7 @@ android {
 
 
         vectorDrawables.useSupportLibrary = true
-        vectorDrawbles{
-            var useSupportLibrary = true
 
-        }
 
     }
 
@@ -58,6 +55,7 @@ android {
     }
 
     buildToolsVersion = "34.0.0"
+
 }
 
 dependencies {
@@ -93,13 +91,11 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
 
+
+    //테드 퍼미션
+    /*implementation("gun0912.ted:tedpermission:2.2.3")*/
+
+
     //업로드 이모티콘
-//    implementation("androidx.emoji2:emojipicker:$version")
+    /*implementation("androidx.emoji2:emojipicker:$version")*/
 }
-
-}
-
-fun vectorDrawbles(function: () -> Unit) {
-
-}
-
