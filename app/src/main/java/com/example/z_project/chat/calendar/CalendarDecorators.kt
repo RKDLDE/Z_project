@@ -16,10 +16,16 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView // 캘린더 뷰 관련
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import android.graphics.Color // 색상 관련
+import android.graphics.Paint // 페인팅 관련
+
+
+val tagMap: MutableMap<DayViewFacade, CalendarDay> = mutableMapOf()
 
 object CalendarDecorators {
     /**
@@ -210,8 +216,10 @@ object CalendarDecorators {
     fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
         return object : DayViewDecorator {
             private val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>() // 이벤트 날짜마다 여러 색상을 저장하는 맵
-            private lateinit var colors: IntArray
+            private lateinit var eventColors: IntArray
             private val eventDates = HashSet<CalendarDay>()
+
+            private var currentDay: CalendarDay? = null
 
             init {
                 val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
@@ -219,21 +227,6 @@ object CalendarDecorators {
                 // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
                 scheduleList.forEach { schedule ->
                     schedule.startDate?.let { startDate ->
-//                        try {
-//                            // 시작 날짜를 파싱
-//                            val startDateTime = dateFormat.parse(startDate)
-//                            val endDateTime = schedule.endDate?.let { endDate ->
-//                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
-//                                dateFormat.parse(endDate)
-//                            } ?: startDateTime
-//
-//                            // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
-//                            val datesInRange = getDateRange(startDateTime!!, endDateTime)
-//                            eventDates.addAll(datesInRange)
-//                        } catch (e: Exception) {
-//                            e.printStackTrace()
-//                        }
-
                         try {
                             // 시작 날짜를 파싱
                             val startDateTime = dateFormat.parse(startDate)
@@ -253,6 +246,7 @@ object CalendarDecorators {
 
                                     // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
                                     eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
+                                    Log.d("eventMap", "${eventMap}")
                                 }
                             }
                         } catch (e: Exception) {
@@ -264,41 +258,54 @@ object CalendarDecorators {
 
             override fun shouldDecorate(day: CalendarDay?): Boolean {
 //                return eventDates.contains(day)
+//                if (day == null) {
+//                    Log.d("엥", "day가 null입니다.")
+//                    return false
+//                }
+//                val containsKey = eventMap.containsKey(day)
+//                Log.d("엥", "day: $day, containsKey: $containsKey")
+//                return containsKey
+//                if(eventMap.containsKey(day)){
+//                    currentDay = day
+//                }
+//                Log.d("이벤트날짜22", "${currentDay}")
                 return day != null && eventMap.containsKey(day)
+
                 //return eventMap.containsKey(day)
             }
 
-            override fun decorate(view: DayViewFacade) {
+            override fun decorate(view: DayViewFacade?) {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
                 //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
 
-                Log.d("이벤트내역", "${eventMap}")
-
-                val dotList = mutableListOf<Int>()
-                // eventMap을 순회하며 색상을 추가
-                eventMap.forEach { (_, colorList) ->
-                    dotList.addAll(colorList) // 각 날짜의 색상을 colorsList에 추가
-                }
-                colors = dotList.toIntArray()
-                Log.d("색깔리스트", "${colors.contentToString()}")
-                view.addSpan(CustomMultipleDotSpan(6f, colors))
-
-//                // 해당 날짜에 여러 색상의 점을 표시
-//                eventMap.forEach { (calendarDay, colors) ->
-//                    eventMap.keys.forEach { day ->
-//                        if (view.toString() == calendarDay.toString()) {
-//                            val colors = eventMap[day] // 현재 날짜에 대한 색상 목록을 가져옴
-//                            colors?.forEach { color ->
-//                                Log.d("dot 색상", "$color")
-//                                view.addSpan(DotSpan(6F, ContextCompat.getColor(context, color))) // 각 색상에 대해 점 추가
-//                            }
+//                view?.let {
+//                    eventMap.forEach {(calendarDay, colors) ->
+//                        val colorList = mutableListOf<Int>()
+//
+//                        colors.forEach { colorId ->
+//                            val colorValue = ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
+//                            colorList.addAll(listOf(colorValue))
+//                        }
+//                        eventColors = colorList.toIntArray()
+//
+//                        if (eventColors.isNotEmpty()) {
+//                            Log.d("색상들....", "${colorList}")
+//                            it.addSpan(CustomMultipleDotSpan(6f, eventColors))
+//                        } else {
+//                            Log.d("DotSpan", "No colors to draw.")
 //                        }
 //                    }
-////                    colors.forEach { color ->
-////                        Log.d("dot 색상", "${color}")
-////                        view.addSpan(DotSpan(6F, ContextCompat.getColor(context, color)))
-////                    }
 //                }
+
+                view?.let {
+                    // 현재 날짜를 기준으로 장식 추가
+                    eventMap.forEach { (calendarDay, colors) ->
+                        // 각각의 calendarDay에 대해 추가
+                        it.addSpan(CustomMultipleDotSpan(6f, colors.map { colorId ->
+                            ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
+                        }.toIntArray()))
+                    }
+                }
             }
 
             /**

@@ -6,7 +6,7 @@ import android.text.style.LineBackgroundSpan
 import com.prolificinteractive.materialcalendarview.spans.DotSpan.DEFAULT_RADIUS
 
 class CustomMultipleDotSpan : LineBackgroundSpan {
-    private var radius: Float = 0.0f
+    private var radius: Float
     private var color = IntArray(0)
 
     constructor(){
@@ -50,9 +50,9 @@ class CustomMultipleDotSpan : LineBackgroundSpan {
             if (color[i] != 0){
                 paint.color = color[i]
             }
-            canvas.drawCircle(((left + right) / 2 - leftMost).toFloat(), bottom + radius, radius, paint)
+            canvas.drawCircle(((left + right) / 2 - leftMost).toFloat(), bottom + radius + 20, radius, paint)
             paint.color = oldColor
-            leftMost += 24
+            leftMost += 30
         }
     }
 }
