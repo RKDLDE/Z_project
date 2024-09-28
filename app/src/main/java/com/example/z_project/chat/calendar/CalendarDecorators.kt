@@ -278,34 +278,32 @@ object CalendarDecorators {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
                 //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
 
-//                view?.let {
-//                    eventMap.forEach {(calendarDay, colors) ->
-//                        val colorList = mutableListOf<Int>()
+                // 일정 정보가 총합되어서 찍힘.. - 보류ㅠㅠ
+//                eventMap.forEach {(calendarDay, colors) ->
+//                    val colorList = mutableListOf<Int>()
 //
-//                        colors.forEach { colorId ->
-//                            val colorValue = ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
-//                            colorList.addAll(listOf(colorValue))
-//                        }
-//                        eventColors = colorList.toIntArray()
+//                    colors.forEach { colorId ->
+//                        val colorValue = ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
+//                        colorList.addAll(listOf(colorValue))
+//                    }
+//                    eventColors = colorList.toIntArray()
 //
-//                        if (eventColors.isNotEmpty()) {
-//                            Log.d("색상들....", "${colorList}")
-//                            it.addSpan(CustomMultipleDotSpan(6f, eventColors))
-//                        } else {
-//                            Log.d("DotSpan", "No colors to draw.")
-//                        }
+//                    if (eventColors.isNotEmpty()) {
+//                        Log.d("색상들....", "${colorList}")
+//                        view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
+//                    } else {
+//                        Log.d("DotSpan", "No colors to draw.")
 //                    }
 //                }
+                val colorList = mutableListOf<Int>()
+                colorList.addAll(listOf(
+                    ContextCompat.getColor(context, R.color.calendar_color_blue),
+                    ContextCompat.getColor(context, R.color.calendar_color_yellow),
+                    ContextCompat.getColor(context, R.color.calendar_color_orange),
+                ))
+                eventColors = colorList.toIntArray()
+                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
 
-                view?.let {
-                    // 현재 날짜를 기준으로 장식 추가
-                    eventMap.forEach { (calendarDay, colors) ->
-                        // 각각의 calendarDay에 대해 추가
-                        it.addSpan(CustomMultipleDotSpan(6f, colors.map { colorId ->
-                            ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
-                        }.toIntArray()))
-                    }
-                }
             }
 
             /**

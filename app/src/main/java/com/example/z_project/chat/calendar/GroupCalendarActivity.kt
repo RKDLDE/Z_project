@@ -319,26 +319,34 @@ class GroupCalendarActivity : AppCompatActivity() {
     }
 
     private fun showEventDetailsDialog() { //일정 작성 dialog
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val bindingDialog = DialogEventDetailsBinding.inflate(layoutInflater)
-        bottomSheetDialog.setContentView(bindingDialog.root)
-        bottomSheetDialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+//        val bottomSheetDialog = BottomSheetDialog(this)
+//        val bindingDialog = DialogEventDetailsBinding.inflate(layoutInflater)
+//        bottomSheetDialog.setContentView(bindingDialog.root)
+//        bottomSheetDialog.setCanceledOnTouchOutside(true) // 바깥 영역 터치 시, 닫힘 O
+//
+//        bindingDialog.dialogEventDetailsContent.requestFocus() //포커스 On
+//
+//        //일정 확인 버튼
+//        bindingDialog.dialogEventDetailsCheckIcon.setOnClickListener {
+//            // 확인 버튼 클릭 시 수행할 작업
+//            bottomSheetDialog.dismiss() // 다이얼로그 닫기
+//        }
+//
+//        // 다이얼로그가 닫힐 때 날짜 선택을 해제
+//        bottomSheetDialog.setOnDismissListener {
+//            binding.calendarView.clearSelection() // 선택 해제
+//        }
+//
+//        // 다이얼로그 표시
+//        bottomSheetDialog.show()
 
-        bindingDialog.dialogEventDetailsContent.requestFocus() //포커스 On
-
-        //일정 확인 버튼
-        bindingDialog.dialogEventDetailsCheckIcon.setOnClickListener {
-            // 확인 버튼 클릭 시 수행할 작업
-            bottomSheetDialog.dismiss() // 다이얼로그 닫기
+        //Dialog 정의
+        val dialogEventDetail = DialogEventDetail(this){
+            binding.calendarView.clearSelection() // 날짜 선택 해제
         }
 
-        // 다이얼로그가 닫힐 때 날짜 선택을 해제
-        bottomSheetDialog.setOnDismissListener {
-            binding.calendarView.clearSelection() // 선택 해제
-        }
-
-        // 다이얼로그 표시
-        bottomSheetDialog.show()
+        //Dialog 표시
+        dialogEventDetail.show()
     }
 
     //날짜 확인 및 필터링 함수

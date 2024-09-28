@@ -52,7 +52,7 @@ class CustomMultipleDotSpan : LineBackgroundSpan {
             }
             canvas.drawCircle(((left + right) / 2 - leftMost).toFloat(), bottom + radius + 20, radius, paint)
             paint.color = oldColor
-            leftMost += 30
+            leftMost += 24
         }
     }
 }

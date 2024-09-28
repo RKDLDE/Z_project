@@ -9,16 +9,19 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.z_project.R
 import com.example.z_project.databinding.DialogAddEventBinding
 
 class DialogAddEvent(private val context: Context, private val calendarClearSelection: () -> Unit) {
     private val dialog = Dialog(context)
+    val bindingDialog = DialogAddEventBinding.inflate(LayoutInflater.from(context))
 
     @SuppressLint("ClickableViewAccessibility")
     fun show(events: List<ScheduleModel>, onAddEventClick: () -> Unit) {
-        val bindingDialog = DialogAddEventBinding.inflate(LayoutInflater.from(context))
         dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -80,9 +83,5 @@ class DialogAddEvent(private val context: Context, private val calendarClearSele
 
         // 다이얼로그 보여주기
         dialog.show()
-    }
-
-    fun dismiss() {
-        dialog.dismiss()
     }
 }
