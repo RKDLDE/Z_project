@@ -93,3 +93,8 @@ dependencies {
 //    implementation("androidx.emoji2:emojipicker:$version")
 }
 
+
+fun vectorDrawbles(function: () -> Unit) {
+
+}
+
