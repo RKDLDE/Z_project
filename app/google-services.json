@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "670302445648",
+    "firebase_url": "https://z-project-3116b-default-rtdb.firebaseio.com",
+    "project_id": "z-project-3116b",
+    "storage_bucket": "z-project-3116b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670302445648:android:dc969d7fe39ec7e0b97155",
+        "android_client_info": {
+          "package_name": "com.example.z_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnwy8y9nu5KgT2sffDQuKsOrtjPFoeRHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
