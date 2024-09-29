@@ -40,17 +40,7 @@ class UploadFragment : Fragment() {
     ): View {
         _binding = FragmentUploadBinding.inflate(inflater, container, false)
 
-        storagePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                binding.cameraBtn.setOnClickListener {
-                    cameraPermission.launch(Manifest.permission.CAMERA)
-                }
 
-            } else {
-                Toast.makeText(requireContext(), "권한을 승인해야 앱을 사용할 수 있습니다.", Toast.LENGTH_SHORT).show()
-                requireActivity().finish()
-            }
-        }
 
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
@@ -77,7 +67,6 @@ class UploadFragment : Fragment() {
             }
         }
 
-        storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         // 버튼 클릭 시 CustomFragment로 전환 --- ViewBinding 사용 시 findViewById 사용할 필요 없음!
         binding.sss.setOnClickListener {

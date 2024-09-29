@@ -375,52 +375,52 @@ fun BottomBar(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .fillMaxWidth(0.25f)
-                    .alpha(0.4f),
-                painter = painterResource(id = R.drawable.ic_upload),
-                contentDescription = "BottomBarIcon"
-            )
+//            Icon(
+//                modifier = Modifier
+//                    .size(32.dp)
+//                    .fillMaxWidth(0.25f)
+//                    .alpha(0.4f),
+//                painter = painterResource(id = R.drawable.ic_upload),
+//                contentDescription = "BottomBarIcon"
+//            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .fillMaxWidth(0.25f)
-                    .alpha(0.4f),
-                painter = painterResource(id = R.drawable.ic_inventory),
-                contentDescription = "BottomBarIcon"
-            )
+//            Icon(
+//                modifier = Modifier
+//                    .size(32.dp)
+//                    .fillMaxWidth(0.25f)
+//                    .alpha(0.4f),
+//                painter = painterResource(id = R.drawable.ic_inventory),
+//                contentDescription = "BottomBarIcon"
+//            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .fillMaxWidth(0.25f),
-                painter = painterResource(id = R.drawable.ic_chat),
-                contentDescription = "BottomBarIcon"
-            )
+//            Icon(
+//                modifier = Modifier
+//                    .size(32.dp)
+//                    .fillMaxWidth(0.25f),
+//                painter = painterResource(id = R.drawable.ic_chat),
+//                contentDescription = "BottomBarIcon"
+//            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(32.dp)
-                    .fillMaxWidth(0.25f)
-                    .alpha(0.4f),
-                painter = painterResource(id = R.drawable.ic_smile),
-                contentDescription = "BottomBarIcon"
-            )
+//            Icon(
+//                modifier = Modifier
+//                    .size(32.dp)
+//                    .fillMaxWidth(0.25f)
+//                    .alpha(0.4f),
+//                painter = painterResource(id = R.drawable.ic_smile),
+//                contentDescription = "BottomBarIcon"
+//            )
         }
     }
 }
