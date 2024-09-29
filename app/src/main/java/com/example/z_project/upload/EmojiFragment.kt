@@ -8,10 +8,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.emoji2.bundled.BundledEmojiCompatConfig
+//import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.emojipicker.RecentEmojiAsyncProvider
 import androidx.emoji2.emojipicker.RecentEmojiProviderAdapter
-import androidx.emoji2.text.EmojiCompat
+//import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.Fragment
 import com.example.z_project.databinding.FragmentEmojiBinding
 import com.google.common.util.concurrent.Futures
@@ -21,9 +21,9 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         // EmojiCompat 초기화
-        val config = BundledEmojiCompatConfig(this)
-            .setReplaceAll(true)  // 지원되지 않는 이모티콘을 대체 텍스트로 교체
-        EmojiCompat.init(config)
+//        val config = BundledEmojiCompatConfig(this)
+//            .setReplaceAll(true)  // 지원되지 않는 이모티콘을 대체 텍스트로 교체
+//        EmojiCompat.init(config)
     }
 }
 

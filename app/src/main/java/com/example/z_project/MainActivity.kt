@@ -22,6 +22,7 @@ import com.example.z_project.upload.UploadFragment
 import com.example.z_project.mypage.LogoutFragment
 import com.example.z_project.MainActivity
 import android.Manifest
+import android.widget.Toast
 
 
 class MainActivity : AppCompatActivity() {
