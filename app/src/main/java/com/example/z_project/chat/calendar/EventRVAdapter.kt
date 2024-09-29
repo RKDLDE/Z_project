@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarEventBinding
 
-class EventRVAdapter (private var events: ArrayList<ScheduleModel>): RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
+class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
+    RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventRVAdapter.ViewHolder {
         // itemview 객체 생성
         val binding: ItemCalendarEventBinding = ItemCalendarEventBinding.inflate(
@@ -39,8 +40,8 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>): RecyclerVie
         notifyItemRemoved(position)
     }
 
-    inner class ViewHolder(val binding: ItemCalendarEventBinding, private val context: Context): RecyclerView.ViewHolder(binding.root) {
-        val deleteButton: View = itemView.findViewById(R.id.erase_item_view)
+    inner class ViewHolder(val binding: ItemCalendarEventBinding, private val context: Context):
+        RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ResourceType")
         fun bind(event: ScheduleModel) {
@@ -55,12 +56,6 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>): RecyclerVie
             itemView.setOnClickListener {
                 startEditing(position)
             }
-
-            // 삭제 텍스트뷰 클릭시 토스트 표시
-            deleteButton.setOnClickListener {
-                removeData(this.layoutPosition)
-                Toast.makeText(binding.root.context, "일정이 삭제됐습니다", Toast.LENGTH_SHORT).show()
-            }
         }
 
         private fun startEditing(position: Int) {
@@ -74,16 +69,48 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>): RecyclerVie
                 val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(editEventContent, InputMethodManager.SHOW_IMPLICIT)
 
-                editEventContent.setOnFocusChangeListener { v, hasFocus ->
-                    if (!hasFocus) {
-                        val newTitle = (v as EditText).text.toString()
-                        events[position].title = newTitle
-                        notifyItemChanged(position)
-                        calendarEventContent.visibility = View.VISIBLE
-                        editEventContent.visibility = View.GONE
-                        imm.hideSoftInputFromWindow(v.windowToken, 0)
+                // Done 버튼 클릭 시 편집 종료 및 TextView로 전환
+                editEventContent.setOnEditorActionListener { v, actionId, event ->
+                    if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                        // 편집 종료
+                        finishEditing(position, imm)
+                        true // 액션 처리 완료
+                    } else {
+                        false // 액션 처리되지 않음
                     }
                 }
+
+                // 포커스가 사라지면 편집 종료
+                editEventContent.setOnFocusChangeListener { v, hasFocus ->
+                    if (!hasFocus) {
+                        finishEditing(position, imm)
+                    }
+                }
+
+//                editEventContent.setOnFocusChangeListener { v, hasFocus ->
+//                    if (!hasFocus) {
+//                        val newTitle = (v as EditText).text.toString()
+//                        events[position].title = newTitle
+//                        notifyItemChanged(position)
+//                        calendarEventContent.visibility = View.VISIBLE
+//                        editEventContent.visibility = View.GONE
+//                        imm.hideSoftInputFromWindow(v.windowToken, 0)
+//                    }
+//                }
+            }
+        }
+        private fun finishEditing(position: Int, imm: InputMethodManager) {
+            binding.apply {
+                val newTitle = editEventContent.text.toString()
+                events[position].title = newTitle.ifEmpty { events[position].title }  // 빈 문자열일 경우 기존 제목 유지
+                notifyItemChanged(position)
+
+                // EditText 숨기고 TextView 보여주기
+                calendarEventContent.visibility = View.VISIBLE
+                editEventContent.visibility = View.GONE
+
+                // 키보드 숨기기
+                imm.hideSoftInputFromWindow(editEventContent.windowToken, 0)
             }
         }
     }

@@ -18,10 +18,6 @@ android {
 
 
         vectorDrawables.useSupportLibrary = true
-        vectorDrawbles{
-            var useSupportLibrary = true
-
-        }
 
     }
 

@@ -16,10 +16,16 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView // 캘린더 뷰 관련
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import android.graphics.Color // 색상 관련
+import android.graphics.Paint // 페인팅 관련
+
+
+val tagMap: MutableMap<DayViewFacade, CalendarDay> = mutableMapOf()
 
 object CalendarDecorators {
     /**
@@ -210,7 +216,10 @@ object CalendarDecorators {
     fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
         return object : DayViewDecorator {
             private val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>() // 이벤트 날짜마다 여러 색상을 저장하는 맵
+            private lateinit var eventColors: IntArray
             private val eventDates = HashSet<CalendarDay>()
+
+            private var currentDay: CalendarDay? = null
 
             init {
                 val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
@@ -218,21 +227,6 @@ object CalendarDecorators {
                 // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
                 scheduleList.forEach { schedule ->
                     schedule.startDate?.let { startDate ->
-//                        try {
-//                            // 시작 날짜를 파싱
-//                            val startDateTime = dateFormat.parse(startDate)
-//                            val endDateTime = schedule.endDate?.let { endDate ->
-//                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
-//                                dateFormat.parse(endDate)
-//                            } ?: startDateTime
-//
-//                            // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
-//                            val datesInRange = getDateRange(startDateTime!!, endDateTime)
-//                            eventDates.addAll(datesInRange)
-//                        } catch (e: Exception) {
-//                            e.printStackTrace()
-//                        }
-
                         try {
                             // 시작 날짜를 파싱
                             val startDateTime = dateFormat.parse(startDate)
@@ -252,6 +246,7 @@ object CalendarDecorators {
 
                                     // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
                                     eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
+                                    Log.d("eventMap", "${eventMap}")
                                 }
                             }
                         } catch (e: Exception) {
@@ -263,21 +258,52 @@ object CalendarDecorators {
 
             override fun shouldDecorate(day: CalendarDay?): Boolean {
 //                return eventDates.contains(day)
+//                if (day == null) {
+//                    Log.d("엥", "day가 null입니다.")
+//                    return false
+//                }
+//                val containsKey = eventMap.containsKey(day)
+//                Log.d("엥", "day: $day, containsKey: $containsKey")
+//                return containsKey
+//                if(eventMap.containsKey(day)){
+//                    currentDay = day
+//                }
+//                Log.d("이벤트날짜22", "${currentDay}")
                 return day != null && eventMap.containsKey(day)
+
                 //return eventMap.containsKey(day)
             }
 
-            override fun decorate(view: DayViewFacade) {
+            override fun decorate(view: DayViewFacade?) {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
                 //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
 
-                // 해당 날짜에 여러 색상의 점을 표시
-                eventMap.forEach { (calendarDay, colors) ->
-                    colors.forEach { color ->
-                        Log.d("dot 색상", "${color}")
-                        view.addSpan(DotSpan(5F, color))
-                    }
-                }
+                // 일정 정보가 총합되어서 찍힘.. - 보류ㅠㅠ
+//                eventMap.forEach {(calendarDay, colors) ->
+//                    val colorList = mutableListOf<Int>()
+//
+//                    colors.forEach { colorId ->
+//                        val colorValue = ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
+//                        colorList.addAll(listOf(colorValue))
+//                    }
+//                    eventColors = colorList.toIntArray()
+//
+//                    if (eventColors.isNotEmpty()) {
+//                        Log.d("색상들....", "${colorList}")
+//                        view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
+//                    } else {
+//                        Log.d("DotSpan", "No colors to draw.")
+//                    }
+//                }
+                val colorList = mutableListOf<Int>()
+                colorList.addAll(listOf(
+                    ContextCompat.getColor(context, R.color.calendar_color_blue),
+                    ContextCompat.getColor(context, R.color.calendar_color_yellow),
+                    ContextCompat.getColor(context, R.color.calendar_color_orange),
+                ))
+                eventColors = colorList.toIntArray()
+                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
+
             }
 
             /**
@@ -308,6 +334,17 @@ object CalendarDecorators {
                         calendar.get(Calendar.DAY_OF_MONTH)
                     )
                 ) // Add the end date itself
+
+//                while (calendar.time.before(endDate) || calendar.time == endDate) {
+//                    datesInRange.add(
+//                        CalendarDay.from(
+//                            calendar.get(Calendar.YEAR),
+//                            calendar.get(Calendar.MONTH) + 1,
+//                            calendar.get(Calendar.DAY_OF_MONTH)
+//                        )
+//                    )
+//                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+//                }
                 return datesInRange
             }
         }
