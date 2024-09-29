@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,12 +29,25 @@ import com.example.z_project.databinding.FragmentBottomsheetBinding
 import com.example.z_project.databinding.FragmentLoginBinding
 import com.example.z_project.databinding.FragmentMypageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.example.z_project.MainActivity
 
 class BottomsheetFragment : BottomSheetDialogFragment() {
+
+    // ImageSelectionListener 인터페이스 정의
+    interface ImageSelectionListener {
+        fun onImageSelected(imageUri: Uri)
+        fun onImageDeleted()
+    }
+
     //lateinit var binding: FragmentBottomsheetBinding
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var selectImageLauncher: ActivityResultLauncher<Intent>
+    private var listener: ImageSelectionListener? = null
 
+    // Listener 설정 메서드
+    fun setImageSelectionListener(listener: ImageSelectionListener) {
+        this.listener = listener
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,15 +63,22 @@ class BottomsheetFragment : BottomSheetDialogFragment() {
             checkAndRequestPermission()
         }
 
+        val deleteButton = view.findViewById<Button>(R.id.delete)
+        deleteButton.setOnClickListener {
+            listener?.onImageDeleted() // 기본 이미지로 변경
+            dismiss()
+        }
+
         // 갤러리 호출 결과 처리 런처
         selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 val imageUri: Uri? = result.data?.data
                 imageUri?.let {
-                    // MainFragment로 선택된 이미지 전달
-                    (activity as MypageFragment.ImageSelectionListener).onImageSelected(it)
+                    listener?.onImageSelected(it) // 선택된 이미지 전달
                     dismiss()
                 }
+            } else {
+                Log.e("GalleryError", "Result Code is not OK")
             }
         }
 

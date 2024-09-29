@@ -6,12 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentFriendBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.example.z_project.mypage.ListdeleteFragment
 
 class FriendFragment : Fragment() {
     lateinit var binding: FragmentFriendBinding
@@ -31,10 +35,11 @@ class FriendFragment : Fragment() {
         val recyclerView: RecyclerView = binding.rcvFriendList
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val customAdapter = CustomAdapter(testDataSet)
+        val customAdapter = CustomAdapter(testDataSet, requireContext())
         recyclerView.adapter = customAdapter
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,6 +49,8 @@ class FriendFragment : Fragment() {
             // 이전 Fragment로 이동
             requireActivity().supportFragmentManager.popBackStack()
         }
+
     }
+
 }
 

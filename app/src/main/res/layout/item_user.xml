@@ -9,6 +9,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:orientation="horizontal"
         >
 
@@ -29,13 +33,14 @@
             android:includeFontPadding="false"
             android:fontFamily="@font/noto_sans_kr_semibold"
             android:layout_gravity="center"
-            android:textAlignment="textStart"
             android:textSize="20sp"
             android:layout_weight="4"/>
 
         <ImageView
             android:id="@+id/iv_x"
             android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
