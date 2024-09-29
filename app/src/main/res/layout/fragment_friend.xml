@@ -53,7 +53,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="250dp"
         android:fontFamily="@font/noto_sans_kr_semibold"
-        android:gravity="left"
         android:includeFontPadding="false"
         android:text="초대링크 보내기"
         android:textColor="#757575"
@@ -70,6 +69,8 @@
         android:layout_width="0dp"
         android:layout_height="75dp"
         android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:background="@drawable/friend_frame"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
@@ -103,7 +104,6 @@
             android:id="@+id/iv_friend_click"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|center"
             android:layout_weight="1"
             app:srcCompat="@drawable/next_buttom" />
     </LinearLayout>
@@ -114,7 +114,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="330dp"
         android:fontFamily="@font/noto_sans_kr_semibold"
-        android:gravity="left"
         android:includeFontPadding="false"
         android:text="친구"
         android:textColor="#757575"
@@ -128,7 +127,10 @@
         android:id="@+id/v_blank"
         android:layout_width="wrap_content"
         android:layout_height="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_friend_list"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_friend_list"
+        />
 
     <LinearLayout
         android:layout_width="0dp"
