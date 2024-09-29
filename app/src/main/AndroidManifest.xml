@@ -17,8 +17,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".upload.MyApplication"
         android:theme="@style/Theme.Z_project"
         tools:targetApi="31">
+
 
         <activity
             android:name=".login.LoginFragment"
