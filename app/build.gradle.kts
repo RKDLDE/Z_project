@@ -18,6 +18,10 @@ android {
 
 
         vectorDrawables.useSupportLibrary = true
+ Upload
+
+
+ master
 
     }
 
@@ -54,6 +58,7 @@ android {
     }
 
     buildToolsVersion = "34.0.0"
+
 }
 
 dependencies {
@@ -89,12 +94,16 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
 
-    //업로드 이모티콘
-//    implementation("androidx.emoji2:emojipicker:$version")
+    //이모지
+    implementation("com.google.guava:guava:31.1-android")
+    implementation("androidx.emoji2:emojipicker:$version")
+
+    implementation("androidx.emoji2:emoji2:1.1.0")
+    implementation("androidx.emoji2:emoji2-bundled:1.1.0")
+
+
+
+
+    //테드 퍼미션
+    /*implementation("gun0912.ted:tedpermission:2.2.3")*/
 }
-
-
-fun vectorDrawbles(function: () -> Unit) {
-
-}
-
