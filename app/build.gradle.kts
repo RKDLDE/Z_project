@@ -1,7 +1,8 @@
+//import org.jetbrains.kotlin.gradle.internal.kapt.incremental.UnknownSnapshot.classpath
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
@@ -60,7 +61,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -107,7 +107,6 @@ dependencies {
 
     //업로드 이모티콘
 //    implementation("androidx.emoji2:emojipicker:$version")
-
 
 
     //이모지

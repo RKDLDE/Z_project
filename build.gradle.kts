@@ -1,3 +1,5 @@
+//import org.jetbrains.kotlin.gradle.internal.kapt.incremental.UnknownSnapshot.classpath
+
 //import org.jetbrains.kotlin.gradle.internal.kapt.incremental.UnknownSnapshot.
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
@@ -9,13 +11,9 @@ plugins {
 }
 
 
-//뭔지 모르겠지만...
-//buildscript {
-//    dependencies {
-//        classpath("com.android.tools.build:gradle:8.0.0") // Android Gradle Plugin
-//    }
-//}
+buildscript{
+    dependencies{
+        classpath ("com.google.gms:google-services:4.4.2")
+    }
+}
 
-//task clean(type: Delete) {
-//    delete rootProject.buildDir
-//}
