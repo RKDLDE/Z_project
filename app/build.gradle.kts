@@ -21,6 +21,14 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
+ Chat
+
+ Upload
+
+
+ master
+
+ master
     }
 
     buildTypes {
@@ -56,6 +64,7 @@ android {
     }
 
     buildToolsVersion = "34.0.0"
+
 }
 
 dependencies {
@@ -94,6 +103,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.5.1")
     implementation("androidx.fragment:fragment-ktx:1.5.2")
 
+ Chat
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
 
@@ -109,3 +119,18 @@ dependencies {
 }
 
 
+
+    //이모지
+    implementation("com.google.guava:guava:31.1-android")
+    implementation("androidx.emoji2:emojipicker:$version")
+
+    implementation("androidx.emoji2:emoji2:1.1.0")
+    implementation("androidx.emoji2:emoji2-bundled:1.1.0")
+
+
+
+
+    //테드 퍼미션
+    /*implementation("gun0912.ted:tedpermission:2.2.3")*/
+}
+ master

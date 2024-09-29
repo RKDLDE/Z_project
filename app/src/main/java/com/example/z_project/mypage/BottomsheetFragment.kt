@@ -1,14 +1,23 @@
 package com.example.z_project.mypage
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -19,69 +28,94 @@ import com.example.z_project.R
 import com.example.z_project.databinding.FragmentBottomsheetBinding
 import com.example.z_project.databinding.FragmentLoginBinding
 import com.example.z_project.databinding.FragmentMypageBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.example.z_project.MainActivity
 
-class BottomsheetFragment : Fragment() {
-    lateinit var binding: FragmentBottomsheetBinding
+class BottomsheetFragment : BottomSheetDialogFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentBottomsheetBinding.inflate(inflater, container, false)
-        return binding.root
+    // ImageSelectionListener 인터페이스 정의
+    interface ImageSelectionListener {
+        fun onImageSelected(imageUri: Uri)
+        fun onImageDeleted()
     }
 
-//    private fun initViews() = with(binding) {
-//        select.setOnClickListener {
-//            when {
-//                // 갤러리 접근 권한이 있는 경우
-//                ContextCompat.checkSelfPermission(
-//                    this,
-//                    android.Manifest.permission.READ_EXTERNAL_STORAGE
-//                ) == PackageManager.PERMISSION_GRANTED
-//                -> {
-//                    navigateGallery()
-//                }
-//
-//                // 갤러리 접근 권한이 없는 경우 & 교육용 팝업을 보여줘야 하는 경우
-//                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-//                -> {
-//                    showPermissionContextPopup()
-//                }
-//
-//                // 권한 요청 하기(requestPermissions) -> 갤러리 접근(onRequestPermissionResult)
-//                else -> requestPermissions(
-//                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-//                    1000
-//                )
-//            }
-//
-//        }
-//
-//        delete.setOnClickListener {
-//
-//        }
-//    }
-//
-//    private fun navigateGallery() {
-//        val intent = Intent(Intent.ACTION_PICK)
-//        // 가져올 컨텐츠들 중에서 Image 만을 가져온다.
-//        intent.type = "image/*"
-//        // 갤러리에서 이미지를 선택한 후, 프로필 이미지뷰를 수정하기 위해 갤러리에서 수행한 값을 받아오는 startActivityForeResult를 사용한다.
-//        startActivityForResult(intent, 2000)
-//    }
-//
-//    private fun showPermissionContextPopup() {
-//        AlertDialog.Builder(this)
-//            .setTitle("권한이 필요합니다.")
-//            .setMessage("프로필 이미지를 바꾸기 위해서는 갤러리 접근 권한이 필요합니다.")
-//            .setPositiveButton("동의하기") { _, _ ->
-//                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
-//            }
-//            .setNegativeButton("취소하기") { _, _ -> }
-//            .create()
-//            .show()
-//    }
+    //lateinit var binding: FragmentBottomsheetBinding
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private lateinit var selectImageLauncher: ActivityResultLauncher<Intent>
+    private var listener: ImageSelectionListener? = null
+
+    // Listener 설정 메서드
+    fun setImageSelectionListener(listener: ImageSelectionListener) {
+        this.listener = listener
+    }
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_bottomsheet, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 버튼 클릭 리스너 설정
+        val selectButton = view.findViewById<Button>(R.id.select)
+        selectButton.setOnClickListener {
+            checkAndRequestPermission()
+        }
+
+        val deleteButton = view.findViewById<Button>(R.id.delete)
+        deleteButton.setOnClickListener {
+            listener?.onImageDeleted() // 기본 이미지로 변경
+            dismiss()
+        }
+
+        // 갤러리 호출 결과 처리 런처
+        selectImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                val imageUri: Uri? = result.data?.data
+                imageUri?.let {
+                    listener?.onImageSelected(it) // 선택된 이미지 전달
+                    dismiss()
+                }
+            } else {
+                Log.e("GalleryError", "Result Code is not OK")
+            }
+        }
+
+        // 권한 요청 런처
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                openGallery() // 권한이 허가되면 갤러리 열기
+            } else {
+                Toast.makeText(requireContext(), "갤러리 접근 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    // 갤러리 열기 함수
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        selectImageLauncher.launch(intent)
+    }
+
+    // 권한 체크 및 요청 함수
+    private fun checkAndRequestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13 이상일 경우 READ_MEDIA_IMAGES 권한 요청
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                openGallery()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+            }
+        } else {
+            // Android 12 이하일 경우 READ_EXTERNAL_STORAGE 권한 요청
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                openGallery()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+    }
+
 }
 

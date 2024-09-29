@@ -4,13 +4,25 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
+ Chat
         <DropdownSelection timestamp="2024-09-14T13:24:08.009545100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CR70XNBGZ" />
+
+ Upload
+        <DropdownSelection timestamp="2024-09-22T11:29:39.761709Z">
+
+        <DropdownSelection timestamp="2024-09-22T12:34:20.235525300Z">
+ master
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\canddy\.android\avd\Pixel_7_API_30.avd" />
+ master
             </handle>
           </Target>
         </DropdownSelection>
+ Upload
         <DialogSelection>
           <targets>
             <Target type="DEFAULT_BOOT">
@@ -20,12 +32,9 @@
             </Target>
           </targets>
         </DialogSelection>
-      </SelectionState>
-      <SelectionState runConfigName="MainActivity">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="InviteScreenPreview">
-        <option name="selectionMode" value="DROPDOWN" />
+
+        <DialogSelection />
+ master
       </SelectionState>
     </selectionStates>
   </component>
