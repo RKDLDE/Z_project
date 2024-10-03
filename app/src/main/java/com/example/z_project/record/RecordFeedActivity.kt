@@ -14,6 +14,11 @@ class RecordFeedActivity : AppCompatActivity() {
         binding = ActivityRecordFeedBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 뒤로가기 클릭 기능
+        binding.recordFeedBackIcon.setOnClickListener {
+            finish()
+        }
+
         var dummyList = listOf(
             FeedModel(
                 id = 1,
