@@ -47,24 +47,24 @@ class GroupCalendarActivity : AppCompatActivity() {
             authId = 1,
             groupId = 1,
             title = "회의",
-            startDate = "2024.09.07",
-            endDate = "2024.09.07",
+            startDate = "2024.10.07",
+            endDate = "2024.10.08",
             userColor = ColorEnum.getByColor(R.color.calendar_color_pink)
         ),
         ScheduleModel(
             authId = 2,
             groupId = 1,
             title = "개강",
-            startDate = "2024.09.02",
-            endDate = "2024.09.02",
+            startDate = "2024.10.02",
+            endDate = "2024.10.02",
             userColor = ColorEnum.getByColor(R.color.calendar_color_blue)
         ),
         ScheduleModel(
             authId = 3,
             groupId = 1,
             title = "출근",
-            startDate = "2024.09.02",
-            endDate = "2024.09.02",
+            startDate = "2024.10.02",
+            endDate = "2024.10.02",
             userColor = ColorEnum.getByColor(R.color.calendar_color_yellow)
         )
     )
