@@ -8,85 +8,60 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
-
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import com.example.z_project.R
 import com.example.z_project.databinding.FragmentUploadBinding
 import java.io.File
-import java.io.FileOutputStream
 
 
 class UploadFragment : Fragment() {
-    private var _binding: FragmentUploadBinding? = null
-    private val binding get() = _binding!!
-    private val dialog = CustomFragment()
 
-
+    lateinit var binding: FragmentUploadBinding
     private lateinit var cameraPermission: ActivityResultLauncher<String>
-    private lateinit var storagePermission: ActivityResultLauncher<String>
     private lateinit var cameraLauncher: ActivityResultLauncher<Uri>
-    private lateinit var galleryLauncher: ActivityResultLauncher<String>
-
     private var photoUri: Uri? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentUploadBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentUploadBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        storagePermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                binding.cameraBtn.setOnClickListener {
-                    cameraPermission.launch(Manifest.permission.CAMERA)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-            } else {
-                Toast.makeText(requireContext(), "권한을 승인해야 앱을 사용할 수 있습니다.", Toast.LENGTH_SHORT).show()
-                requireActivity().finish()
-            }
+        binding.cameraBtn.setOnClickListener {
+            // 카메라 버튼 비활성화
+            binding.cameraBtn.isEnabled = false
+            cameraPermission.launch(Manifest.permission.CAMERA)
         }
 
         cameraPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
             if (it) {
                 openCamera()
             } else {
-                Toast.makeText(requireContext(), "권한을 승인해야 카메라를 사용할 수 있습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "권한을 승인해야 카메라를 사용할 수 있습니다.", Toast.LENGTH_SHORT)
+                    .show()
             }
-        }
+        } //이 부분을 Android 버전별 권한 승인으로 바꾸기!!
 
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (photoUri != null){
-                binding.cameraBtn.setImageURI(photoUri)
+        //사진 촬영->이미지 뷰 띄우기 (Android Jetpack)
+        cameraLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success && photoUri != null) {
+                    binding.photo.setImageURI(photoUri)
 
-                if (success) {
-                    // 사진 촬영 성공 시 크기 조정
-                    val resizedBitmap = resizeImage(photoUri!!, 800, 1120) // 원하는 크기 입력
-                    if (resizedBitmap != null) {
-                        binding.cameraBtn.setImageBitmap(resizedBitmap)
-                        // 크기 조정된 이미지를 사용할 수 있습니다
-                        saveResizedImage(resizedBitmap) // 원한다면 이미지 저장
-                    }
+                    // 사진 촬영 후 DecoFragment로 전환
+                    openDecoFragment()
+                } else {
+                    // 사진 촬영이 실패했을 경우 버튼 다시 활성화
+                    binding.cameraBtn.isEnabled = true
                 }
-
             }
-        }
-
-        storagePermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
-        // 버튼 클릭 시 CustomFragment로 전환 --- ViewBinding 사용 시 findViewById 사용할 필요 없음!
-        binding.sss.setOnClickListener {
-            openCustomFragment()
-        }
-
-        return binding.root
     }
-
 
     private fun openCamera() {
         val photoFile = File.createTempFile(
@@ -98,7 +73,6 @@ class UploadFragment : Fragment() {
         photoUri = FileProvider.getUriForFile(
             requireContext(), "${requireContext().packageName}.provider", photoFile
         )
-
         cameraLauncher.launch(photoUri)
     }
 
@@ -114,35 +88,20 @@ class UploadFragment : Fragment() {
         }
     }
 
-    // 크기 조정된 이미지 저장
-    private fun saveResizedImage(bitmap: Bitmap) {
-        val file = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "resized_image.jpg")
-        val outputStream = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        outputStream.flush()
-        outputStream.close()
-    }
+    private fun openDecoFragment() {
+        val fragmentManager = parentFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
 
+        // DecoFragment에 URI를 전달하기 위해 Bundle을 생성
+        val decoFragment = DecoFragment().apply {
+            arguments = Bundle().apply {
+                putString("photoUri", photoUri.toString()) // URI를 문자열로 변환하여 전달
+            }
+        }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
-
-    private fun openCustomFragment() {
-        val customFragment = CustomFragment()
-        parentFragmentManager.beginTransaction()
-            .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-            .replace(R.id.custom_view, customFragment) // fragment_container는 교체될 Fragment의 container ID
-            .addToBackStack(null)
-            .commit()
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null /*여기서 null을 쓰려고 binding 대신 _binding을 새로 설정하는 듯*/
+        fragmentTransaction.replace(com.example.z_project.R.id.container, decoFragment)
+        /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
+        fragmentTransaction.commit()
     }
 
 }
