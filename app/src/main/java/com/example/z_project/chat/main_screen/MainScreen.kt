@@ -26,10 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,128 +41,86 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.z_project.R
+import com.example.z_project.chat.model.R
+import com.example.z_project.chat.model.GroupChat
+import com.example.z_project.chat.model.PersonalChat
+import com.example.z_project.chat.modelChatUITheme
 import com.example.z_project.chat.ui.theme.ChatUITheme
 
 @Composable
 fun MainScreen(
+    uiState: MainUiState,
+    onClickChatType: () -> Unit,
+    onChangeChatType: (Boolean) -> Unit,
     navigateToInviteScreen: () -> Unit,
-    navigateToGroupChatScreen: () -> Unit,
-    navigateToPersonalChatScreen: () -> Unit
+    navigateToGroupChatScreen: (GroupChat) -> Unit,
+    navigateToPersonalChatScreen: (PersonalChat) -> Unit
 ) {
-    var isOpen by remember { mutableStateOf(false) }
-    var isPersonal by remember { mutableStateOf(false) }
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (changeType, inviteBtn, chatRoom, bottomBar) = createRefs()
-        ChangeType(
-            modifier = Modifier.constrainAs(changeType) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top, 14.dp)
-                end.linkTo(parent.end)
-            },
-            isOpen = isOpen,
-            isPersonal = isPersonal,
-            onClick = { isOpen = !isOpen },
-            onClickType = {
-                isPersonal = it
-                isOpen = false
+    Box(modifier = Modifier.fillMaxSize()) {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (topBar, chatRoom, bottomBar) = createRefs()
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .constrainAs(topBar) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                    }
+                    .padding(start = 14.dp, end = 14.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(32.dp)
+                        .clickable { navigateToInviteScreen() },
+                    painter = painterResource(id = R.drawable.ic_baseline_group_add),
+                    contentDescription = "GroupAdd"
+                )
             }
-        )
-        Icon(
-            modifier = Modifier
-                .constrainAs(inviteBtn) {
-                    top.linkTo(parent.top, 14.dp)
-                    end.linkTo(parent.end, 14.dp)
-                }
-                .size(32.dp)
-                .clickable { navigateToInviteScreen() },
-            painter = painterResource(id = R.drawable.ic_baseline_group_add),
-            contentDescription = "GroupAdd"
-        )
 
-        Column(
-            modifier = Modifier
-                .constrainAs(chatRoom) {
-                    top.linkTo(changeType.bottom, 14.dp)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(bottomBar.top)
+            Column(
+                modifier = Modifier
+                    .constrainAs(chatRoom) {
+                        top.linkTo(topBar.bottom, 14.dp)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(bottomBar.top)
 
-                    height = Dimension.fillToConstraints
-                    width = Dimension.fillToConstraints
-                }
-        ) {
-
-            Column {
-                if (isPersonal) {
-                    val list = listOf(
-                        ChatRoom(
-                            image = R.drawable.person1,
-                            title = "냠",
-                            previewMessage = "언제쯤 도착함???",
-                            chatCount = 1
-                        ),
-                        ChatRoom(
-                            image = R.drawable.person2,
-                            title = "현",
-                            previewMessage = "아 내말이",
-                            chatCount = 0
-                        ),
-                        ChatRoom(
-                            image = R.drawable.person3,
-                            title = "고도리",
-                            previewMessage = "언제쯤 도착함???",
-                            chatCount = 0
-                        ),
-                        ChatRoom(
-                            image = R.drawable.person4,
-                            title = "도금",
-                            previewMessage = "ㅋㅋㅋㅋㅋㅋ",
-                            chatCount = 0
+                        height = Dimension.fillToConstraints
+                        width = Dimension.fillToConstraints
+                    }
+            ) {
+                Column {
+                    if (uiState.isPersonal) {
+                        PersonalChatList(
+                            chats = uiState.personalChats,
+                            itemClick = { navigateToPersonalChatScreen(it) }
                         )
-                    )
-                    PersonalChatList(
-                        chats = list,
-                        itemClick = {
-                            navigateToPersonalChatScreen()
-                        }
-                    )
-                } else {
-                    val list = listOf(
-                        ChatRoom(
-                            image = R.drawable.image,
-                            title = "JSND",
-                            chatCount = 3
-                        ),
-                        ChatRoom(
-                            image = R.drawable.group,
-                            title = "그룹2",
-                            chatCount = 1
-                        ),
-                        ChatRoom(
-                            image = R.drawable.group,
-                            title = "그룹3",
-                            chatCount = 1
-                        ),
-                        ChatRoom(
-                            image = R.drawable.group,
-                            title = "그룹4",
-                            chatCount = 0
+                    } else {
+                        GroupChatList(
+                            chats = uiState.groupChats,
+                            itemClick = { navigateToGroupChatScreen(it) }
                         )
-                    )
-                    GroupChatList(
-                        chats = list,
-                        itemClick = {
-                            navigateToGroupChatScreen()
-                        }
-                    )
+                    }
                 }
             }
+            BottomBar(
+                modifier = Modifier.constrainAs(bottomBar) {
+                    bottom.linkTo(parent.bottom)
+                }
+            )
         }
-        BottomBar(
-            modifier = Modifier.constrainAs(bottomBar) {
-                bottom.linkTo(parent.bottom)
-            }
+        ChangeType(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 14.dp),
+            isOpen = uiState.isOpenMenu,
+            isPersonal = uiState.isPersonal,
+            onClick = { onClickChatType() },
+            onClickType = { onChangeChatType(it) }
         )
     }
 }
@@ -228,8 +182,8 @@ fun ChangeType(
 @Composable
 fun GroupChatList(
     modifier: Modifier = Modifier,
-    chats: List<ChatRoom>,
-    itemClick: () -> Unit
+    chats: List<GroupChat>,
+    itemClick: (GroupChat) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -248,17 +202,15 @@ fun GroupChatList(
 @Composable
 fun GroupChatItem(
     modifier: Modifier = Modifier,
-    chatGroup: ChatRoom,
-    onClick: () -> Unit
+    chatGroup: GroupChat,
+    onClick: (GroupChat) -> Unit
 ) {
     val screenWidth = (LocalConfiguration.current.screenWidthDp / 2) - 52
 
     Column(
         modifier = modifier
             .width(screenWidth.dp)
-            .clickable {
-                onClick()
-            }
+            .clickable { onClick(chatGroup) }
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -288,15 +240,16 @@ fun GroupChatItem(
 @Composable
 fun PersonalChatList(
     modifier: Modifier = Modifier,
-    chats: List<ChatRoom>,
-    itemClick: () -> Unit
+    chats: List<PersonalChat>,
+    itemClick: (PersonalChat) -> Unit
 ) {
     LazyColumn(
         modifier = modifier.fillMaxWidth()
     ) {
         items(chats.size) { index ->
             PersonalChatItem(
-                chatRoom = chats[index], onClick = itemClick
+                chatRoom = chats[index],
+                onClick = itemClick
             )
             if (index < chats.size - 1)
                 HorizontalDivider()
@@ -307,13 +260,13 @@ fun PersonalChatList(
 @Composable
 fun PersonalChatItem(
     modifier: Modifier = Modifier,
-    chatRoom: ChatRoom,
-    onClick: () -> Unit
+    chatRoom: PersonalChat,
+    onClick: (PersonalChat) -> Unit
 ) {
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickable { onClick(chatRoom) }
             .padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 12.dp)
     ) {
         val (image, person, message, count) = createRefs()
@@ -328,7 +281,7 @@ fun PersonalChatItem(
                 .size(68.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
-            painter = painterResource(id = chatRoom.image),
+            painter = painterResource(id = chatRoom.profile.profileImageRes),
             contentDescription = "ProfileImage"
         )
         Text(
@@ -336,7 +289,7 @@ fun PersonalChatItem(
                 top.linkTo(parent.top)
                 start.linkTo(image.end, 16.dp)
             },
-            text = chatRoom.title,
+            text = chatRoom.profile.name,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -375,52 +328,52 @@ fun BottomBar(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                modifier = Modifier
-//                    .size(32.dp)
-//                    .fillMaxWidth(0.25f)
-//                    .alpha(0.4f),
-//                painter = painterResource(id = R.drawable.ic_upload),
-//                contentDescription = "BottomBarIcon"
-//            )
+            Icon(
+                modifier = Modifier
+                    .size(32.dp)
+                    .fillMaxWidth(0.25f)
+                    .alpha(0.4f),
+                painter = painterResource(id = R.drawable.ic_upload),
+                contentDescription = "BottomBarIcon"
+            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                modifier = Modifier
-//                    .size(32.dp)
-//                    .fillMaxWidth(0.25f)
-//                    .alpha(0.4f),
-//                painter = painterResource(id = R.drawable.ic_inventory),
-//                contentDescription = "BottomBarIcon"
-//            )
+            Icon(
+                modifier = Modifier
+                    .size(32.dp)
+                    .fillMaxWidth(0.25f)
+                    .alpha(0.4f),
+                painter = painterResource(id = R.drawable.ic_inventory),
+                contentDescription = "BottomBarIcon"
+            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                modifier = Modifier
-//                    .size(32.dp)
-//                    .fillMaxWidth(0.25f),
-//                painter = painterResource(id = R.drawable.ic_chat),
-//                contentDescription = "BottomBarIcon"
-//            )
+            Icon(
+                modifier = Modifier
+                    .size(32.dp)
+                    .fillMaxWidth(0.25f),
+                painter = painterResource(id = R.drawable.ic_chat),
+                contentDescription = "BottomBarIcon"
+            )
         }
         Box(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                modifier = Modifier
-//                    .size(32.dp)
-//                    .fillMaxWidth(0.25f)
-//                    .alpha(0.4f),
-//                painter = painterResource(id = R.drawable.ic_smile),
-//                contentDescription = "BottomBarIcon"
-//            )
+            Icon(
+                modifier = Modifier
+                    .size(32.dp)
+                    .fillMaxWidth(0.25f)
+                    .alpha(0.4f),
+                painter = painterResource(id = R.drawable.ic_smile),
+                contentDescription = "BottomBarIcon"
+            )
         }
     }
 }
@@ -453,10 +406,12 @@ fun ChatCount(
 private fun MainScreenPreview() {
     ChatUITheme {
         MainScreen(
+            uiState = MainUiState(),
+            onClickChatType = {},
+            onChangeChatType = {},
             navigateToInviteScreen = {},
             navigateToGroupChatScreen = {},
             navigateToPersonalChatScreen = {}
         )
     }
 }
-

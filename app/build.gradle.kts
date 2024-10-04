@@ -1,8 +1,7 @@
-//import org.jetbrains.kotlin.gradle.internal.kapt.incremental.UnknownSnapshot.classpath
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
@@ -69,7 +68,8 @@ dependencies {
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
+//    implementation(libs.androidx.activity.compose)
+//    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.emoji2.emojipicker)
     implementation(libs.firebase.crashlytics.buildtools)
 
@@ -81,9 +81,14 @@ dependencies {
     implementation(libs.firebase.database.ktx)
     implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore)
+    //implementation(libs.androidx.monitor)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+//    androidTestImplementation(platform(libs.androidx.compose.bom))
+//    androidTestImplementation(libs.androidx.ui.test.junit4)
+//    debugImplementation(libs.androidx.ui.tooling)
+//    debugImplementation(libs.androidx.ui.test.manifest)
     // ViewPager2
     implementation ("androidx.viewpager2:viewpager2:1.1.0-beta01")
 
@@ -116,9 +121,19 @@ dependencies {
     implementation("androidx.emoji2:emoji2:1.1.0")
     implementation("androidx.emoji2:emoji2-bundled:1.1.0")
 
+    // 채팅
+    implementation("com.google.dagger:hilt-android:2.41")
+    kapt("com.google.dagger:hilt-android-compiler:2.41")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+
+
+    implementation(libs.androidx.navigation.compose)
+}
 
 
     //테드 퍼미션
     /*implementation("gun0912.ted:tedpermission:2.2.3")*/
-}
+
+
