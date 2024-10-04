@@ -31,9 +31,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Intent로부터 데이터 가져오기
+//        val userName = intent.getStringExtra("USER_NAME")
+//        val profileImageUrl = intent.getStringExtra("PROFILE_IMAGE")
+//        val token = intent.getStringExtra("TOKEN")
+//
+//        // Fragment에 데이터 전달
+//        val fragment = MypageFragment().apply {
+//            arguments = Bundle().apply {
+//                putString("USER_NAME", userName)
+//                putString("PROFILE_IMAGE", profileImageUrl)
+//                putString("TOKEN", token)
+//            }
+//        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        //setContentView(R.layout.activity_main)
         initBottomNavigation()
 
     }

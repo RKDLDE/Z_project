@@ -9,8 +9,21 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     id("com.google.gms.google-services") version "4.4.2" apply false
     id("com.google.dagger.hilt.android") version "2.41" apply false
+
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" apply false
+
+
 }
+
+//allprojects {
+//    repositories{
+//        google()
+//        jcenter()
+//        mavenCentral()
+//        maven { url = java.net.URI("https://jitpack.io") }
+//    }
+//}
+
 
 
 buildscript{
@@ -19,4 +32,11 @@ buildscript{
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1")
     }
 }
+
+
+
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}
+
 

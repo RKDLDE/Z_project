@@ -23,29 +23,31 @@ import com.example.z_project.databinding.FragmentLogoutBinding
 
 class ListdeleteFragment(
     context: Context,
-) : Dialog(context) { // 뷰를 띄워야하므로 Dialog 클래스는 context를 인자로 받는다.
+    private val deleteListener: OnDeleteListener,
+    private val position: Int
+) : Dialog(context) {
 
     private lateinit var binding: FragmentListDeleteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 만들어놓은 dialog_profile.xml 뷰를 띄운다.
         binding = FragmentListDeleteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initViews()
     }
 
     private fun initViews() = with(binding) {
-        // 뒤로가기 버튼, 빈 화면 터치를 통해 dialog가 사라지지 않도록
         setCancelable(false)
-
-        // background를 투명하게 만듦
-        // (중요) Dialog는 내부적으로 뒤에 흰 사각형 배경이 존재하므로, 배경을 투명하게 만들지 않으면
-        // corner radius의 적용이 보이지 않는다.
         window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        // OK Button 클릭에 대한 Callback 처리. 이 부분은 상황에 따라 자유롭게!
+        // noButton 클릭 시 다이얼로그 닫기
         noButton.setOnClickListener {
+            dismiss()
+        }
+
+        // yesButton 클릭 시 아이템 삭제 콜백 호출 후 다이얼로그 닫기
+        yesButton.setOnClickListener {
+            deleteListener.onDelete(position)
             dismiss()
         }
     }

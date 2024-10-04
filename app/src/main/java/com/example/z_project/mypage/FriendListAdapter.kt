@@ -11,31 +11,38 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.mypage.ListdeleteFragment
 
-class CustomAdapter(testDataSet: List<String>, private val context: Context) :
+class CustomAdapter(testDataSet: MutableList<String>, private val context: Context) :
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
-    private val localDataSet: List<String> = testDataSet
+
+    private val localDataSet: MutableList<String> = testDataSet
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val userName: TextView = itemView.findViewById<TextView>(R.id.tv_name)
+        val userName: TextView = itemView.findViewById(R.id.tv_name)
         val userDelete: ImageView = itemView.findViewById(R.id.iv_x)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_user, parent, false)
-
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.userName.text = localDataSet[position] // 문자열 값을 직접 설정합니다.
-        holder.userDelete.setOnClickListener{
-            showListdeleteDialog()
+        holder.userName.text = localDataSet[position]
+        holder.userDelete.setOnClickListener {
+            showListdeleteDialog(position)
         }
     }
 
-    private fun showListdeleteDialog() {
-        ListdeleteFragment(context).show()
+    private fun showListdeleteDialog(position: Int) {
+        ListdeleteFragment(context, object : OnDeleteListener {
+            override fun onDelete(pos: Int) {
+                // 해당 아이템 삭제 후 어댑터에 반영
+                localDataSet.removeAt(pos)
+                notifyItemRemoved(pos)
+                notifyItemRangeChanged(pos, localDataSet.size)
+            }
+        }, position).show()
     }
 
     override fun getItemCount(): Int {

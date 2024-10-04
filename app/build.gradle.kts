@@ -3,9 +3,14 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
 
+
+
+
+
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 }
+
 
 android {
     namespace = "com.example.z_project"
@@ -110,6 +115,7 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-auth")
 
+
     //업로드 이모티콘
 //    implementation("androidx.emoji2:emojipicker:$version")
 
@@ -120,6 +126,7 @@ dependencies {
 
     implementation("androidx.emoji2:emoji2:1.1.0")
     implementation("androidx.emoji2:emoji2-bundled:1.1.0")
+
 
     // 채팅
     implementation("com.google.dagger:hilt-android:2.41")
@@ -132,8 +139,24 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 }
 
+    implementation("com.google.dagger:hilt-android:2.41")
+    kapt("com.google.dagger:hilt-compiler:2.41")
+
+
 
     //테드 퍼미션
     /*implementation("gun0912.ted:tedpermission:2.2.3")*/
 
+
+
+
+    implementation ("com.kakao.sdk:v2-all:2.20.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
+    implementation ("com.kakao.sdk:v2-share:2.20.0") // 카카오톡 공유 API 모듈
+//    implementation "com.kakao.sdk:v2-talk:2.20.0" // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
+//    implementation "com.kakao.sdk:v2-friend:2.20.0" // 피커 API 모듈
+//    implementation "com.kakao.sdk:v2-navi:2.20.0" // 카카오내비 API 모듈
+//    implementation ("com.kakao.sdk:v2-cert:2.20.0") // 카카오톡 인증 서비스 API 모듈
+
+}
 
