@@ -1,28 +1,4 @@
-package com.example.z_project.upload
-
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.net.Uri
-import android.os.Bundle
-import android.util.AttributeSet
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.example.z_project.R
-import com.example.z_project.databinding.FragmentDecoBinding
-import com.example.z_project.databinding.FragmentDrawBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.io.IOException
+/*package com.example.z_project.upload*/
 
 //class DecoFragment : Fragment() {
 //    private lateinit var binding: FragmentDecoBinding
@@ -123,7 +99,7 @@ import java.io.IOException
 //            drawCanvas.loadDrawImage = CanvasIO.openBitmap(requireContext())
 //            drawCanvas.invalidate()
 //        }
-    }
+//    }
 
 //    class DrawCanvas(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 //        companion object {
@@ -214,4 +190,4 @@ import java.io.IOException
 //            Bitmap.createScaledBitmap(it, width, height, true)
 //        }
 //    }
-}
+//}
