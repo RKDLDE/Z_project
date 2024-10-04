@@ -55,7 +55,7 @@ class UploadFragment : Fragment() {
                     binding.photo.setImageURI(photoUri)
 
                     // 사진 촬영 후 DecoFragment로 전환
-                    openDecoFragment()
+                    /*openDecoFragment()*/
                 } else {
                     // 사진 촬영이 실패했을 경우 버튼 다시 활성화
                     binding.cameraBtn.isEnabled = true
