@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("kotlin-kapt")
 
 
     // Add the Google services Gradle plugin
@@ -117,7 +118,8 @@ dependencies {
     implementation("androidx.emoji2:emoji2:1.1.0")
     implementation("androidx.emoji2:emoji2-bundled:1.1.0")
 
-
+    implementation("com.google.dagger:hilt-android:2.41")
+    kapt("com.google.dagger:hilt-compiler:2.41")
 
 
     //테드 퍼미션

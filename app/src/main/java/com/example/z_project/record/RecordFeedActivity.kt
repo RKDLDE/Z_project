@@ -51,7 +51,135 @@ class RecordFeedActivity : AppCompatActivity() {
                 uploadImage = R.drawable.image,
                 uploadEmoji = R.drawable.emoji,
                 feedText = "강아지 귀여워"
-            )
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
+            FeedModel(
+                id = 4,
+                userImage = R.drawable.person4,
+                uploadDate = "2024.10.15",
+                uploadImage = R.drawable.image,
+                uploadEmoji = R.drawable.emoji,
+                feedText = "강아지 귀여워"
+            ),
 
         )
 
