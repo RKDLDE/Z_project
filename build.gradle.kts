@@ -9,6 +9,16 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.41" apply false
 }
 
+//allprojects {
+//    repositories{
+//        google()
+//        jcenter()
+//        mavenCentral()
+//        maven { url = java.net.URI("https://jitpack.io") }
+//    }
+//}
+
+
 
 //뭔지 모르겠지만...
 //buildscript {
@@ -20,3 +30,4 @@ plugins {
 //task clean(type: Delete) {
 //    delete rootProject.buildDir
 //}
+
