@@ -1,5 +1,6 @@
 package com.example.z_project.chat.group_chat_screen
 
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -8,21 +9,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +42,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,14 +51,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.z_project.R
+import com.example.z_project.model.Chat
+import com.example.z_project.getDefaultGroupChats
 import com.example.z_project.chat.ui.theme.ChatUITheme
 
-@Composable
-fun GroupChatScreen() {
-    var isExit by remember { mutableStateOf(false) }
-
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+}@Composable
+fun GroupChatScreen(
+    uiState: GroupChatUiState,
+    onNavigateUp: () -> Unit,
+    onClickMenu: (Boolean) -> Unit,
+    onClickExit: () -> Unit,
+    onClickSend: (String) -> Unit
+) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
         val (topBar, chatList, bottomBar) = createRefs()
         ConstraintLayout(
             modifier = Modifier
@@ -58,11 +81,14 @@ fun GroupChatScreen() {
         ) {
             val (navigate, profile, icons) = createRefs()
             Icon(
-                modifier = Modifier.constrainAs(navigate) {
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    start.linkTo(parent.start)
-                },
+                modifier = Modifier
+                    .constrainAs(navigate) {
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                    }
+                    .clip(CircleShape)
+                    .clickable { onNavigateUp() },
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_new),
                 contentDescription = "NavigateBack"
             )
@@ -80,13 +106,13 @@ fun GroupChatScreen() {
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape),
-                    painter = painterResource(id = R.drawable.image),
+                    painter = painterResource(id = uiState.groupChat?.image ?: R.drawable.group),
                     contentDescription = "ProfileImage",
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "JSND",
+                    text = uiState.groupChat?.title ?: "",
                     fontSize = 18.sp
                 )
             }
@@ -106,9 +132,9 @@ fun GroupChatScreen() {
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Icon(
-                    modifier = Modifier.clickable {
-                        isExit = !isExit
-                    },
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .clickable { onClickMenu(!uiState.isExit) },
                     painter = painterResource(id = R.drawable.ic_baseline_menu),
                     contentDescription = "Menu"
                 )
@@ -121,19 +147,22 @@ fun GroupChatScreen() {
                     bottom.linkTo(bottomBar.top)
                     height = Dimension.fillToConstraints
                 }
-                .padding(start = 12.dp, end = 12.dp)
+                .padding(start = 12.dp, end = 12.dp),
+            chats = uiState.chats
         )
-        if (isExit) {
+        if (uiState.isExit) {
             Box(
                 modifier = Modifier
                     .constrainAs(bottomBar) {
                         bottom.linkTo(parent.bottom)
                     }
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .background(
                         color = Color(0xffd9d9d9),
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                     )
+                    .clickable { onClickExit() }
                     .padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -149,85 +178,47 @@ fun GroupChatScreen() {
         } else {
             InputChat(
                 modifier = Modifier
-                    .constrainAs(bottomBar) {
-                        bottom.linkTo(parent.bottom, 12.dp)
-                    }
-                    .padding(start = 8.dp, end = 8.dp)
+                    .constrainAs(bottomBar) { bottom.linkTo(parent.bottom, 12.dp) }
+                    .padding(start = 8.dp, end = 8.dp),
+                onClickSend = onClickSend
             )
         }
     }
 }
 
 @Composable
-fun ConstraintLayout(modifier: Modifier, content: () -> Unit) {
+fun ChatList(
+    modifier: Modifier = Modifier,
+    chats: List<Chat>
+) {
+    val listState = rememberLazyListState()
+    val imeState = rememberImeState()
 
-}
+    LaunchedEffect(key1 = chats, imeState) {
+        if (imeState) {
+            if (chats.isNotEmpty()) {
+                listState.scrollToItem(chats.size - 1)
+            }
+        }
+    }
 
-@Composable
-fun ChatList(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        state = listState
     ) {
-        ChatDate()
-        Spacer(modifier = Modifier.height(4.dp))
-        ChatContent(
-            profileImage = painterResource(id = R.drawable.person1),
-            profileName = "냠",
-            messageContent = "언제쯤 도착함???",
-            time = "18:00"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        MyChatContent(
-            messageContent = "몰라?",
-            time = "18:05"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ChatContent(
-            profileImage = painterResource(id = R.drawable.person2),
-            profileName = "현",
-            messageContent = "ㅋㅋㅋㅋㅋ 개웃겨",
-            time = "18:10"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ChatContent(
-            profileImage = null,
-            profileName = "",
-            messageContent = "ㅋㅋㅋㅋㅋ 개웃겨",
-            time = ""
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ChatContent(
-            profileImage = null,
-            profileName = "",
-            messageContent = "ㅋㅋㅋㅋㅋ 개웃겨",
-            time = ""
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ChatContent(
-            profileImage = painterResource(id = R.drawable.person4),
-            profileName = "도금",
-            messageContent = "언제쯤 도착함???",
-            time = "18:11"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        MyChatContent(
-            messageContent = "빨리 와",
-            time = "18:13"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        ChatContent(
-            profileImage = painterResource(id = R.drawable.person1),
-            profileName = "냠",
-            messageContent = "메롱",
-            time = "18:14"
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-        MyChatContent(
-            messageContent = "^^",
-            time = "14:16"
-        )
+        item {
+            ChatDate()
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+        items(chats.size) { index ->
+            val chat = chats[index]
+            if (chat.isOther) {
+                ChatContent(chat = chat)
+            } else {
+                MyChatContent(chat = chat)
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
     }
 }
 
@@ -258,25 +249,21 @@ fun ChatDate(modifier: Modifier = Modifier) {
 @Composable
 fun ChatContent(
     modifier: Modifier = Modifier,
-    profileImage: Painter?,
-    profileName: String,
-    messageContent: String,
-    time: String
+    chat: Chat
 ) {
     ConstraintLayout(modifier = modifier) {
         val (profileView, nameView, messageView, timeView) = createRefs()
 
-        if (profileImage != null) {
+        if (chat.time.isNotEmpty()) {
             Image(
                 modifier = Modifier
                     .constrainAs(profileView) {
                         top.linkTo(nameView.bottom)
-//                        bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                     }
                     .size(42.dp)
                     .clip(CircleShape),
-                painter = profileImage,
+                painter = painterResource(id = chat.profile.profileImageRes),
                 contentDescription = "ProfileImage",
                 contentScale = ContentScale.Crop
             )
@@ -304,15 +291,15 @@ fun ChatContent(
                 .padding(10.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = messageContent)
+            Text(text = chat.message)
         }
-        if (profileName.isNotEmpty()) {
+        if (chat.time.isNotEmpty()) {
             Text(
                 modifier = Modifier.constrainAs(nameView) {
                     top.linkTo(parent.top)
                     start.linkTo(messageView.start, 10.dp)
                 },
-                text = profileName
+                text = chat.profile.name,
             )
         }
         Text(
@@ -320,7 +307,7 @@ fun ChatContent(
                 start.linkTo(messageView.end, 4.dp)
                 bottom.linkTo(messageView.bottom)
             },
-            text = time,
+            text = chat.time,
             style = MaterialTheme.typography.labelMedium.copy(color = Color.Gray)
         )
     }
@@ -329,11 +316,11 @@ fun ChatContent(
 @Composable
 fun MyChatContent(
     modifier: Modifier = Modifier,
-    messageContent: String,
-    time: String
+    chat: Chat
 ) {
     ConstraintLayout(modifier = modifier.fillMaxWidth()) {
         val (messageView, timeView) = createRefs()
+        val maxWidth = LocalConfiguration.current.screenWidthDp.dp
 
         Box(
             modifier = Modifier
@@ -344,34 +331,40 @@ fun MyChatContent(
                     color = Color(0xffc6c6c6),
                     shape = CircleShape
                 )
+                .sizeIn(maxWidth = maxWidth.minus(58.dp))
                 .padding(10.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = messageContent)
+            Text(text = chat.message)
         }
         Text(
             modifier = Modifier.constrainAs(timeView) {
                 end.linkTo(messageView.start, 4.dp)
                 bottom.linkTo(messageView.bottom)
             },
-            text = time,
+            text = chat.time,
             style = MaterialTheme.typography.labelMedium.copy(color = Color.Gray)
         )
     }
 }
 
 @Composable
-fun InputChat(modifier: Modifier = Modifier) {
+fun InputChat(
+    modifier: Modifier = Modifier,
+    onClickSend: (String) -> Unit,
+) {
+    var text by remember { mutableStateOf("") }
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(42.dp)
+            .imePadding(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
                 .clip(CircleShape)
                 .weight(0.8f)
-                .fillMaxHeight()
+                .defaultMinSize(minHeight = 42.dp)
                 .border(
                     width = 2.dp,
                     color = Color(0xffe2e2e2),
@@ -380,7 +373,15 @@ fun InputChat(modifier: Modifier = Modifier) {
                 .background(
                     color = Color(0xfff2f2f2)
                 )
-        )
+                .padding(start = 12.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            BasicTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = text,
+                onValueChange = { text = it }
+            )
+        }
         Spacer(modifier = Modifier.width(12.dp))
         Box(
             modifier = Modifier
@@ -389,7 +390,11 @@ fun InputChat(modifier: Modifier = Modifier) {
                 .background(
                     color = Color(0xffbfbfbf),
                     shape = CircleShape
-                ),
+                )
+                .clickable {
+                    onClickSend(text)
+                    text = ""
+                },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -402,11 +407,39 @@ fun InputChat(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun rememberImeState(): Boolean {
+    var imeState by remember {
+        mutableStateOf(false)
+    }
+
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val isKeyboardOpen =
+                ViewCompat.getRootWindowInsets(view)?.isVisible(WindowInsetsCompat.Type.ime())
+                    ?: true
+            imeState = isKeyboardOpen
+        }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose { view.viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    }
+    return imeState
+}
+
 @Preview
 @Composable
 private fun GroupChatScreenPreview() {
     ChatUITheme {
-        GroupChatScreen()
+        GroupChatScreen(
+            uiState = GroupChatUiState(
+                chats = getDefaultGroupChats()
+            ),
+            onNavigateUp = {},
+            onClickMenu = {},
+            onClickExit = {},
+            onClickSend = {}
+        )
     }
 }
-
