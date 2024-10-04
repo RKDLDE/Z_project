@@ -24,4 +24,7 @@
     <color name="enabled_color">#7B7C80</color>
     <color name="today_color">#C9EFE8</color>
 
+    <!-- using in UPLOAD -->
+    <color name="alpha">#00FFFFFF</color>
+
 </resources>

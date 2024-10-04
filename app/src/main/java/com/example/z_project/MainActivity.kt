@@ -1,28 +1,19 @@
 package com.example.z_project
 
 
+import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
-
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-
 import androidx.fragment.app.Fragment
 import com.example.z_project.chat.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
 import com.example.z_project.upload.UploadFragment
-
-import com.example.z_project.mypage.LogoutFragment
-import com.example.z_project.MainActivity
-import android.Manifest
-import android.widget.Toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -49,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         //setContentView(R.layout.activity_main)
         initBottomNavigation()
-
     }
 
     private fun initBottomNavigation(){
