@@ -106,6 +106,11 @@ dependencies {
 
     implementation ("com.google.firebase:firebase-auth")
 
+
+    //업로드 이모티콘
+//    implementation("androidx.emoji2:emojipicker:$version")
+
+
     //이모지
     implementation("com.google.guava:guava:31.1-android")
     implementation("androidx.emoji2:emoji2-emojipicker:1.5.0")
