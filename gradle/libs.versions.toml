@@ -17,6 +17,7 @@ lifecycleViewmodelKtx = "2.6.1"
 
 emoji2Emojipicker = "1.5.0"
 firebaseCrashlyticsBuildtools = "3.0.2"
+
 foundationAndroid = "1.7.1"
 material3Android = "1.3.0"
 uiToolingPreviewAndroid = "1.7.1"

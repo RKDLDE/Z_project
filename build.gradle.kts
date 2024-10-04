@@ -8,6 +8,16 @@ plugins {
     id("com.google.gms.google-services") version "4.4.2" apply false
 }
 
+//allprojects {
+//    repositories{
+//        google()
+//        jcenter()
+//        mavenCentral()
+//        maven { url = java.net.URI("https://jitpack.io") }
+//    }
+//}
+
+
 
 //뭔지 모르겠지만...
 //buildscript {
@@ -19,3 +29,4 @@ plugins {
 //task clean(type: Delete) {
 //    delete rootProject.buildDir
 //}
+
