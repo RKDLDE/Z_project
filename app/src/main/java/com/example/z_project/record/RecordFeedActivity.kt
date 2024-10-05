@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z_project.R
 import com.example.z_project.databinding.ActivityRecordFeedBinding
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class RecordFeedActivity : AppCompatActivity() {
     lateinit var binding: ActivityRecordFeedBinding
@@ -17,6 +21,18 @@ class RecordFeedActivity : AppCompatActivity() {
         // 뒤로가기 클릭 기능
         binding.recordFeedBackIcon.setOnClickListener {
             finish()
+        }
+
+        // 선택한 날짜의 정보 받기
+        val selectedYear = intent.getIntExtra("selected_year", -1)
+        val selectedMonth = intent.getIntExtra("selected_month", -1)
+        val selectedDay = intent.getIntExtra("selected_day", -1)
+
+        if (selectedYear != -1 && selectedMonth != -1 && selectedDay != -1) {
+            val selectedDate = CalendarDay.from(selectedYear, selectedMonth, selectedDay)
+
+            // 선택한 날짜 텍스트로 표시
+            binding.recordFeedDate.text = formatDateWithE(selectedDate)
         }
 
         var dummyList = listOf(
@@ -188,5 +204,13 @@ class RecordFeedActivity : AppCompatActivity() {
         val eventAdapter = RecordFeedRVAdapter(dummyList)
         binding.recordFeedRv.adapter = eventAdapter
 
+    }
+
+    private fun formatDateWithE(date: CalendarDay): String {
+        val calendar = Calendar.getInstance().apply {
+            set(date.year, date.month - 1, date.day)  // MaterialCalendarView uses 1-based months
+        }
+        val format = SimpleDateFormat("M월 d일", Locale("ko", "KR"))
+        return format.format(calendar.time)
     }
 }
