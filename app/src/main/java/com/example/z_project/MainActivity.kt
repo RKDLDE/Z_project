@@ -14,8 +14,9 @@ import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
 import com.example.z_project.upload.UploadFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 

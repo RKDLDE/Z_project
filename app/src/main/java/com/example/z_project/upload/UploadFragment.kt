@@ -88,20 +88,21 @@ class UploadFragment : Fragment() {
         }
     }
 
-    private fun openDecoFragment() {
-        val fragmentManager = parentFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-
-        // DecoFragment에 URI를 전달하기 위해 Bundle을 생성
-        val decoFragment = DecoFragment().apply {
-            arguments = Bundle().apply {
-                putString("photoUri", photoUri.toString()) // URI를 문자열로 변환하여 전달
-            }
-        }
-
-        fragmentTransaction.replace(com.example.z_project.R.id.container, decoFragment)
-        /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
-        fragmentTransaction.commit()
-    }
+    // 잠시 주석처리...
+//    private fun openDecoFragment() {
+//        val fragmentManager = parentFragmentManager
+//        val fragmentTransaction = fragmentManager.beginTransaction()
+//
+//        // DecoFragment에 URI를 전달하기 위해 Bundle을 생성
+//        val decoFragment = DecoFragment().apply {
+//            arguments = Bundle().apply {
+//                putString("photoUri", photoUri.toString()) // URI를 문자열로 변환하여 전달
+//            }
+//        }
+//
+//        fragmentTransaction.replace(com.example.z_project.R.id.container, decoFragment)
+//        /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
+//        fragmentTransaction.commit()
+//    }
 
 }
