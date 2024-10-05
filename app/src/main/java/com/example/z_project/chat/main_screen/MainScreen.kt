@@ -41,10 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.z_project.chat.model.R
+import com.example.z_project.R
 import com.example.z_project.chat.model.GroupChat
 import com.example.z_project.chat.model.PersonalChat
-import com.example.z_project.chat.modelChatUITheme
 import com.example.z_project.chat.ui.theme.ChatUITheme
 
 @Composable

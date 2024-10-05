@@ -54,11 +54,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.z_project.R
-import com.example.z_project.model.Chat
-import com.example.z_project.getDefaultGroupChats
+import com.example.z_project.chat.model.Chat
+import com.example.z_project.chat.model.getDefaultGroupChats
 import com.example.z_project.chat.ui.theme.ChatUITheme
 
-}@Composable
+@Composable
 fun GroupChatScreen(
     uiState: GroupChatUiState,
     onNavigateUp: () -> Unit,

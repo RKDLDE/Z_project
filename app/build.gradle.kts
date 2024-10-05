@@ -5,6 +5,9 @@ plugins {
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -118,7 +121,20 @@ dependencies {
     implementation("androidx.emoji2:emoji2-bundled:1.1.0")
 
 
+    //카카오톡
+    implementation("com.kakao.sdk:v2-all:2.12.0")
+    implementation("com.kakao.sdk:v2-user:2.12.0") // 카카오 로그인
+    implementation("com.kakao.sdk:v2-talk:2.12.0") // 친구, 메시지(카카오톡)
+    implementation("com.kakao.sdk:v2-link:2.12.0") // 메시지(카카오링크)
 
+
+    //채팅
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("com.google.dagger:hilt-android:2.45")
+    kapt("com.google.dagger:hilt-compiler:2.45")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
 
     //테드 퍼미션
     /*implementation("gun0912.ted:tedpermission:2.2.3")*/

@@ -33,10 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.z_project.R
+import com.example.z_project.chat.main_screen.MainUiState
+import com.example.z_project.chat.model.Profile
 import com.example.z_project.chat.ui.theme.ChatUITheme
 
 @Composable
-fun InviteScreen() {
+fun InviteScreen(
+    uiState: InviteUiState, // uiState 매개변수 추가
+    onSelected: (Int, Boolean) -> Unit, // onSelected 매개변수 추가
+    onNavigateUp: () -> Unit, // onNavigateUp 매개변수 추가
+    onClickInvite: () -> Unit // onClickInvite 매개변수 추가
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -194,6 +201,11 @@ fun InviteButton(
 @Composable
 private fun InviteScreenPreview() {
     ChatUITheme {
-        InviteScreen()
+        InviteScreen(
+            uiState = InviteUiState(), //임의추가
+            onSelected = {id, selected ->}, //임의추가
+            onNavigateUp = {}, //임의추가
+            onClickInvite = {}, //임의추가
+        )
     }
 }

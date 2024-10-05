@@ -10,10 +10,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
-
-
-
-
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -26,7 +22,6 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
 
@@ -78,12 +73,12 @@
         <activity
             android:name=".login.LoginActivity"
             android:exported="true"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"/>
 
 
-        <activity
-            android:name=".chat.ChatFragment"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".chat.ChatFragment"-->
+<!--            android:exported="false" />-->
 
         <activity
             android:name=".login.LoginFragment"
@@ -95,7 +90,6 @@
 
         <activity
             android:name=".MainActivity"
-
             android:exported="true">
 
             <intent-filter>
@@ -104,10 +98,10 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-        </activity>
+<!--        <activity-->
+<!--            android:name=".MainActivity"-->
+<!--            android:exported="true">-->
+<!--        </activity>-->
 
         <meta-data
             android:name="preloaded_fonts"

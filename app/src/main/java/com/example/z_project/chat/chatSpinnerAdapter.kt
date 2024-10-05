@@ -1,16 +1,11 @@
 package com.example.z_project.chat
 
-import android.R
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.annotation.LayoutRes
 import com.example.z_project.databinding.ItemChatOptionBinding
-import com.example.z_project.databinding.ItemSpinnerYearBinding
 
 class chatSpinnerAdapter (
     context: Context,

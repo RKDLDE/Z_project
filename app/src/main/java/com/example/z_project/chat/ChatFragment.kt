@@ -32,11 +32,12 @@ import com.example.z_project.chat.personal_chat_screen.PersonalChatScreen
 import com.example.z_project.chat.ui.theme.ChatUITheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import kotlin.text.Typography.dagger
 
 
 @AndroidEntryPoint
-class MainFragment : Fragment() {
+class ChatFragment : Fragment() {
     private val gViewModel by viewModels<GlobalViewModel>()
 
     override fun onCreateView(

@@ -15,12 +15,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import kotlin.text.Typography.dagger
+import kotlinx.serialization.serializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+
 
 
 @HiltViewModel
-class PersonalChatViewModel @Inject constructor {
+class PersonalChatViewModel @Inject constructor (
     savedStateHandle: SavedStateHandle
-}: ViewModel() {
+): ViewModel() {
     // UI State
     private val _uiState = MutableStateFlow(PersonalChatUiState())
     val uiState = _uiState.stateIn(
@@ -32,7 +36,8 @@ class PersonalChatViewModel @Inject constructor {
     init {
         val personalChatJson = savedStateHandle.get<String>("personalChat")
         if (personalChatJson != null) {
-            val personalChat = Json.decodeFromString(PersonalChat.serializer(), personalChatJson)
+//            val personalChat = Json.decodeFromString(PersonalChat.serializer(), personalChatJson)
+            val personalChat: PersonalChat = Json.decodeFromString(PersonalChat.serializer(), personalChatJson)
             _uiState.update {
                 it.copy(
                     personalChat = personalChat,

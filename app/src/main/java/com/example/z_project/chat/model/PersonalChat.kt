@@ -1,6 +1,6 @@
 package com.example.z_project.chat.model
 
-import com.example.z_project.chat.model.R
+import com.example.z_project.R
 import kotlinx.serialization.Serializable
 
 @Serializable
