@@ -10,7 +10,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.z_project.R
 import com.example.z_project.chat.calendar.CalendarDecorators
+import com.example.z_project.chat.calendar.ColorEnum
 import com.example.z_project.chat.calendar.GroupCalendarActivity
+import com.example.z_project.chat.calendar.ScheduleModel
 import com.example.z_project.chat.calendar.YearSpinnerAdapter
 import com.example.z_project.databinding.FragmentRecordBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -27,9 +29,36 @@ class RecordFragment : Fragment() {
     private lateinit var otherMonthDecorator: DayViewDecorator
     private lateinit var sundayDecorator: DayViewDecorator
     private lateinit var saturdayDecorator: DayViewDecorator
-    private lateinit var eventDecorator: DayViewDecorator
+    private lateinit var recordEventDecorator: DayViewDecorator
 
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
+
+    private var dummyScheduleList = listOf(
+        FeedModel(
+            id = 1,
+            userImage = R.drawable.person1,
+            uploadDate = "2024.10.03",
+            uploadEmoji = R.drawable.ex_emoji1,
+            uploadImage = R.drawable.image,
+            feedText = "강아지 귀엽다",
+        ),
+        FeedModel(
+            id = 2,
+            userImage = R.drawable.person2,
+            uploadDate = "2024.10.09",
+            uploadEmoji = R.drawable.person4,
+            uploadImage = R.drawable.image,
+            feedText = "강아지",
+        ),
+        FeedModel(
+            id = 2,
+            userImage = R.drawable.person2,
+            uploadDate = "2024.10.06",
+            uploadEmoji = R.drawable.ex_emoji2,
+            uploadImage = R.drawable.image,
+            feedText = "귀엽다",
+        )
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,9 +94,9 @@ class RecordFragment : Fragment() {
             selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
                 context,
                 Calendar.getInstance().get(Calendar.MONTH) + 1)
-            eventDecorator = CalendarDecorators.eventDecorator(
+            recordEventDecorator = CalendarDecorators.recordEventDecorator(
                 context,
-                listOf()
+                dummyScheduleList
             )
 
             // 캘린더뷰에 데코레이터 추가
@@ -79,7 +108,7 @@ class RecordFragment : Fragment() {
                 otherMonthDecorator,
                 sundayDecorator,
                 saturdayDecorator,
-                eventDecorator,
+                recordEventDecorator,
             )
 
             // 월 표시 부분 커스텀
@@ -112,7 +141,7 @@ class RecordFragment : Fragment() {
                     ),
                     sundayDecorator,
                     saturdayDecorator,
-                    eventDecorator,
+                    recordEventDecorator,
                 )
 
                 // 변경 된 일에 해당하는 일정 목록을 필터링하고 업데이트
@@ -131,7 +160,16 @@ class RecordFragment : Fragment() {
 //                EventRVAdapter.submitList(filteredEvents)
                 if(selected){
                     //날짜 선택 시 해당 날짜의 피드 모음으로 이동
-                    val intent = Intent(context, RecordFeedActivity::class.java)
+                    val year = date.year
+                    val month = date.month
+                    val day = date.day
+
+                    val intent = Intent(context, RecordFeedActivity::class.java).apply{
+                        putExtra("selected_year", year)
+                        putExtra("selected_month", month)
+                        putExtra("selected_day", day)
+                    }
+                    binding.recordCalendarView.clearSelection() // 날짜 선택 해제
                     startActivity(intent)
                 }
             }
