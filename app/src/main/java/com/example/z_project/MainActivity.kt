@@ -4,6 +4,7 @@ package com.example.z_project
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -24,18 +25,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Intent로부터 데이터 가져오기
-//        val userName = intent.getStringExtra("USER_NAME")
-//        val profileImageUrl = intent.getStringExtra("PROFILE_IMAGE")
-//        val token = intent.getStringExtra("TOKEN")
-//
-//        // Fragment에 데이터 전달
-//        val fragment = MypageFragment().apply {
-//            arguments = Bundle().apply {
-//                putString("USER_NAME", userName)
-//                putString("PROFILE_IMAGE", profileImageUrl)
-//                putString("TOKEN", token)
-//            }
-//        }
+        val userName = intent.getStringExtra("USER_NAME")
+        val profileImageUrl = intent.getStringExtra("PROFILE_IMAGE")
+        val token = intent.getStringExtra("TOKEN")
+
+        Log.d("메인카카오정보", "이름: $userName")
+        Log.d("메인카카오정보", "토큰: $token")
+        // Fragment에 데이터 전달
+        val fragment = MypageFragment().apply {
+            arguments = Bundle().apply {
+                putString("USER_NAME", userName)
+                putString("PROFILE_IMAGE", profileImageUrl)
+                putString("TOKEN", token)
+            }
+        }
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -72,8 +76,20 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.mypageFragment -> {
+                    // MypageFragment로 이동할 때 사용자 정보 전달
+                    val userName = intent.getStringExtra("USER_NAME")
+                    val profileImageUrl = intent.getStringExtra("PROFILE_IMAGE")
+                    val token = intent.getStringExtra("TOKEN")
+
+                    val mypageFragment = MypageFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("USER_NAME", userName)
+                            putString("PROFILE_IMAGE", profileImageUrl)
+                            putString("TOKEN", token)
+                        }
+                    }
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.main_frm, MypageFragment())
+                        .replace(R.id.main_frm, mypageFragment)
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }

@@ -121,9 +121,9 @@ android {
 
 
         //카카오톡
-        implementation ("com.kakao.sdk:v2-all:2.20.0") // 전체 모듈 설치, 2.11.0 버전부터 지원
-        implementation ("com.kakao.sdk:v2-user:2.20.0") // 카카오 로그인 API 모듈
-        implementation ("com.kakao.sdk:v2-share:2.20.0") // 카카오톡 공유 API 모듈
+        implementation ("com.kakao.sdk:v2-all:2.20.6") // 전체 모듈 설치, 2.11.0 버전부터 지원
+        implementation ("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
+        implementation ("com.kakao.sdk:v2-share:2.20.6") // 카카오톡 공유 API 모듈
 //    implementation "com.kakao.sdk:v2-talk:2.20.0" // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
 //    implementation "com.kakao.sdk:v2-friend:2.20.0" // 피커 API 모듈
 //    implementation "com.kakao.sdk:v2-navi:2.20.0" // 카카오내비 API 모듈
@@ -141,7 +141,9 @@ android {
         //테드 퍼미션
         /*implementation("gun0912.ted:tedpermission:2.2.3")*/
 
-
+        implementation("com.github.bumptech.glide:glide:4.12.0")
+        implementation("com.github.bumptech.glide:annotations:4.12.0")
+        annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
         implementation(libs.androidx.navigation.compose)
     }
