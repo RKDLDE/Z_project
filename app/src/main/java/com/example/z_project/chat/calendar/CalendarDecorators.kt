@@ -358,6 +358,8 @@ object CalendarDecorators {
         return object : DayViewDecorator {
             private val eventDates = HashMap<CalendarDay, Int>()
 
+            private var currentDay: CalendarDay? = null // 현재 데코레이션할 날짜를 저장
+
             init {
                 val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
 
@@ -387,30 +389,38 @@ object CalendarDecorators {
             }
 
             override fun decorate(view: DayViewFacade) {
-                // 이벤트가 있는 날짜에 점을 추가하여 표시
-                eventDates.forEach { (calendarDay, emoji) ->
-                    feedList.forEach{ feed ->
-                        if(feed.id == 2){ // 사용자 본인이라면 (예시: 2)
-                            if (view is DayViewFacade) {
-                                view.apply {
-                                    setBackgroundDrawable(ContextCompat.getDrawable(context, feed.uploadEmoji)!!)
-                                    addSpan(
-                                        ForegroundColorSpan(
-                                            ContextCompat.getColor(context, R.color.white)
-                                        )
-                                    )
-                                }
-                            }
-                        } else{
-                            view.addSpan(ForegroundColorSpan(
-                                ContextCompat.getColor(
-                                    context,
-                                    R.color.red
-                                )
-                            ))
-                        }
+                eventDates.forEach { day, emojiResId ->
+                    if (shouldDecorate(day)) { // 날짜가 매칭되는지 확인
+                        Log.d("이모지내용", "${emojiResId} for date ${day}")
+                        val drawable = ContextCompat.getDrawable(context, emojiResId)
+                        drawable?.let { view.setBackgroundDrawable(drawable) }
                     }
                 }
+
+//                // 이벤트가 있는 날짜에 점을 추가하여 표시
+//                eventDates.forEach { (calendarDay, emoji) ->
+//                    feedList.forEach{ feed ->
+//                        if(feed.id == 2){ // 사용자 본인이라면 (예시: 2)
+//                            if (view is DayViewFacade) {
+//                                view.apply {
+//                                    setBackgroundDrawable(ContextCompat.getDrawable(context, feed.uploadEmoji)!!)
+//                                    addSpan(
+//                                        ForegroundColorSpan(
+//                                            ContextCompat.getColor(context, R.color.white)
+//                                        )
+//                                    )
+//                                }
+//                            }
+//                        } else{
+//                            view.addSpan(ForegroundColorSpan(
+//                                ContextCompat.getColor(
+//                                    context,
+//                                    R.color.red
+//                                )
+//                            ))
+//                        }
+//                    }
+//                }
             }
 
             /**
