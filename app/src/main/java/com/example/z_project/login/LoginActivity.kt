@@ -1,6 +1,6 @@
 package com.example.z_project.login
 
-import android.content.Intent  // 추가된 import
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -15,17 +15,15 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_login) // 레이아웃 파일 이름 확인
+        setContentView(R.layout.fragment_login)
 
         val kakaoLoginButton = findViewById<ImageButton>(R.id.ib_kakao)
 
         kakaoLoginButton.setOnClickListener {
-            // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오 계정으로 로그인
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
                 UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                     if (error != null) {
                         Toast.makeText(this, "카카오톡 로그인 실패, 카카오 계정으로 로그인 시도", Toast.LENGTH_SHORT).show()
-                        // 카카오톡 로그인 실패 시 카카오 계정 로그인 시도
                         UserApiClient.instance.loginWithKakaoAccount(this) { token, error ->
                             handleLoginResult(token, error)
                         }
@@ -53,15 +51,15 @@ class LoginActivity : AppCompatActivity() {
             UserApiClient.instance.me { user, error ->
                 if (user != null) {
                     val nickname = user.kakaoAccount?.profile?.nickname
-                    val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl // 프로필 사진 URL
+                    val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl
                     Log.d("사용자 이름", "$nickname")
                     Toast.makeText(this, "사용자 이름: $nickname", Toast.LENGTH_SHORT).show()
 
-                    // 로그인 성공 시 MainActivity로 이동
+                    // MainActivity로 이동하며 사용자 정보 전달
                     val intent = Intent(this, MainActivity::class.java).apply {
-//                        putExtra("USER_NAME", nickname)
-//                        putExtra("PROFILE_IMAGE", profileImageUrl)
-//                        putExtra("TOKEN", token.accessToken) // AccessToken도 전달
+                        putExtra("USER_NAME", nickname)
+                        putExtra("PROFILE_IMAGE", profileImageUrl)
+                        putExtra("TOKEN", token.accessToken)
                     }
                     startActivity(intent)
 

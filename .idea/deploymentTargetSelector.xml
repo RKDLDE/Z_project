@@ -4,37 +4,14 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
- Chat
-        <DropdownSelection timestamp="2024-09-14T13:24:08.009545100Z">
+        <DropdownSelection timestamp="2024-10-08T10:02:01.274165Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CR70XNBGZ" />
-
- Upload
-        <DropdownSelection timestamp="2024-09-22T11:29:39.761709Z">
-
-        <DropdownSelection timestamp="2024-09-22T12:34:20.235525300Z">
- master
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\canddy\.android\avd\Pixel_7_API_30.avd" />
- master
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\canddy\.android\avd\zproject_API_34.avd" />
             </handle>
           </Target>
         </DropdownSelection>
- Upload
-        <DialogSelection>
-          <targets>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\jkh47\.android\avd\Pixel_7_API_30.avd" />
-              </handle>
-            </Target>
-          </targets>
-        </DialogSelection>
-
         <DialogSelection />
- master
       </SelectionState>
     </selectionStates>
   </component>
