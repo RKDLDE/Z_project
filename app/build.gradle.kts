@@ -121,6 +121,7 @@ android {
 
 
         //카카오톡
+        implementation ("com.kakao.sdk:v2-common:2.20.6")
         implementation ("com.kakao.sdk:v2-all:2.20.6") // 전체 모듈 설치, 2.11.0 버전부터 지원
         implementation ("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
         implementation ("com.kakao.sdk:v2-share:2.20.6") // 카카오톡 공유 API 모듈
