@@ -24,11 +24,13 @@ class RecordFragment : Fragment() {
     lateinit var binding: FragmentRecordBinding
 
     private lateinit var dayDecorator: DayViewDecorator
-    private lateinit var todayDecorator: DayViewDecorator
-    private lateinit var selectedMonthDecorator: DayViewDecorator
-    private lateinit var otherMonthDecorator: DayViewDecorator
-    private lateinit var sundayDecorator: DayViewDecorator
-    private lateinit var saturdayDecorator: DayViewDecorator
+//    private lateinit var todayDecorator: DayViewDecorator
+//    private lateinit var selectedMonthDecorator: DayViewDecorator
+private lateinit var pastAndTodayDecorator: DayViewDecorator
+    private lateinit var futureDatesDecorator: DayViewDecorator
+//    private lateinit var otherMonthDecorator: DayViewDecorator
+//    private lateinit var sundayDecorator: DayViewDecorator
+//    private lateinit var saturdayDecorator: DayViewDecorator
     private lateinit var recordEventDecorator: DayViewDecorator
 
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
@@ -85,15 +87,17 @@ class RecordFragment : Fragment() {
         with(recordCalendarView) {
             // 데코레이터 초기화
             dayDecorator = CalendarDecorators.dayDecorator(context)
-            todayDecorator = CalendarDecorators.todayDecorator(context)
-            sundayDecorator = CalendarDecorators.sundayDecorator(context)
-            saturdayDecorator = CalendarDecorators.saturdayDecorator(context)
-            otherMonthDecorator = CalendarDecorators.otherMonthDecorator(
-                context,
-                Calendar.getInstance().get(Calendar.MONTH) + 1)
-            selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
-                context,
-                Calendar.getInstance().get(Calendar.MONTH) + 1)
+//            todayDecorator = CalendarDecorators.todayDecorator(context)
+//            sundayDecorator = CalendarDecorators.sundayDecorator(context)
+//            saturdayDecorator = CalendarDecorators.saturdayDecorator(context)
+            pastAndTodayDecorator = CalendarDecorators.pastAndTodayDecorator(context)
+            futureDatesDecorator = CalendarDecorators.futureDatesDecorator(context)
+//            otherMonthDecorator = CalendarDecorators.otherMonthDecorator(
+//                context,
+//                Calendar.getInstance().get(Calendar.MONTH) + 1)
+//            selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
+//                context,
+//                Calendar.getInstance().get(Calendar.MONTH) + 1)
             recordEventDecorator = CalendarDecorators.recordEventDecorator(
                 context,
                 dummyScheduleList
@@ -103,11 +107,13 @@ class RecordFragment : Fragment() {
             addDecorators(
                 //customDayViewDecorator,
                 dayDecorator,
-                todayDecorator,
-                selectedMonthDecorator,
-                otherMonthDecorator,
-                sundayDecorator,
-                saturdayDecorator,
+//                todayDecorator,
+//                selectedMonthDecorator,
+                pastAndTodayDecorator,
+                futureDatesDecorator,
+//                otherMonthDecorator,
+//                sundayDecorator,
+//                saturdayDecorator,
                 recordEventDecorator,
             )
 
@@ -124,23 +130,25 @@ class RecordFragment : Fragment() {
                 invalidateDecorators()
 
                 // 새로운 월에 해당하는 데코레이터를 생성하여 selectedMonthDecorator에 할당
-                selectedMonthDecorator =
-                    com.example.z_project.chat.calendar.CalendarDecorators.selectedMonthDecorator(
-                        context,
-                        date.month
-                    )
+//                selectedMonthDecorator =
+//                    CalendarDecorators.selectedMonthDecorator(
+//                        context,
+//                        date.month
+//                    )
                 // 새로 생성한 데코레이터를 캘린더 위젯에 추가
                 addDecorators(
                     //customDayViewDecorator,
                     dayDecorator,
-                    todayDecorator,
-                    selectedMonthDecorator,
-                    com.example.z_project.chat.calendar.CalendarDecorators.otherMonthDecorator(
-                        context,
-                        date.month
-                    ),
-                    sundayDecorator,
-                    saturdayDecorator,
+                    pastAndTodayDecorator,
+                    futureDatesDecorator,
+//                    todayDecorator,
+//                    selectedMonthDecorator,
+//                    CalendarDecorators.otherMonthDecorator(
+//                        context,
+//                        date.month
+//                    ),
+//                    sundayDecorator,
+//                    saturdayDecorator,
                     recordEventDecorator,
                 )
 
