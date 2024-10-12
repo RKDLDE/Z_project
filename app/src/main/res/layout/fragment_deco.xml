@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,16 +18,17 @@
             android:background="@drawable/cam_bg_rec"
             android:layout_centerInParent="true">
 
-            <ImageView
+            <com.example.z_project.upload.CustomView
                 android:id="@+id/photo"
                 android:layout_width="300dp"
                 android:layout_height="400dp"
                 android:layout_gravity="center|bottom"
                 android:layout_marginBottom="45dp"
+                android:background="#EEEEEE"
                 tools:ignore="ContentDescription" />
 
             <ImageView
-                android:id="@+id/sss"
+                android:id="@+id/drawBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
@@ -36,7 +38,7 @@
                 app:srcCompat="@drawable/sss_img" />
 
             <ImageView
-                android:id="@+id/aa"
+                android:id="@+id/aaBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="33dp"
                 android:layout_gravity="top|start"
@@ -44,7 +46,19 @@
                 android:layout_marginTop="20dp"
                 app:srcCompat="@drawable/aa_img"
                 android:contentDescription="@null"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                android:text="활성화 버튼"/>
+
+            <EditText
+                android:id="@+id/myEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_margin="50dp"
+                android:gravity="center"
+                android:enabled="false"
+                android:inputType="text" />
+
         </FrameLayout>
 
 
@@ -60,14 +74,15 @@
             android:contentDescription="choose_emoji" />
 
         <ImageView
-            android:id="@+id/deleteBtn"
+            android:id="@+id/undoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/clear"
             android:layout_alignParentStart="true"
             android:layout_above="@+id/decoBG"
-            android:layout_marginLeft="45dp"
+            android:layout_marginStart="45dp"
             android:layout_marginBottom="15dp"
+            android:text="Undo"
             android:contentDescription="delete"/>
 
         <ImageView
@@ -77,7 +92,7 @@
             app:srcCompat="@drawable/okay"
             android:layout_alignParentEnd="true"
             android:layout_above="@+id/decoBG"
-            android:layout_marginRight="45dp"
+            android:layout_marginEnd="45dp"
             android:layout_marginBottom="15dp"
             android:contentDescription="done"/>
     </RelativeLayout>
@@ -87,7 +102,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </FrameLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
