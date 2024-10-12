@@ -37,7 +37,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopof="parent"
-            app:layout_constraintBottom_toTopof="@id/main_bg">
+            app:layout_constraintBottom_toTopof="@id/main_bg"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="60dp">
 
             <ImageView
                 android:background="@drawable/profile_round"
