@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.z_project.databinding.FragmentFinalBinding
 
 class FinalFragment: Fragment() {
     private lateinit var binding: FragmentFinalBinding
+    private val sharedViewModel: SharedViewModel by activityViewModels()  // ViewModel 인스턴스
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFinalBinding.inflate(inflater, container, false)
@@ -19,12 +21,9 @@ class FinalFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Bundle에서 URI 가져오기
-        val imageUriString = arguments?.getString("finalImageUri")
-        imageUriString?.let {
-            val imageUri = Uri.parse(it)
-            // 이미지를 ImageView에 설정하는 메서드 호출
-            binding.photo.setImageURI(imageUri)  // ImageView의 ID에 맞게 수정 필요
+        // ViewModel에서 URI를 관찰하여 이미지 표시
+        sharedViewModel.imageUri.observe(viewLifecycleOwner) { uri ->
+            binding.photo.setImageURI(uri)  // ImageView의 ID에 맞게 수정 필요
         }
     }
 }

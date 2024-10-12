@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentDecoBinding
 
@@ -16,9 +17,7 @@ class DecoFragment : Fragment() {
     private lateinit var binding: FragmentDecoBinding
     private var undoStack = mutableListOf<String>()  // 이전 상태 저장
     private var photoUri: Uri? = null
-
-    private lateinit var drawCanvas: DrawFragment.DrawCanvas
-    private lateinit var canvasContainer: ConstraintLayout
+    private val sharedViewModel: SharedViewModel by activityViewModels()  // ViewModel 인스턴스
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -60,15 +59,7 @@ class DecoFragment : Fragment() {
             // Specify a file path where you want to save the drawing
             val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
             binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
-
-            val finalFragment = FinalFragment()
-            val savedImageUri = Uri.parse("${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png")
-
-            // Bundle에 URI 추가
-            val bundle = Bundle().apply {
-                putString("finalImageUri", savedImageUri.toString())
-            }
-            finalFragment.arguments = bundle
+            sharedViewModel.imageUri.value = Uri.parse(filePath)  // URI를 ViewModel에 저장
 
         }
 
