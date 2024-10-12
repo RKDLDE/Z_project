@@ -4,6 +4,6 @@ import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import kotlin.text.Typography.dagger
 
-
-class MainApplication {
-}
+//@HiltAndroidApp
+//class MainApplication : Application()  {
+//}
