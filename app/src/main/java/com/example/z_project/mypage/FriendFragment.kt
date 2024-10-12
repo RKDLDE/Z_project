@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentFriendBinding
 import com.example.z_project.mypage.CustomAdapter
+import com.example.z_project.mypage.DeleteFragment
+import com.example.z_project.mypage.FriendPlusFragment
 import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.talk.model.Friend
 import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
@@ -59,13 +62,22 @@ class FriendFragment : Fragment() {
         llKakao.setOnClickListener {
             sendKakaoTalkInvite()
         }
+
+        val plusFriend = view.findViewById<ImageButton>(R.id.ib_friend_plus)
+        plusFriend.setOnClickListener {
+            showFriendPlusDialog()
+        }
+    }
+
+    private fun showFriendPlusDialog() {
+        FriendPlusFragment(requireContext()).show()
     }
 
     private fun sendKakaoTalkInvite() {
         // FeedTemplate을 사용하여 초대 링크 생성
         val feedTemplate = FeedTemplate(
             content = Content(
-                title = "초대하기",
+                title = "",
                 description = "친구를 초대합니다!",
                 imageUrl = "https://naver.com",  // 이미지 URL 추가
                 link = Link(
