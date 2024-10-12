@@ -56,12 +56,25 @@ class DecoFragment : Fragment() {
             saveState()
         }
 
+        binding.okayBtn.setOnClickListener {
+            // Specify a file path where you want to save the drawing
+            val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
+            binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
+
+            val finalFragment = FinalFragment()
+            val savedImageUri = Uri.parse("${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png")
+
+            // Bundle에 URI 추가
+            val bundle = Bundle().apply {
+                putString("finalImageUri", savedImageUri.toString())
+            }
+            finalFragment.arguments = bundle
+
+        }
+
         // Undo 버튼 클릭 시 이전 상태 복구
         binding.undoButton.setOnClickListener {
-            if (undoStack.isNotEmpty()) {
-                val previousState = undoStack.removeAt(undoStack.size - 1)  // 이전 상태 가져오기
-                binding.myEditText.setText(previousState)  // 복구
-            }
+            binding.photo.undo()  // undo 호출
         }
 
         binding.emoji.setOnClickListener{
