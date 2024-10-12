@@ -1,5 +1,7 @@
 package com.example.z_project.upload
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,6 +31,7 @@ class DecoFragment : Fragment() {
 
         photoUri = arguments?.getString("photoUri")?.let { Uri.parse(it) }
         if (photoUri != null) {
+            resizeImage(photoUri!!, 300, 400)
             binding.photo.setImageUri(photoUri!!)
         }
 
@@ -53,19 +56,32 @@ class DecoFragment : Fragment() {
             saveState()
         }
 
+        binding.okayBtn.setOnClickListener {
+            // Specify a file path where you want to save the drawing
+            val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
+            binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
+
+            val finalFragment = FinalFragment()
+            val savedImageUri = Uri.parse("${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png")
+
+            // Bundle에 URI 추가
+            val bundle = Bundle().apply {
+                putString("finalImageUri", savedImageUri.toString())
+            }
+            finalFragment.arguments = bundle
+
+        }
+
         // Undo 버튼 클릭 시 이전 상태 복구
         binding.undoButton.setOnClickListener {
-            if (undoStack.isNotEmpty()) {
-                val previousState = undoStack.removeAt(undoStack.size - 1)  // 이전 상태 가져오기
-                binding.myEditText.setText(previousState)  // 복구
-            }
+            binding.photo.undo()  // undo 호출
         }
 
         binding.emoji.setOnClickListener{
             val emojiFragment = EmojiFragment()
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, emojiFragment)
+            fragmentTransaction.replace(R.id.main_frm, emojiFragment)
             /*fragmentTransaction.addToBackStack(null)*/
             fragmentTransaction.commit()
         }
@@ -79,5 +95,17 @@ class DecoFragment : Fragment() {
     companion object {
         private var xPos: Float = 0f  // 텍스트 입력 위치 x좌표
         private var yPos: Float = 0f  // 텍스트 입력 위치 y좌표
+    }
+
+    // 사진 크기 조정을 위한 함수
+    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+
+        // Bitmap 크기 조정
+        return originalBitmap?.let {
+            Bitmap.createScaledBitmap(it, width, height, true)
+        }
     }
 }

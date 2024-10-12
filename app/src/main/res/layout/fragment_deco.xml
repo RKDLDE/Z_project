@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="30dp">
 
         <FrameLayout
             android:id="@+id/decoBG"
-            android:layout_width="360dp"
-            android:layout_height="550dp"
+            android:layout_width="330dp"
+            android:layout_height="520dp"
             android:background="@drawable/cam_bg_rec"
             android:layout_centerInParent="true">
 
@@ -29,21 +31,21 @@
 
             <ImageView
                 android:id="@+id/drawBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="top|end"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="30dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="30dp"
                 android:contentDescription="@null"
                 app:srcCompat="@drawable/sss_img" />
 
             <ImageView
                 android:id="@+id/aaBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="top|start"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
                 app:srcCompat="@drawable/aa_img"
                 android:contentDescription="@null"
                 tools:ignore="ContentDescription"
@@ -51,12 +53,13 @@
 
             <EditText
                 android:id="@+id/myEditText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|bottom"
                 android:layout_margin="50dp"
                 android:gravity="center"
                 android:enabled="false"
+                android:textSize="28dp"
                 android:inputType="text" />
 
         </FrameLayout>
@@ -67,40 +70,34 @@
             android:id="@+id/emoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@null"
             android:layout_below="@+id/decoBG"
-            android:layout_centerInParent="true"
-            android:layout_margin="16dp"
-            app:srcCompat="@drawable/emoji"
-            android:contentDescription="choose_emoji" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/emoji" />
 
         <ImageView
             android:id="@+id/undoButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
             app:srcCompat="@drawable/clear"
             android:layout_alignParentStart="true"
             android:layout_above="@+id/decoBG"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="30dp"
             android:layout_marginBottom="15dp"
             android:text="Undo"
             android:contentDescription="delete"/>
 
         <ImageView
             android:id="@+id/okayBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="25dp"
             app:srcCompat="@drawable/okay"
             android:layout_alignParentEnd="true"
             android:layout_above="@+id/decoBG"
-            android:layout_marginEnd="45dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginBottom="15dp"
             android:contentDescription="done"/>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
