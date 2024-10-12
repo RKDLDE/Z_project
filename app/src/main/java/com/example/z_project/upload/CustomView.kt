@@ -87,7 +87,7 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                     }
                     MotionEvent.ACTION_MOVE -> {
                         path.lineTo(it.x, it.y)
-                        invalidate()
+                        /*invalidate()*/
                     }
                     MotionEvent.ACTION_UP -> {
                         canvas?.drawPath(path, paint)

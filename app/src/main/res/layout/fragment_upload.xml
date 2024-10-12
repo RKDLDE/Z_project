@@ -11,14 +11,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="30dp">
 
         <FrameLayout
             android:id="@+id/main_bg"
-            android:layout_width="360dp"
-            android:layout_height="550dp"
+            android:layout_width="330dp"
+            android:layout_height="520dp"
             android:background="@drawable/cam_bg_rec"
-            android:layout_centerInParent="true">
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp">
 
             <ImageView
                 android:id="@+id/cameraBtn"
@@ -40,22 +42,22 @@
 
             <ImageView
                 android:id="@+id/aa"
-                android:layout_width="wrap_content"
-                android:layout_height="33dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="top|start"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
                 app:srcCompat="@drawable/aa_img"
                 android:contentDescription="@null"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/sss"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_gravity="top|end"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="30dp"
                 android:contentDescription=""
                 app:srcCompat="@drawable/sss_img" />
         </FrameLayout>
@@ -71,12 +73,5 @@
             app:srcCompat="@drawable/emoji" />
 
     </RelativeLayout>
-
-
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

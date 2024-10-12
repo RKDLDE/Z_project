@@ -1,5 +1,7 @@
 package com.example.z_project.upload
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,6 +31,7 @@ class DecoFragment : Fragment() {
 
         photoUri = arguments?.getString("photoUri")?.let { Uri.parse(it) }
         if (photoUri != null) {
+            resizeImage(photoUri!!, 300, 400)
             binding.photo.setImageUri(photoUri!!)
         }
 
@@ -65,7 +68,7 @@ class DecoFragment : Fragment() {
             val emojiFragment = EmojiFragment()
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, emojiFragment)
+            fragmentTransaction.replace(R.id.main_frm, emojiFragment)
             /*fragmentTransaction.addToBackStack(null)*/
             fragmentTransaction.commit()
         }
@@ -79,5 +82,17 @@ class DecoFragment : Fragment() {
     companion object {
         private var xPos: Float = 0f  // 텍스트 입력 위치 x좌표
         private var yPos: Float = 0f  // 텍스트 입력 위치 y좌표
+    }
+
+    // 사진 크기 조정을 위한 함수
+    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+
+        // Bitmap 크기 조정
+        return originalBitmap?.let {
+            Bitmap.createScaledBitmap(it, width, height, true)
+        }
     }
 }
