@@ -61,7 +61,12 @@ class LogoutFragment(
                     // 로그아웃 성공
                     Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show()
 
-                    // 로그아웃 후 추가 처리 (로그인 화면으로 이동 등)
+                    // SharedPreferences에서 리프레시 토큰 삭제
+                    val sharedPreferences =
+                        context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+                    sharedPreferences.edit().remove("REFRESH_TOKEN").apply()
+
+                    // 로그인 화면으로 이동
                     val intent = Intent(context, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     context.startActivity(intent)

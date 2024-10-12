@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:gravity="center"
-        android:minHeight="60dp"
+        android:minHeight="57dp"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -43,7 +43,7 @@
             android:id="@+id/noButton"
             style="drawable/dialog_custombutton"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="57dp"
             android:layout_weight="1"
             android:background="#00ff0000"
             android:includeFontPadding="false"
@@ -55,7 +55,7 @@
         <View
             android:background="#D7D8DC"
             android:layout_width="1dp"
-            android:layout_height="60dp"
+            android:layout_height="57dp"
             />
 
         <Button
