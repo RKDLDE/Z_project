@@ -65,7 +65,7 @@ class DecoFragment : Fragment() {
             val emojiFragment = EmojiFragment()
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, emojiFragment)
+            fragmentTransaction.replace(R.id.main_frm, emojiFragment)
             /*fragmentTransaction.addToBackStack(null)*/
             fragmentTransaction.commit()
         }

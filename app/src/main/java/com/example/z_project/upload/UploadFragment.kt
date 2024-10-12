@@ -99,7 +99,7 @@ class UploadFragment : Fragment() {
             }
         }
 
-        fragmentTransaction.replace(R.id.container, decoFragment)
+        fragmentTransaction.replace(R.id.main_frm, decoFragment)
         /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
         fragmentTransaction.commit()
     }
