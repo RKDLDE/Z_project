@@ -39,7 +39,15 @@
             app:layout_constraintTop_toTopof="parent"
             app:layout_constraintBottom_toTopof="@id/main_bg"
             android:layout_marginTop="60dp"
-            android:layout_marginStart="60dp">
+            android:layout_marginStart="20dp">
+
+            <ImageButton
+                android:id="@+id/ib_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:backgroundTint="#00FFFFFF"
+                app:srcCompat="@drawable/back" />
 
             <ImageView
                 android:background="@drawable/profile_round"
@@ -78,7 +86,10 @@
                     android:textAlignment="center"
                     android:textSize="15sp" />
             </RelativeLayout>
+
         </LinearLayout>
+
+
 
     </FrameLayout>
 
