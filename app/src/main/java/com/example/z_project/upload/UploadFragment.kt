@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.example.z_project.R
 import com.example.z_project.databinding.FragmentUploadBinding
 import java.io.File
 
@@ -55,7 +56,7 @@ class UploadFragment : Fragment() {
                     binding.photo.setImageURI(photoUri)
 
                     // 사진 촬영 후 DecoFragment로 전환
-                    /*openDecoFragment()*/
+                    openDecoFragment()
                 } else {
                     // 사진 촬영이 실패했을 경우 버튼 다시 활성화
                     binding.cameraBtn.isEnabled = true
@@ -88,21 +89,19 @@ class UploadFragment : Fragment() {
         }
     }
 
-    // 잠시 주석처리...
-//    private fun openDecoFragment() {
-//        val fragmentManager = parentFragmentManager
-//        val fragmentTransaction = fragmentManager.beginTransaction()
-//
-//        // DecoFragment에 URI를 전달하기 위해 Bundle을 생성
-//        val decoFragment = DecoFragment().apply {
-//            arguments = Bundle().apply {
-//                putString("photoUri", photoUri.toString()) // URI를 문자열로 변환하여 전달
-//            }
-//        }
-//
-//        fragmentTransaction.replace(com.example.z_project.R.id.container, decoFragment)
-//        /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
-//        fragmentTransaction.commit()
-//    }
+    private fun openDecoFragment() {
+        val fragmentTransaction = parentFragmentManager.beginTransaction()
+
+        // DecoFragment에 URI를 전달하기 위해 Bundle을 생성
+        val decoFragment = DecoFragment().apply {
+            arguments = Bundle().apply {
+                putString("photoUri", photoUri.toString()) // URI를 문자열로 변환하여 전달
+            }
+        }
+
+        fragmentTransaction.replace(R.id.container, decoFragment)
+        /*fragmentTransaction.addToBackStack(null)*/  // 백스택에 추가하여 뒤로 가기 가능하게 함
+        fragmentTransaction.commit()
+    }
 
 }
