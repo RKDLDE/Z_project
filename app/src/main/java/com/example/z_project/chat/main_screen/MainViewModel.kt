@@ -69,7 +69,7 @@ class MainViewModel @Inject constructor() : ViewModel()  {
             groupChats.add(
                 0,
                 GroupChat(
-                    image = R.drawable.group,
+                    image = R.drawable.baseline_groups_24,
                     title = "그룹",
                     chatCount = 0,
                     member = members,

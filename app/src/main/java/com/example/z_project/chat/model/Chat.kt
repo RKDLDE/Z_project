@@ -8,5 +8,6 @@ data class Chat(
     val message: String,
     val imageRes: Int? = null,
     val isOther: Boolean,
-    val time: String
+    val time: String,
+    val replyChat: Chat? = null
 )

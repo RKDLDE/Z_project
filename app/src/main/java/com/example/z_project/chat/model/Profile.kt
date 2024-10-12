@@ -11,12 +11,12 @@ data class Profile(
 )
 
 fun getDefaultProfileList() = listOf(
-    Profile(
+   Profile(
         profileImageRes = R.drawable.person1,
         name = "냠"
-    ),
+   ),
     Profile(
-        profileImageRes = R.drawable.person2,
+       profileImageRes = R.drawable.person2,
         name = "현"
     ),
     Profile(

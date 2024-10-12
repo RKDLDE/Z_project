@@ -15,6 +15,9 @@ annotation = "1.6.0"
 lifecycleLivedataKtx = "2.6.1"
 lifecycleViewmodelKtx = "2.6.1"
 
+lifecycleRuntimeKtx = "2.8.4"
+hiltAndroid = "2.51.1"
+
 emoji2Emojipicker = "1.5.0"
 firebaseCrashlyticsBuildtools = "3.0.2"
 

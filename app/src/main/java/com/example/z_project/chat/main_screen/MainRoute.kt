@@ -13,13 +13,13 @@ import com.example.z_project.chat.model.Profile
 fun MainRoute(
     viewModel: MainViewModel = hiltViewModel(),
     addedMembers: List<Profile>,
-    onAdded: () -> Unit,
+    onAdded: () -> Unit, //멤버가 추가되었을 때 호출되는 콜백 함수
     removeChatId: Long,
     isRemoveGroup: Boolean,
     onRemoved: () -> Unit,
-    navigateToInviteScreen: () -> Unit,
-    navigateToGroupChatScreen: (GroupChat) -> Unit,
-    navigateToPersonalChatScreen: (PersonalChat) -> Unit
+    navigateToInviteScreen: () -> Unit, //초대 화면으로 이동하기 위한 콜백 함수
+    navigateToGroupChatScreen: (GroupChat) -> Unit, //그룹 채팅 화면으로 이동하기 위한 콜백 함수
+    navigateToPersonalChatScreen: (PersonalChat) -> Unit //개인 채팅 화면으로 이동하기 위한 콜백 함수
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

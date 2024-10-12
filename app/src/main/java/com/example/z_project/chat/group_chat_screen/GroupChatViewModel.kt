@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
+import java.text.SimpleDateFormat
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.text.Typography.dagger
 
@@ -47,6 +49,12 @@ class GroupChatViewModel @Inject constructor(
         }
     }
 
+    fun selectReplyChat(chat: Chat?) {
+        _uiState.update {
+            it.copy(replyChat = chat)
+        }
+    }
+
     fun sendChat(message: String) {
         _uiState.update {
             it.copy(
@@ -59,9 +67,12 @@ class GroupChatViewModel @Inject constructor(
                         message = message,
                         imageRes = null,
                         isOther = false,
-                        time = "18:20"
+                        time = SimpleDateFormat("HH:mm", Locale.KOREA)
+                            .format(System.currentTimeMillis()),
+                        replyChat = _uiState.value.replyChat
                     )
-                )
+                ),
+                replyChat = null
             )
         }
     }

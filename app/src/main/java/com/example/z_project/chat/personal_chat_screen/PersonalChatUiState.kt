@@ -6,5 +6,6 @@ import com.example.z_project.chat.model.PersonalChat
 data class PersonalChatUiState(
     val personalChat: PersonalChat? = null,
     val isExit: Boolean = false,
-    val chats: List<Chat> = emptyList()
+    val chats: List<Chat> = emptyList(),
+    val replyChat: Chat? = null
 )
