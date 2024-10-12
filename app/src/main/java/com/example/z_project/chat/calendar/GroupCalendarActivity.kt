@@ -49,6 +49,8 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "회의",
             startDate = "2024.10.07",
             endDate = "2024.10.08",
+            startTime = "오후 6:00",
+            endTime = "오후 9:00",
             userColor = ColorEnum.getByColor(R.color.calendar_color_pink)
         ),
         ScheduleModel(
@@ -57,6 +59,8 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "개강",
             startDate = "2024.10.02",
             endDate = "2024.10.02",
+            startTime = "",
+            endTime = "",
             userColor = ColorEnum.getByColor(R.color.calendar_color_blue)
         ),
         ScheduleModel(
@@ -64,9 +68,11 @@ class GroupCalendarActivity : AppCompatActivity() {
             groupId = 1,
             title = "출근",
             startDate = "2024.10.02",
-            endDate = "2024.10.02",
+            endDate = "2024.10.04",
+            startTime = "오전 9:00",
+            endTime = "오후 6:00",
             userColor = ColorEnum.getByColor(R.color.calendar_color_yellow)
-        )
+        ),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

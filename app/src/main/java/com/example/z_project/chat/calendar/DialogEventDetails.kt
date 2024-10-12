@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.z_project.databinding.DialogAddEventBinding
 import com.example.z_project.databinding.DialogEventDetailsBinding
+import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -21,6 +23,7 @@ import java.util.Locale
 class DialogEventDetails(private val context: Context, private val calendarClearSelection: () -> Unit) {
     private val dialog = Dialog(context)
     val bindingDialog = DialogEventDetailsBinding.inflate(LayoutInflater.from(context))
+    private val db = FirebaseFirestore.getInstance() // Firestore 인스턴스 생성
 
     @SuppressLint("ClickableViewAccessibility")
     fun show(events: List<ScheduleModel>, selectedDate: CalendarDay, onAddEventClick: () -> Unit) {
@@ -97,4 +100,22 @@ class DialogEventDetails(private val context: Context, private val calendarClear
         val format = SimpleDateFormat("M월 d일 EEEE", Locale("ko", "KR"))
         return format.format(calendar.time)
     }
+
+    // DB 데이터 가져오기 (firebase)
+//    fun fetchEvents(selectedDate: CalendarDay) {
+//        val formattedDate = formatDateWithE(selectedDate) // 원하는 형식으로 날짜 포맷팅
+//        db.collection("events") // "events"는 Firestore의 컬렉션 이름
+//            .whereEqualTo("startDate", formattedDate) // 날짜로 필터링
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                val events = querySnapshot.toObjects(ScheduleModel::class.java) // ScheduleModel로 변환
+//                show(events, selectedDate){
+//                    showAddEventDialog(selectedDate)
+//                } // 이벤트 리스트를 다이얼로그에 전달
+//            }
+//            .addOnFailureListener { exception ->
+//                // 오류 처리
+//                Log.w("DialogEventDetails", "Error getting events: ", exception)
+//            }
+//    }
 }

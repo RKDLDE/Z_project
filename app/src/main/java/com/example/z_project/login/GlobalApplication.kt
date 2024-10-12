@@ -20,6 +20,7 @@ class GlobalApplication : Application() {
         // Kakao SDK 초기화
         KakaoSdk.init(this, "0085468296286e234b8814817168c6e7")
 
-        FirebaseApp.initializeApp(this) // Firebase 초기화
+        // Firebase 초기화
+        FirebaseApp.initializeApp(this)
     }
 }
