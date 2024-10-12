@@ -1,5 +1,6 @@
 package com.example.z_project.mypage
 
+import FriendFragment
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -57,7 +58,7 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
 
         // 프로필 이미지 로드
         if (!profileImageUrl.isNullOrEmpty()) {
-            Log.d("기본프로필~","${profileImageUrl}")
+            //Log.d("기본프로필~","${profileImageUrl}")
             if (profileImageUrl == "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg") {
                 profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
             }

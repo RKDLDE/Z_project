@@ -2,6 +2,7 @@ package com.example.z_project.login
 
 import android.app.Application
 import android.util.Log
+import com.google.firebase.FirebaseApp
 import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.common.util.Utility
 import dagger.hilt.android.HiltAndroidApp
@@ -18,5 +19,7 @@ class GlobalApplication : Application() {
 
         // Kakao SDK 초기화
         KakaoSdk.init(this, "0085468296286e234b8814817168c6e7")
+
+        FirebaseApp.initializeApp(this) // Firebase 초기화
     }
 }
