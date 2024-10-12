@@ -18,7 +18,8 @@ import kotlin.text.Typography.dagger
 import kotlinx.serialization.serializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
-
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 @HiltViewModel
@@ -53,6 +54,12 @@ class PersonalChatViewModel @Inject constructor (
         }
     }
 
+    fun selectReplyChat(chat: Chat?) {
+        _uiState.update {
+            it.copy(replyChat = chat)
+        }
+    }
+
     fun sendChat(message: String) {
         _uiState.update {
             it.copy(
@@ -65,9 +72,12 @@ class PersonalChatViewModel @Inject constructor (
                         message = message,
                         imageRes = null,
                         isOther = false,
-                        time = "18:20"
+                        time = SimpleDateFormat("HH:mm", Locale.KOREA)
+                            .format(System.currentTimeMillis()),
+                        replyChat = _uiState.value.replyChat
                     )
-                )
+                ),
+                replyChat = null
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.example.z_project.chat.model
 
+import androidx.compose.ui.res.painterResource
 import com.example.z_project.R
 import kotlinx.serialization.Serializable
 
@@ -110,28 +111,28 @@ fun getDefaultGroupChats() = listOf(
 fun getDefaultGroupChatList() = listOf(
     GroupChat(
         id = 0,
-        image = R.drawable.image,
+        image = R.drawable.kakaotalk_sharing_btn_medium,
         title = "JSND",
         chatCount = 3,
         member = getDefaultProfileList()
     ),
     GroupChat(
         id = 1,
-        image = R.drawable.group,
+        image = R.drawable.kakaotalk_sharing_btn_medium,
         title = "그룹2",
         chatCount = 1,
         member = getDefaultProfileList()
     ),
     GroupChat(
         id = 2,
-        image = R.drawable.group,
+        image = R.drawable.kakaotalk_sharing_btn_medium,
         title = "그룹3",
         chatCount = 1,
         member = getDefaultProfileList()
     ),
     GroupChat(
         id = 3,
-        image = R.drawable.group,
+        image = R.drawable.logo,
         title = "그룹4",
         chatCount = 0,
         member = getDefaultProfileList()

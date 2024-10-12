@@ -3,6 +3,7 @@ package com.example.z_project.chat.invite_screen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -57,47 +58,45 @@ fun InviteScreen(
                     .padding(14.dp),
             ) {
                 Icon(
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .clickable { onNavigateUp() },
                     painter = painterResource(id = R.drawable.ic_baseline_close),
                     contentDescription = "Close"
+
                 )
             }
-            InviteMemberList()
+            InviteMemberList(
+                profileList = uiState.members,
+                selectedMap = uiState.selectedMap,
+                onSelected = onSelected
+
+            )
         }
 
         InviteButton(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 80.dp)
+                .padding(bottom = 80.dp),
+            onClick = onClickInvite
         )
     }
 }
 
 @Composable
 fun InviteMemberList(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    profileList: List<Profile>,
+    selectedMap: Map<Int, Boolean>,
+    onSelected: (Int, Boolean) -> Unit
 ) {
     LazyColumn(modifier = modifier.fillMaxWidth()) {
-        item {
+        items(profileList.size) { index ->
             InviteMember(
-                image = painterResource(id = R.drawable.person1),
-                name = "냠",
-                isSelected = true
-            )
-            InviteMember(
-                image = painterResource(id = R.drawable.person2),
-                name = "현",
-                isSelected = true
-            )
-            InviteMember(
-                image = painterResource(id = R.drawable.person3),
-                name = "고도리",
-                isSelected = true
-            )
-            InviteMember(
-                image = painterResource(id = R.drawable.person4),
-                name = "도금",
-                isSelected = false
+                profile = profileList[index],
+                isSelected = selectedMap.getOrDefault(index, false),
+                onSelected = { onSelected(index, it) }
             )
         }
     }
@@ -106,13 +105,14 @@ fun InviteMemberList(
 @Composable
 fun InviteMember(
     modifier: Modifier = Modifier,
-    image: Painter,
-    name: String,
-    isSelected: Boolean
+    profile: Profile,
+    isSelected: Boolean,
+    onSelected: (Boolean) -> Unit
 ) {
     ConstraintLayout(
         modifier = modifier
             .fillMaxWidth()
+            .clickable { onSelected(!isSelected) }
             .padding(start = 14.dp, end = 14.dp, top = 12.dp, bottom = 12.dp)
     ) {
         val (imageLayout, person, select) = createRefs()
@@ -127,7 +127,7 @@ fun InviteMember(
                 .size(72.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
-            painter = image,
+            painter = painterResource(id = profile.profileImageRes),
             contentDescription = "ProfileImage"
         )
         Text(
@@ -136,7 +136,7 @@ fun InviteMember(
                 start.linkTo(imageLayout.end, 16.dp)
                 bottom.linkTo(parent.bottom)
             },
-            text = name,
+            text = profile.name,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -176,7 +176,8 @@ fun InviteMember(
 
 @Composable
 fun InviteButton(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -185,6 +186,7 @@ fun InviteButton(
                 color = Color(0xffd9d9d9),
                 shape = RoundedCornerShape(16.dp)
             )
+            .clickable { onClick() }
             .padding(top = 8.dp, bottom = 8.dp, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -203,7 +205,7 @@ private fun InviteScreenPreview() {
     ChatUITheme {
         InviteScreen(
             uiState = InviteUiState(), //임의추가
-            onSelected = {id, selected ->}, //임의추가
+            onSelected = { _, _ -> }, //임의추가
             onNavigateUp = {}, //임의추가
             onClickInvite = {}, //임의추가
         )
