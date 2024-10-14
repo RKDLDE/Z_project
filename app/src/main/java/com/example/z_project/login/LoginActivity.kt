@@ -144,6 +144,7 @@ class LoginActivity : AppCompatActivity() {
                     // MainActivity로 이동하며 사용자 정보 전달
                     goToMainActivity(token, nickname ?: "이름 없음")
 
+
 //                    val intent = Intent(this, MainActivity::class.java).apply {
 //                        putExtra("USER_NAME", nickname)
 //                        putExtra("PROFILE_IMAGE", profileImageUrl)
