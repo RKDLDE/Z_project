@@ -247,7 +247,7 @@ object CalendarDecorators {
 
                                 datesInRange.forEach { date ->
                                     // 유저의 색상 추가
-                                    val userColor = schedule.userColor?.color ?: ContextCompat.getColor(context, R.color.select_blue)
+                                    val userColor = schedule.category.color?.color ?: ContextCompat.getColor(context, R.color.select_blue)
 
                                     // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
                                     eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)

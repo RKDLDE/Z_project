@@ -89,6 +89,15 @@ class LoginActivity : AppCompatActivity() {
             // 새로 엑세스 토큰 발급 요청
             UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                 if (error != null) {
+                    Log.e("로그인 오류", error.message.toString())
+                    kakaologin()
+                    return@loginWithKakaoTalk
+                }
+
+                if (token != null) {
+                    // 엑세스 토큰이 새로 발급되었습니다.
+                    val newAccessToken = token.accessToken
+                    Log.d("새 엑세스 토큰", newAccessToken)
                     Log.e("Login error", error.message.toString())
                     kakaologin()
                 } else if (token != null) {

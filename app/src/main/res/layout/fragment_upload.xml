@@ -9,69 +9,66 @@
     tools:context=".MainActivity"
     android:background="#FFFFFF">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="30dp">
 
-        <FrameLayout
-            android:id="@+id/main_bg"
-            android:layout_width="330dp"
-            android:layout_height="520dp"
-            android:background="@drawable/cam_bg_rec"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp">
-
-            <ImageView
-                android:id="@+id/cameraBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|bottom"
-                android:layout_gravity="center_horizontal|bottom"
-                android:contentDescription="카메라 열기"
-                android:layout_marginBottom="30dp"
-                app:srcCompat="@drawable/cambtn" />
-
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="300dp"
-                android:layout_height="400dp"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="45dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/aa"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="top|start"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="30dp"
-                app:srcCompat="@drawable/aa_img"
-                android:contentDescription="@null"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/sss"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="top|end"
-                android:layout_marginEnd="40dp"
-                android:layout_marginTop="30dp"
-                android:contentDescription=""
-                app:srcCompat="@drawable/sss_img" />
-        </FrameLayout>
+    <FrameLayout
+        android:id="@+id/main_bg"
+        android:layout_width="330dp"
+        android:layout_height="520dp"
+        android:background="@drawable/cam_bg_rec"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/emoji"
+            android:id="@+id/cameraBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@null"
-            android:layout_below="@+id/main_bg"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/emoji" />
+            android:gravity="center_horizontal|bottom"
+            android:layout_gravity="center_horizontal|bottom"
+            android:contentDescription="카메라 열기"
+            android:layout_marginBottom="30dp"
+            app:srcCompat="@drawable/cambtn" />
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="45dp"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/aa"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="30dp"
+            app:srcCompat="@drawable/aa_img"
+            android:contentDescription="@null"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/sss"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription=""
+            app:srcCompat="@drawable/sss_img" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toBottomOf="@id/main_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        app:srcCompat="@drawable/emoji" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

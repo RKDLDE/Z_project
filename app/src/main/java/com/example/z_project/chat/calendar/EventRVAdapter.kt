@@ -47,9 +47,11 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
         fun bind(event: ScheduleModel) {
             binding.calendarEventContent.text = event.title
             Log.d("일정내용", "${event.title}")
-            Log.d("유저색상", "userColor: ${event.userColor}, color: ${event.userColor?.color}")
-            event.userColor?.color?.let {
-                binding.itemCalendarEvent.background.setTint(ContextCompat.getColor(binding.root.context, event.userColor.color))
+            Log.d("유저색상", "userColor: ${event.category.color}, color: ${event.category.color}")
+            event.category.color?.let { colorEnum ->
+                val colorResId = colorEnum.color ?: R.color.main_gray // null일 경우 기본 색상 설정
+                val color = ContextCompat.getColor(binding.root.context, colorResId)
+                binding.itemCalendarEvent.background.setTint(color)
             }
 
             // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경

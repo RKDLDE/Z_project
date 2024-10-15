@@ -145,6 +145,7 @@ class FinalFragment : Fragment() {
             }
     }
 
+
     // 프로필 이미지 로드
     private fun loadProfileImage(url: String) {
         Glide.with(this)
@@ -153,5 +154,13 @@ class FinalFragment : Fragment() {
             .placeholder(R.drawable.profile)
             .error(R.drawable.profile)
             .into(profileImageView)
-    }
+
+    // 현재 시간을 "yyyy-MM-dd hh:mm"로 표시하는 메소드
+//     private fun getTime(): String {
+//         val now = System.currentTimeMillis()
+//         val date = Date(now)
+//         val dateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault())
+//         return dateFormat.format(date)
+
+//     }
 }

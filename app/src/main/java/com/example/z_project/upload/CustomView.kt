@@ -17,7 +17,7 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     : View(context, attrs, defStyleAttr) {
 
     private var path = android.graphics.Path()  // 그림 그리기를 위한 Path(현재)
-    private val paths = mutableListOf<android.graphics.Path>()  // 그려진 경로들을 저장할 리스트
+    private val paths = mutableListOf<Pair<android.graphics.Path, Int>>()  // 그려진 경로들을 저장할 리스트
     private val undonePaths = mutableListOf<android.graphics.Path>()  // 되돌리기 위한 경로들
 
     private val paint = Paint().apply {
@@ -65,19 +65,14 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
 
     override fun onDraw(canvas: Canvas) {
-        if (canvas != null) {
-            super.onDraw(canvas)
-        } else{
-            return
-        }
-
         // Bitmap이 존재하면 그리기
         bitmap?.let {
             canvas.drawBitmap(it, 0f, 0f, null)
         }
 
-        // 저장된 모든 경로를 그리기
-        for (savedPath in paths) {
+        // 저장된 모든 경로를 그리기 (각 경로의 색상으로)
+        for ((savedPath, savedColor) in paths) {
+            paint.color = savedColor
             canvas.drawPath(savedPath, paint)
         }
 
@@ -103,7 +98,7 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                         invalidate()
                     }
                     MotionEvent.ACTION_UP -> {
-                        paths.add(android.graphics.Path(path))  // 현재 경로를 저장
+                        paths.add(Pair(android.graphics.Path(path), paint.color))  // 현재 경로를 저장
                         path.reset()
                     }
                 }
@@ -151,8 +146,9 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             combinedCanvas.drawBitmap(it, 0f, 0f, null)
         }
 
-        // Draw all saved paths onto the new canvas
-        for (savedPath in paths) {
+        // 모든 저장된 경로를 새로운 캔버스에 그리기
+        for ((savedPath, savedColor) in paths) {
+            paint.color = savedColor
             combinedCanvas.drawPath(savedPath, paint)
         }
 
@@ -167,5 +163,10 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             Log.e("CustomView", "Error saving drawing: ${e.message}")
         }
     }
+
+}
+
+//수정필요
+private fun <E> MutableList<E>.add(element: Pair<E, Int>) {
 
 }
