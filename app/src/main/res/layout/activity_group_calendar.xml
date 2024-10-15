@@ -18,7 +18,7 @@
 
     <Spinner
         android:id="@+id/select_year_spinner"
-        android:layout_width="103dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_spinner_option"
         android:overlapAnchor="false"

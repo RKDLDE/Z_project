@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
             UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
                 if (error != null) {
                     Log.e("로그인 오류", error.message.toString())
+                    kakaologin()
                     return@loginWithKakaoTalk
                 }
 
