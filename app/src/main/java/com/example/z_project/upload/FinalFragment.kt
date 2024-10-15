@@ -155,7 +155,7 @@ class FinalFragment : Fragment() {
             .error(R.drawable.profile)
             .into(profileImageView)
 
-    // 현재 시간을 "yyyy-MM-dd hh:mm"로 표시하는 메소드
+        // 현재 시간을 "yyyy-MM-dd hh:mm"로 표시하는 메소드
 //     private fun getTime(): String {
 //         val now = System.currentTimeMillis()
 //         val date = Date(now)
@@ -163,4 +163,5 @@ class FinalFragment : Fragment() {
 //         return dateFormat.format(date)
 
 //     }
+    }
 }

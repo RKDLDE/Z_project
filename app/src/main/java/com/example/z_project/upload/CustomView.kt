@@ -17,10 +17,10 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     : View(context, attrs, defStyleAttr) {
 
     private var path = android.graphics.Path()  // 그림 그리기를 위한 Path(현재)
-    private val paths = mutableListOf<Pair<android.graphics.Path, Int>>()  // 그려진 경로들을 저장할 리스트
-    private val undonePaths = mutableListOf<android.graphics.Path>()  // 되돌리기 위한 경로들
+    private val paths = mutableListOf<Pair<android.graphics.Path, Paint>>()  // 그려진 경로들을 저장할 리스트
+    private var undonePaths = mutableListOf<Pair<android.graphics.Path, Paint>>()  // 되돌리기 위한 경로들
 
-    private val paint = Paint().apply {
+    private var currentPaint = Paint().apply {
         color = Color.BLACK
         strokeWidth = 10f
         style = Paint.Style.STROKE
@@ -48,7 +48,9 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     }
 
     fun setColor(color: Int) {
-        paint.color = color
+        currentPaint = Paint(currentPaint).apply {
+            this.color = color
+        }
     }
 
     // 이미지 Bitmap을 설정하는 함수
@@ -71,19 +73,19 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         }
 
         // 저장된 모든 경로를 그리기 (각 경로의 색상으로)
-        for ((savedPath, savedColor) in paths) {
-            paint.color = savedColor
-            canvas.drawPath(savedPath, paint)
+        for ((savedPath, savedPaint) in paths) {
+            canvas.drawPath(savedPath, savedPaint)
         }
 
-        // Path를 따라 그리기 (그림)
-        canvas.drawPath(path, paint)
+        // Path를 따라 그리기 (현재 그리는 그림)
+        canvas.drawPath(path, currentPaint)
 
         // 사용자가 입력한 텍스트를 그리기
         if (inputText.isNotEmpty()) {
             canvas.drawText(inputText, xPos, yPos, textPaint)
         }
     }
+
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event?.let {
@@ -98,7 +100,7 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                         invalidate()
                     }
                     MotionEvent.ACTION_UP -> {
-                        paths.add(Pair(android.graphics.Path(path), paint.color))  // 현재 경로를 저장
+                        paths.add(Pair(android.graphics.Path(path), Paint(currentPaint)))  // 현재 경로와 색상을 저장
                         path.reset()
                     }
                 }
@@ -147,9 +149,8 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         }
 
         // 모든 저장된 경로를 새로운 캔버스에 그리기
-        for ((savedPath, savedColor) in paths) {
-            paint.color = savedColor
-            combinedCanvas.drawPath(savedPath, paint)
+        for ((savedPath, savedPaint) in paths) {
+            combinedCanvas.drawPath(savedPath, savedPaint)
         }
 
         // Save the combined bitmap to a file
@@ -163,10 +164,5 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             Log.e("CustomView", "Error saving drawing: ${e.message}")
         }
     }
-
-}
-
-//수정필요
-private fun <E> MutableList<E>.add(element: Pair<E, Int>) {
 
 }

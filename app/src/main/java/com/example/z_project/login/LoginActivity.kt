@@ -98,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
                     // 엑세스 토큰이 새로 발급되었습니다.
                     val newAccessToken = token.accessToken
                     Log.d("새 엑세스 토큰", newAccessToken)
-                    Log.e("Login error", error.message.toString())
+                    Log.e("Login error", error?.message.toString())
                     kakaologin()
                 } else if (token != null) {
                     Log.d("Login new AccessToken", token.accessToken)

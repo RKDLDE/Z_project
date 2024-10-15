@@ -51,25 +51,24 @@ class DecoFragment : Fragment(), View.OnClickListener {
         }
         binding.btnRed.setOnClickListener{
             currentColor = Color.RED
-            saveState()
             binding.photo.setColor(currentColor)
+            saveState()
         }
         binding.btnGreen.setOnClickListener {
             currentColor = Color.GREEN
-            saveState()
             binding.photo.setColor(currentColor)
+            saveState()
         }
         binding.btnBlue.setOnClickListener {
             currentColor = Color.BLUE
-            saveState()
             binding.photo.setColor(currentColor)
+            saveState()
         }
         binding.btnBlack.setOnClickListener {
             currentColor = Color.BLACK
-            saveState()
             binding.photo.setColor(currentColor)
+            saveState()
         }
-        binding.photo.setColor(currentColor)
 
 
 
