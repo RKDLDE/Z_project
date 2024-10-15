@@ -47,10 +47,26 @@ class DecoFragment : Fragment(), View.OnClickListener {
             canvasContainer.addView(drawCanvas)*/
             saveState()
         }
-        binding.btnRed.setOnClickListener(this)
-        binding.btnGreen.setOnClickListener(this)
-        binding.btnBlue.setOnClickListener(this)
-        binding.btnBlack.setOnClickListener(this)
+        binding.btnRed.setOnClickListener{
+            currentColor = Color.RED
+            saveState()
+            binding.photo.setColor(currentColor)
+        }
+        binding.btnGreen.setOnClickListener {
+            currentColor = Color.GREEN
+            saveState()
+            binding.photo.setColor(currentColor)
+        }
+        binding.btnBlue.setOnClickListener {
+            currentColor = Color.BLUE
+            saveState()
+            binding.photo.setColor(currentColor)
+        }
+        binding.btnBlack.setOnClickListener {
+            currentColor = Color.BLACK
+            saveState()
+            binding.photo.setColor(currentColor)
+        }
         binding.photo.setColor(currentColor)
 
 

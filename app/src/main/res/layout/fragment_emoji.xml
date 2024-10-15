@@ -6,52 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="30dp">
+    <FrameLayout
+        android:id="@+id/emoji_bg"
+        android:layout_width="330dp"
+        android:layout_height="520dp"
+        android:background="@drawable/cam_bg_rec"
+        android:contentDescription="background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout
-            android:id="@+id/emoji_bg"
-            android:layout_width="330dp"
-            android:layout_height="520dp"
-            android:background="@drawable/cam_bg_rec"
-            android:contentDescription="background"
-            android:layout_centerInParent="true">
-
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text=":D"
-                android:textSize="56sp" />
-
-            <androidx.emoji2.emojipicker.EmojiPickerView
-                android:id="@+id/emoji_picker"
-                android:layout_width="300dp"
-                android:layout_height="400dp"
-                android:theme="@style/EmojiPickerViewStyle"
-                app:emojiGridColumns="6"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="18dp" />
-
-
-        </FrameLayout>
-
-        <ImageView
-            android:id="@+id/sendingBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:contentDescription="send"
-            app:srcCompat="@drawable/send"
-            android:layout_below="@+id/emoji_bg"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_margin="15dp"/>
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text=":D"
+            android:textSize="56sp" />
 
-    </RelativeLayout>
+        <androidx.emoji2.emojipicker.EmojiPickerView
+            android:id="@+id/emoji_picker"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:theme="@style/EmojiPickerViewStyle"
+            app:emojiGridColumns="6"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="18dp" />
+
+    </FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/sendingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="send"
+        app:srcCompat="@drawable/send"
+        app:layout_constraintTop_toBottomOf="@id/emoji_bg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

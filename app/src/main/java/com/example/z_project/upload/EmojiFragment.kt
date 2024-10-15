@@ -9,9 +9,11 @@ import androidx.fragment.app.Fragment
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentEmojiBinding
 
+
 class EmojiFragment : Fragment()  {
 
     private lateinit var binding: FragmentEmojiBinding
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -21,6 +23,7 @@ class EmojiFragment : Fragment()  {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         val emojiPickerView = binding.emojiPicker
         val textView = binding.textView
@@ -41,5 +44,6 @@ class EmojiFragment : Fragment()  {
             fragmentTransaction.commit()
         }
     }
+
 
 }

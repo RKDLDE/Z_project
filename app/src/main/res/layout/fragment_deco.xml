@@ -7,129 +7,133 @@
     android:layout_height="match_parent">
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="30dp">
+    <FrameLayout
+        android:id="@+id/decoBG"
+        android:layout_width="330dp"
+        android:layout_height="520dp"
+        android:background="@drawable/cam_bg_rec"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <FrameLayout
-            android:id="@+id/decoBG"
-            android:layout_width="330dp"
-            android:layout_height="520dp"
-            android:background="@drawable/cam_bg_rec"
-            android:layout_centerInParent="true">
-
-            <com.example.z_project.upload.CustomView
-                android:id="@+id/photo"
-                android:layout_width="300dp"
-                android:layout_height="400dp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="45dp"
-                android:background="#EEEEEE"
-                tools:ignore="ContentDescription" />
-
-            <ImageView
-                android:id="@+id/drawBtn"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_gravity="top|end"
-                android:layout_marginEnd="40dp"
-                android:layout_marginTop="25dp"
-                android:contentDescription="@null"
-                app:srcCompat="@drawable/sss_img" />
-
-            <LinearLayout
-                android:id="@+id/colorButtonsLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:gravity="center|top"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <Button
-                    android:id="@+id/btnRed"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="#FF0000" />
-
-                <Button
-                    android:id="@+id/btnGreen"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="#00FF00" />
-
-                <Button
-                    android:id="@+id/btnBlue"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="#0000FF" />
-
-                <Button
-                    android:id="@+id/btnBlack"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="#000000" />
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/aaBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="top|start"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="25dp"
-                app:srcCompat="@drawable/aa_img"
-                android:contentDescription="@null"
-                tools:ignore="ContentDescription"
-                android:text="활성화 버튼"/>
-
-            <EditText
-                android:id="@+id/myEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_margin="50dp"
-                android:gravity="center"
-                android:enabled="false"
-                android:textSize="28dp"
-                android:inputType="text" />
-
-        </FrameLayout>
-
-
+        <com.example.z_project.upload.CustomView
+            android:id="@+id/photo"
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="45dp"
+            android:background="#EEEEEE"
+            tools:ignore="ContentDescription" />
 
         <ImageView
-            android:id="@+id/emoji"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/drawBtn"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="top|end"
+            android:layout_marginEnd="35dp"
+            android:layout_marginTop="25dp"
             android:contentDescription="@null"
-            android:layout_below="@+id/decoBG"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/emoji" />
+            app:srcCompat="@drawable/sss_img" />
+
+        <LinearLayout
+            android:id="@+id/colorButtonsLayout"
+            android:layout_width="150dp"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="90dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/btnRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:srcCompat="@drawable/red" />
+
+            <ImageView
+                android:id="@+id/btnGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:srcCompat="@drawable/green" />
+
+            <ImageView
+                android:id="@+id/btnBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:srcCompat="@drawable/blue" />
+
+            <ImageView
+                android:id="@+id/btnBlack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                app:srcCompat="@drawable/black" />
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/undoButton"
-            android:layout_width="50dp"
-            android:layout_height="25dp"
-            app:srcCompat="@drawable/clear"
-            android:layout_alignParentStart="true"
-            android:layout_above="@+id/decoBG"
-            android:layout_marginStart="30dp"
-            android:layout_marginBottom="35dp"
-            android:text="Undo"
-            android:contentDescription="delete"/>
+            android:id="@+id/aaBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="25dp"
+            app:srcCompat="@drawable/aa_img"
+            android:contentDescription="@null"
+            tools:ignore="ContentDescription"
+            android:text="활성화 버튼"/>
 
-        <ImageView
-            android:id="@+id/doneBtn"
-            android:layout_width="50dp"
-            android:layout_height="25dp"
-            app:srcCompat="@drawable/done"
-            android:layout_alignParentEnd="true"
-            android:layout_above="@+id/decoBG"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="35dp"
-            android:contentDescription="done"/>
-    </RelativeLayout>
+        <EditText
+            android:id="@+id/myEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_margin="50dp"
+            android:gravity="center"
+            android:enabled="false"
+            android:textSize="28dp"
+            android:inputType="text" />
+
+    </FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/emoji"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toBottomOf="@+id/decoBG"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/emoji" />
+
+    <ImageView
+        android:id="@+id/undoButton"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/clear"
+        app:layout_constraintBottom_toTopOf="@+id/decoBG"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginStart="50dp"
+        android:text="Undo"
+        android:contentDescription="delete"/>
+
+    <ImageView
+        android:id="@+id/doneBtn"
+        android:layout_width="50dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/done"
+        app:layout_constraintBottom_toTopOf="@+id/decoBG"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="50dp"
+        android:contentDescription="done"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
