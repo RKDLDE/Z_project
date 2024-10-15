@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,7 @@ class DecoFragment : Fragment(), View.OnClickListener {
         if (photoUri != null) {
             resizeImage(photoUri!!, 300, 400)
             binding.photo.setImageUri(photoUri!!)
+            Log.d("Deco","${photoUri}")
         }
         // 이전 상태 저장 (글자 입력이나 다른 동작이 이루어지기 전에)
         saveState()
