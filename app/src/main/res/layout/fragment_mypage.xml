@@ -9,18 +9,19 @@
 
     <!--title-->
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:text="MY PAGE"
-        android:textSize="38sp"
+        android:textSize="35sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.09" />
+        app:layout_constraintVertical_bias="0.08" />
 
     <!--profile - frame으로 image + button-->
     <FrameLayout
@@ -92,6 +93,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
         android:padding="1dp"
         android:layout_width="wrap_content"
         app:layout_constraintWidth_percent="0.89"
@@ -109,7 +111,7 @@
         <!--친구관리 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_friend"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center"
@@ -157,7 +159,7 @@
         <!--로그아웃 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_logout"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center"
@@ -205,7 +207,7 @@
         <!--계정삭제 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_delete"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:gravity="center"

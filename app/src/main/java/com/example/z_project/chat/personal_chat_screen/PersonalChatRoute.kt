@@ -19,8 +19,11 @@ fun PersonalChatRoute(
             uiState = uiState,
             onNavigateUp = onNavigateUp,
             onClickMenu = viewModel::openExitMenu,
+            onSwipeSelect = viewModel::selectReplyChat,
             onClickExit = { onExitPersonalChat(uiState.personalChat?.id ?: 0L) },
-            onClickSend = viewModel::sendChat
+            onClickSend = viewModel::sendChat,
+            onClickRemoveReply = { viewModel.selectReplyChat(null) }
+
         )
     }
 }

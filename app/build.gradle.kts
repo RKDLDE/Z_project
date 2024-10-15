@@ -6,6 +6,8 @@ plugins {
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
     id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+
     id("dagger.hilt.android.plugin")
     kotlin("plugin.serialization") version "1.9.0"
 }
@@ -138,6 +140,8 @@ android {
         kapt("com.google.dagger:hilt-compiler:2.41")
         implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
         implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+        implementation(libs.androidx.navigation.compose)
+
 
         //테드 퍼미션
         /*implementation("gun0912.ted:tedpermission:2.2.3")*/
@@ -146,6 +150,6 @@ android {
         implementation("com.github.bumptech.glide:annotations:4.12.0")
         annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
-        implementation(libs.androidx.navigation.compose)
+
     }
 }
