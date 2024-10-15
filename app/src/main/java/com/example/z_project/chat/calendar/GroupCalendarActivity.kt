@@ -45,19 +45,25 @@ class GroupCalendarActivity : AppCompatActivity() {
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
 
     private var dummyCategoryList = listOf(
-        Category(
+        Categorys(
             name = "중요",
             color = ColorEnum.getByColor(R.color.calendar_color_pink),
         ),
-        Category(
+        Categorys(
             name = "일상",
             color = ColorEnum.getByColor(R.color.calendar_color_blue),
         ),
-        Category(
+        Categorys(
             name = "개인 약속",
             color = ColorEnum.getByColor(R.color.calendar_color_yellow),
         ),
-    )
+        Categorys(
+            name = "학교",
+            color = ColorEnum.getByColor(R.color.calendar_color_gray),
+        ),
+    ).toMutableList()
+    //private var dummyCategoryList = mutableListOf<Categorys>()
+
 
     private var dummyScheduleList = listOf(
         ScheduleModel(
@@ -68,7 +74,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             endDate = "2024.10.08",
             startTime = "오후 6:00",
             endTime = "오후 9:00",
-            category = Category("중요", ColorEnum.getByColor(R.color.calendar_color_pink))
+            category = Categorys("중요", ColorEnum.getByColor(R.color.calendar_color_pink))
         ),
         ScheduleModel(
             authId = 2,
@@ -78,7 +84,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             endDate = "2024.10.02",
             startTime = "",
             endTime = "",
-            category = Category("일상", ColorEnum.getByColor(R.color.calendar_color_blue))
+            category = Categorys("일상", ColorEnum.getByColor(R.color.calendar_color_blue))
         ),
         ScheduleModel(
             authId = 3,
@@ -88,7 +94,7 @@ class GroupCalendarActivity : AppCompatActivity() {
             endDate = "2024.10.04",
             startTime = "오전 9:00",
             endTime = "오후 6:00",
-            category = Category("개인 약속", ColorEnum.getByColor(R.color.calendar_color_yellow))
+            category = Categorys("개인 약속", ColorEnum.getByColor(R.color.calendar_color_yellow))
         ),
     )
 

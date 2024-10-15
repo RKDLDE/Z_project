@@ -24,15 +24,17 @@ class DialogSelectCategory (private val context: Context, private val calendarCl
     val bindingDialog = DialogSelectCategoryBinding.inflate(LayoutInflater.from(context))
 
     @SuppressLint("ClickableViewAccessibility")
-    fun show(categorys: List<Category>?, selectedDate: CalendarDay, onAddEventClick: () -> Unit) {
+    fun show(categoryList: List<Categorys>, selectedDate: CalendarDay, onAddEventClick: () -> Unit) {
         dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+
         // RecyclerView 설정 & Adapter 연결
         bindingDialog.selectCategoryList.layoutManager = LinearLayoutManager(context)
-        val categoryList = categorys?.let { ArrayList(it) } ?: ArrayList()
-        val categoryAdapter = CalendarCategoryRVAdapter(categoryList)
+        val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categorys>)
+        Log.d("데이터리스트", "${categoryList}")
         bindingDialog.selectCategoryList.adapter = categoryAdapter
+
 
         // 리사이클러뷰에 스와이프 기능 달기
         val swipeHelperCallback = SwipeHelperCallback(bindingDialog.selectCategoryList, categoryAdapter).apply {
@@ -67,7 +69,7 @@ class DialogSelectCategory (private val context: Context, private val calendarCl
         }
 
         // 이벤트가 있을 경우 RecyclerView를 보이게 설정
-        if (categorys!!.isNotEmpty()) {
+        if (categoryList.isNotEmpty()) { //데이터 존재하면
             bindingDialog.selectCategoryList.visibility = View.VISIBLE
             bindingDialog.selectCategoryHintTv.visibility = View.GONE
         } else {

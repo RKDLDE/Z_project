@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dialog_select_category"
     android:layout_width="match_parent"
-    android:layout_height="600dp">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottomsheet_style">
 
     <TextView
         android:id="@+id/select_category_title"
@@ -40,6 +41,8 @@
         android:textColor="@color/gray"
         android:textStyle="bold"
         android:textSize="15sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,8 +50,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/select_category_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

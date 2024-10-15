@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarCategoryBinding
 
-class CalendarCategoryRVAdapter(private val categories: MutableList<Category>) :
+class CalendarCategoryRVAdapter(private val categories: ArrayList<Categorys>) :
     RecyclerView.Adapter<CalendarCategoryRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarCategoryRVAdapter.ViewHolder {
@@ -37,16 +39,31 @@ class CalendarCategoryRVAdapter(private val categories: MutableList<Category>) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ResourceType")
-        fun bind(categories: Category) {
+        fun bind(categories: Categorys) {
+            Log.d("디버깅용", "${categories}")
+
             binding.calendarCategoryName.text = categories.name
-            categories.color.let {
-                binding.calendarCategoryColor.background.setTint(ContextCompat.getColor(binding.root.context, categories.color!!.color!!))
+            Log.d("카테고리 이름", "${categories.name}")
+
+            categories.color?.let { colorEnum ->
+                Log.d("카테고리 색깔", "${colorEnum}")
+                val colorResId = colorEnum.color ?: R.color.main_gray // null일 경우 기본 색상 설정
+                val color = ContextCompat.getColor(binding.root.context, colorResId)
+                binding.calendarCategoryColor.background.setTint(color)
             }
 
-            // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
+            // 각 아이템 클릭 시 카테고리 결정
             itemView.setOnClickListener {
-
+                selectCategory(position)
             }
+        }
+
+        private fun selectCategory(position: Int){
+            val selectedCategory = categories[position]
+            Log.d("선택된 카테고리", "${selectedCategory.name}, 색상: ${selectedCategory.color}")
+
+            Toast.makeText(context, "선택한 카테고리: ${selectedCategory.name}", Toast.LENGTH_SHORT).show()
+
         }
     }
 }

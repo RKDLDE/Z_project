@@ -150,7 +150,7 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
             val endTime = bindingDialog.selectEndTime.text.toString()
 
             // Event 객체 생성
-            val event = ScheduleModel(1, 1, title, startDate, endDate, startTime, endTime, Category("중요", ColorEnum.getByColor(R.color.calendar_color_yellow)))
+            val event = ScheduleModel(1, 1, title, startDate, endDate, startTime, endTime, Categorys("중요", ColorEnum.getByColor(R.color.calendar_color_yellow)))
 
             // Firestore에 저장
             saveEventToFirestore(event)

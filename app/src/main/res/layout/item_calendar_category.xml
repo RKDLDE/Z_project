@@ -47,12 +47,12 @@
             android:elevation="100dp"
             android:background="@drawable/calendar_event_bg">
 
-            <ImageView
+            <View
                 android:id="@+id/calendar_category_color"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/profile"
                 android:layout_marginStart="10dp"
+                android:background="@drawable/category_circle_shape"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

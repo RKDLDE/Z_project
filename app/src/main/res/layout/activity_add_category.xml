@@ -51,6 +51,7 @@
         android:focusedByDefault="true"
         android:hint="카테고리를 입력하세요"
         android:inputType="none"
+        android:imeOptions="actionDone"
         android:singleLine="true"
         android:textColor="@color/black"
         android:textColorHint="@color/gray"

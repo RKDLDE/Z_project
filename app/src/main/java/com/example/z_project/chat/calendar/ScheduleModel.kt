@@ -3,7 +3,7 @@ package com.example.z_project.chat.calendar
 data class CalendarModel(
     val groupId: Int?,
     val events: List<ScheduleModel>,
-    val eventCategorys: List<Category>
+    val eventCategorys: List<Categorys>
 )
 
 data class ScheduleModel(
@@ -15,12 +15,12 @@ data class ScheduleModel(
     val endDate: String?,
     val startTime: String,
     val endTime: String,
-    val category: Category
+    val category: Categorys
     //val description: String?,
     //val buttonUiState: CalendarButtonUiState?
 )
 
-data class Category(
+data class Categorys(
     val name: String, // 카테고리 이름
     val color: ColorEnum? // 카테고리 색상 (예: Color.RED)
 )

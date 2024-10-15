@@ -79,9 +79,9 @@ class DialogEventDetails(private val context: Context, private val calendarClear
             bindingDialog.addCalendarTitle.visibility = View.VISIBLE
         }
 
-        // 추가 버튼(+버튼) 클릭 시 showEventDetailsDialog 호출
+        // 추가 버튼(+버튼) 클릭 시 AddCategory 호출
         bindingDialog.addCalendarIcon.setOnClickListener {
-            onAddEventClick() // 일정 작성 다이얼로그 호출
+            onAddEventClick() // 카테고리 추가 다이얼로그 호출
         }
 
         // 다이얼로그가 닫힐 때 날짜 선택 해제
