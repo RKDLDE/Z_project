@@ -100,8 +100,8 @@ class LoginActivity : AppCompatActivity() {
                             val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl
 
                             // Firestore에 사용자 이름과 프로필 사진, 고유 코드 저장
-                            saveUserToFirestore(nickname ?: "이름 없음", profileImageUrl, sharedPreferences.getString("UNIQUE_CODE", ""))
-                            Log.d("Login", "사용자 정보 저장")
+                            //saveUserToFirestore(nickname ?: "이름 없음", profileImageUrl, sharedPreferences.getString("UNIQUE_CODE", ""))
+                            //Log.d("Login", "사용자 정보 저장")
 
                             // MainActivity로 이동
                             goToMainActivity(token)
