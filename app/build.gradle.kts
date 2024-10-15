@@ -102,7 +102,8 @@ android {
 
         // Import the Firebase BoM
         implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-
+        // Firebase Storage 의존성 추가
+        implementation("com.google.firebase:firebase-storage")
 
         // When using the BoM, don't specify versions in Firebase dependencies
         implementation("com.google.firebase:firebase-analytics")
