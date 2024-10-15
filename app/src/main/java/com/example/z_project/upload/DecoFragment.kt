@@ -2,6 +2,7 @@ package com.example.z_project.upload
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,11 +14,13 @@ import androidx.fragment.app.activityViewModels
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentDecoBinding
 
-class DecoFragment : Fragment() {
+class DecoFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentDecoBinding
     private var undoStack = mutableListOf<String>()  // 이전 상태 저장
     private var photoUri: Uri? = null
     private val sharedViewModel: SharedViewModel by activityViewModels()  // ViewModel 인스턴스
+
+    private var currentColor: Int = Color.BLACK
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -33,16 +36,24 @@ class DecoFragment : Fragment() {
             resizeImage(photoUri!!, 300, 400)
             binding.photo.setImageUri(photoUri!!)
         }
-
         // 이전 상태 저장 (글자 입력이나 다른 동작이 이루어지기 전에)
         saveState()
 
+        binding.colorButtonsLayout.visibility = View.GONE
         binding.drawBtn.setOnClickListener{
             binding.photo.enableDrawingMode(true)
+            binding.colorButtonsLayout.visibility = View.VISIBLE
             /*drawCanvas = DrawFragment.DrawCanvas(requireContext())
             canvasContainer.addView(drawCanvas)*/
             saveState()
         }
+        binding.btnRed.setOnClickListener(this)
+        binding.btnGreen.setOnClickListener(this)
+        binding.btnBlue.setOnClickListener(this)
+        binding.btnBlack.setOnClickListener(this)
+        binding.photo.setColor(currentColor)
+
+
 
         binding.aaBtn.setOnClickListener {
             /*binding.myEditText.isEnabled = true
@@ -55,7 +66,7 @@ class DecoFragment : Fragment() {
             saveState()
         }
 
-        binding.okayBtn.setOnClickListener {
+        binding.doneBtn.setOnClickListener {
             // Specify a file path where you want to save the drawing
             val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
             binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
@@ -69,6 +80,10 @@ class DecoFragment : Fragment() {
         }
 
         binding.emoji.setOnClickListener{
+            val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
+            binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
+            sharedViewModel.imageUri.value = Uri.parse(filePath)  // URI를 ViewModel에 저장
+
             val emojiFragment = EmojiFragment()
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
@@ -76,6 +91,24 @@ class DecoFragment : Fragment() {
             /*fragmentTransaction.addToBackStack(null)*/
             fragmentTransaction.commit()
         }
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btnRed -> {
+                currentColor = Color.RED
+            }
+            R.id.btnGreen -> {
+                currentColor = Color.GREEN
+            }
+            R.id.btnBlue -> {
+                currentColor = Color.BLUE
+            }
+            R.id.btnBlack -> {
+                currentColor = Color.BLACK
+            }
+        }
+        binding.photo.setColor(currentColor)
     }
 
     // 현재 상태를 저장하는 함수

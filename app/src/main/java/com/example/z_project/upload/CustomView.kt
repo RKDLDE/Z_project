@@ -47,6 +47,10 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         canvas?.drawColor(Color.WHITE)  // 배경을 흰색으로 설정
     }
 
+    fun setColor(color: Int) {
+        paint.color = color
+    }
+
     // 이미지 Bitmap을 설정하는 함수
     fun setImageUri(uri: Uri) {
         val inputStream = context.contentResolver.openInputStream(uri)
