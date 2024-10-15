@@ -13,8 +13,8 @@
     <color name="enabled_date_color">#D7D7D9</color>
     <color name="selected_color">#F6F6F6</color>
     <color name="calendar_fab">#727272</color>
-    <color name="calendar_color_red">#FF5B5B</color>
-    <color name="calendar_color_orange">#E19F02</color>
+    <color name="calendar_color_red">#FFC6C6</color>
+    <color name="calendar_color_orange">#FFB58A</color>
     <color name="calendar_color_yellow">#FFEAA7</color>
     <color name="calendar_color_green">#CEFFCE</color>
     <color name="calendar_color_blue">#D9EDFF</color>

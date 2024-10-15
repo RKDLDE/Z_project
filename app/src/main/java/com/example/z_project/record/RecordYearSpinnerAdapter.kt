@@ -1,8 +1,7 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.record
 
 import android.content.Context
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,9 @@ import android.widget.ArrayAdapter
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.example.z_project.R
-import com.example.z_project.databinding.ItemSpinnerYearBinding
+import com.example.z_project.databinding.ItemRecordSpinnerYearBinding
 
-import java.util.Calendar
-
-class YearSpinnerAdapter (
+class RecordYearSpinnerAdapter (
     context: Context, @LayoutRes private val resId: Int,
     private val yearList: List<Int>, private val currentYear: String,
 ) : ArrayAdapter<String>(context, resId, yearList.map { it.toString() }) {
@@ -24,15 +21,10 @@ class YearSpinnerAdapter (
     // 드롭다운하지 않은 상태의 Spinner 항목의 뷰
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding =
-            ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRecordSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        if(yearList.size > 12){
-            binding.itemSpinnerYearTv.text =
-                if (selectedPosition == -1) "${currentYear}년" else "${yearList[selectedPosition]}년"
-        } else{
-            binding.itemSpinnerYearTv.text =
-                if (selectedPosition == -1) "${currentYear}월" else "${yearList[selectedPosition]}월"
-        }
+        binding.itemSpinnerYearTv.text =
+            if (selectedPosition == -1) "${currentYear}년" else "${yearList[selectedPosition]}년"
 
         Log.d("현재년도", "${currentYear}")
         Log.d("현재selectPosition", "${selectedPosition}")
@@ -43,7 +35,7 @@ class YearSpinnerAdapter (
     // 드롭다운된 항목들 리스트의 뷰
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding =
-            ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemRecordSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         binding.root.background = ContextCompat.getDrawable(parent.context, R.drawable.spinner_dropdown_background)
 

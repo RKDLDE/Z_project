@@ -17,7 +17,22 @@
 
     <Spinner
         android:id="@+id/record_year_spinner"
-        android:layout_width="103dp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_record_year_option"
+        android:overlapAnchor="false"
+        android:popupBackground="@color/main_gray"
+        android:textColor="@color/black"
+        android:theme="@style/SpinnerTheme"
+        android:spinnerMode="dropdown"
+        android:spinnerDropDownItemStyle="@style/CustomSpinnerDropdown"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Spinner
+        android:id="@+id/record_month_spinner"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:background="@drawable/background_spinner_option"
         android:overlapAnchor="false"
@@ -31,23 +46,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/record_calendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:theme="@style/CalenderViewCustom"
-        android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/record_feed_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:listitem="@layout/item_record_feed"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintTop_toBottomOf="@id/record_month_spinner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/record_year_spinner"
-        app:mcv_headerTextAppearance="@style/CalendarWidgetHeader"
-        app:mcv_dateTextAppearance="@style/CalenderViewDateCustomText"
-        app:mcv_firstDayOfWeek="sunday"
-        app:mcv_leftArrow="@drawable/ic_arrow_back"
-        app:mcv_rightArrow="@drawable/ic_arrow_forward"
-        app:mcv_selectionMode="single"
-        app:mcv_showOtherDates="all"
-        app:mcv_weekDayTextAppearance="@style/CalenderViewWeekCustomText"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
