@@ -83,14 +83,6 @@ class DecoFragment : Fragment(), View.OnClickListener {
             saveState()
         }
 
-        binding.doneBtn.setOnClickListener {
-            // Specify a file path where you want to save the drawing
-            val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
-            binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
-            sharedViewModel.imageUri.value = Uri.parse(filePath)  // URI를 ViewModel에 저장
-
-        }
-
         // Undo 버튼 클릭 시 이전 상태 복구
         binding.undoButton.setOnClickListener {
             binding.photo.undo()  // undo 호출

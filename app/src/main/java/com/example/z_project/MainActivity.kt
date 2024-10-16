@@ -14,6 +14,7 @@ import com.example.z_project.chat.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
+import com.example.z_project.upload.FinalFragment
 import com.example.z_project.upload.UploadFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
+
 
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()

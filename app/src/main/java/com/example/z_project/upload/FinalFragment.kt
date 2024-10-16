@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.FileProvider
@@ -72,6 +73,13 @@ class FinalFragment : Fragment() {
                 uploadImageToFirebase(imageUri, currentTime) // 이미지 업로드 및 Firestore 저장
             }
         }
+
+        val backButton = view.findViewById<ImageButton>(R.id.ib_back)
+        // 이미지 버튼 클릭 이벤트 처리
+        backButton.setOnClickListener {
+            // 이전 Fragment로 이동
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     // 현재 시간을 "yyyy-MM-dd HH:mm" 형식으로 반환
@@ -107,15 +115,16 @@ class FinalFragment : Fragment() {
     private fun saveDataToFirestore(imageUrl: String, currentTime: String) {
         if (userId != null) {
             val userData = hashMapOf(
-                "profileImageUrl" to imageUrl,
+                "UploadImageUrl" to imageUrl,
                 "uniqueCode" to userId,
                 "uploadTime" to currentTime // 현재 시간 저장
             )
 
-            firestore.collection("images").document(userId!!)
-                .set(userData)
-                .addOnSuccessListener {
-                    Log.d("Final", "이미지 URL, 시간, UNIQUE_CODE Firestore에 저장됨")
+            // Firestore의 "images" 컬렉션에 새로운 문서 추가 (덮어쓰기 방지)
+            firestore.collection("images")
+                .add(userData) // set 대신 add를 사용하여 고유 문서 생성
+                .addOnSuccessListener { documentReference ->
+                    Log.d("Final", "이미지 URL, 시간, UNIQUE_CODE Firestore에 저장됨, 문서 ID: ${documentReference.id}")
                 }
                 .addOnFailureListener { exception ->
                     Log.e("Final", "데이터 저장 실패", exception)

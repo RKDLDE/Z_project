@@ -125,15 +125,4 @@
         android:text="Undo"
         android:contentDescription="delete"/>
 
-    <ImageView
-        android:id="@+id/doneBtn"
-        android:layout_width="50dp"
-        android:layout_height="25dp"
-        app:srcCompat="@drawable/done"
-        app:layout_constraintBottom_toTopOf="@+id/decoBG"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="50dp"
-        android:contentDescription="done"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
