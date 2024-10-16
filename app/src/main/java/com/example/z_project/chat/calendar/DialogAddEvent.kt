@@ -2,6 +2,7 @@ package com.example.z_project.chat.calendar
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.opengl.Visibility
@@ -43,11 +44,16 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
 
     private lateinit var selectedDate: CalendarDay
 
+    private lateinit var sharedPreferences: SharedPreferences
 
     @SuppressLint("ClickableViewAccessibility")
-    fun show(date: CalendarDay) {
+    fun show(date: CalendarDay, selectedCategory: Categories) {
         dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        // user CODE 가져오기
+        sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
         startCalendarView = dialog.findViewById(R.id.dialog_start_calendar_view)!!
         endCalendarView = dialog.findViewById(R.id.dialog_end_calendar_view)!!
@@ -58,6 +64,9 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
         // 선택된 날짜 텍스트로 표시
         selectedDate = date
         bindingDialog.dialogEventDetailsDate.text = formatDateWithE(selectedDate)
+
+        // 선택한 카테고리로 초기화
+        bindingDialog.dialogEventDetailsCategoryName.text = selectedCategory.name
 
         // 다이얼로그가 닫힐 때 날짜 선택 해제
         dialog.setOnDismissListener {
@@ -72,6 +81,7 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
         }
         bindingDialog.dialogEventDetailsToggleOn.setOnClickListener {
             dateToggle(isSelected = false)
+            initTimePickers()
         }
 
         // 시작 날짜 선택
@@ -150,7 +160,7 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
             val endTime = bindingDialog.selectEndTime.text.toString()
 
             // Event 객체 생성
-            val event = ScheduleModel(1, 1, title, startDate, endDate, startTime, endTime, Categorys("중요", ColorEnum.getByColor(R.color.calendar_color_yellow)))
+            val event = ScheduleModel(uniqueCode, "1", title, startDate, endDate, startTime, endTime, selectedCategory)
 
             // Firestore에 저장
             saveEventToFirestore(event)

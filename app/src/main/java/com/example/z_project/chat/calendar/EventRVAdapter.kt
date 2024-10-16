@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarEventBinding
@@ -49,7 +50,7 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
             Log.d("일정내용", "${event.title}")
             Log.d("유저색상", "userColor: ${event.category.color}, color: ${event.category.color}")
             event.category.color?.let { colorEnum ->
-                val colorResId = colorEnum.color ?: R.color.main_gray // null일 경우 기본 색상 설정
+                val colorResId = colorEnum.toColorInt() ?: R.color.main_gray // null일 경우 기본 색상 설정
                 val color = ContextCompat.getColor(binding.root.context, colorResId)
                 binding.itemCalendarEvent.background.setTint(color)
             }

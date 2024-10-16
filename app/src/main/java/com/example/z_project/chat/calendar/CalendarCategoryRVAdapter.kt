@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarCategoryBinding
 
-class CalendarCategoryRVAdapter(private val categories: ArrayList<Categorys>) :
-    RecyclerView.Adapter<CalendarCategoryRVAdapter.ViewHolder>() {
+class CalendarCategoryRVAdapter(
+    private val categories: ArrayList<Categories>,
+    private val onCategorySelected: (Categories) -> Unit
+) : RecyclerView.Adapter<CalendarCategoryRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarCategoryRVAdapter.ViewHolder {
         // itemview 객체 생성
@@ -39,21 +42,22 @@ class CalendarCategoryRVAdapter(private val categories: ArrayList<Categorys>) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("ResourceType")
-        fun bind(categories: Categorys) {
-            Log.d("디버깅용", "${categories}")
+        fun bind(category: Categories) {
+            Log.d("디버깅용", "${category}")
 
-            binding.calendarCategoryName.text = categories.name
-            Log.d("카테고리 이름", "${categories.name}")
+            binding.calendarCategoryName.text = category.name
+            Log.d("카테고리 이름", "${category.name}")
 
-            categories.color?.let { colorEnum ->
+            category.color?.let { colorEnum ->
                 Log.d("카테고리 색깔", "${colorEnum}")
-                val colorResId = colorEnum.color ?: R.color.main_gray // null일 경우 기본 색상 설정
+                val colorResId = colorEnum.toColorInt() ?: R.color.main_gray // null일 경우 기본 색상 설정
                 val color = ContextCompat.getColor(binding.root.context, colorResId)
                 binding.calendarCategoryColor.background.setTint(color)
             }
 
             // 각 아이템 클릭 시 카테고리 결정
             itemView.setOnClickListener {
+                onCategorySelected(category)
                 selectCategory(position)
             }
         }

@@ -29,6 +29,7 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
 import android.text.style.ImageSpan
+import androidx.core.graphics.toColorInt
 import com.example.z_project.record.FeedModel
 
 
@@ -229,36 +230,41 @@ object CalendarDecorators {
             init {
                 val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
 
-                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
-                scheduleList.forEach { schedule ->
-                    schedule.startDate?.let { startDate ->
-                        try {
-                            // 시작 날짜를 파싱
-                            val startDateTime = dateFormat.parse(startDate)
-                            val endDateTime = schedule.endDate?.let { endDate ->
-                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
-                                dateFormat.parse(endDate)
-                            } ?: startDateTime
+                if (scheduleList.isEmpty()) {
+                    Log.d("eventDecorator", "scheduleList is empty.")
+                } else{
+                    // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
+                    scheduleList.forEach { schedule ->
+                        schedule.startDate?.let { startDate ->
+                            try {
+                                // 시작 날짜를 파싱
+                                val startDateTime = dateFormat.parse(startDate)
+                                val endDateTime = schedule.endDate?.let { endDate ->
+                                    // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
+                                    dateFormat.parse(endDate)
+                                } ?: startDateTime
 
-                            if (startDateTime != null && startDateTime <= endDateTime) {
-                                // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
-                                val datesInRange = getDateRange(startDateTime, endDateTime)
-                                //eventDates.addAll(datesInRange)
+                                if (startDateTime != null && startDateTime <= endDateTime) {
+                                    // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
+                                    val datesInRange = getDateRange(startDateTime, endDateTime)
+                                    //eventDates.addAll(datesInRange)
 
-                                datesInRange.forEach { date ->
-                                    // 유저의 색상 추가
-                                    val userColor = schedule.category.color?.color ?: ContextCompat.getColor(context, R.color.select_blue)
+                                    datesInRange.forEach { date ->
+                                        // 유저의 색상 추가
+                                        val userColor = schedule.category.color!!.toColorInt() ?: ContextCompat.getColor(context, R.color.select_blue)
 
-                                    // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
-                                    eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
-                                    Log.d("eventMap", "${eventMap}")
+                                        // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
+                                        eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
+                                        Log.d("eventMap", "${eventMap}")
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                     }
                 }
+
             }
 
             override fun shouldDecorate(day: CalendarDay?): Boolean {
