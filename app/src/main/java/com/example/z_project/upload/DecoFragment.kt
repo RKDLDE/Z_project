@@ -76,8 +76,10 @@ class DecoFragment : Fragment(), View.OnClickListener {
             /*binding.myEditText.isEnabled = true
             binding.myEditText.requestFocus()  // 포커스를 설정하여 바로 입력 가능*/
             binding.photo.enableDrawingMode(false)
+            binding.myEditText.visibility = View.VISIBLE // myEditText를 보이게 설정
             val inputText = binding.myEditText.text.toString()
-            binding.photo.setText(inputText, 0f, 0f)  // 텍스트 전달, 터치로 위치 결정
+            //binding.photo.setText(inputText, 0f, 0f)  // 텍스트 전달, 터치로 위치 결정
+            sharedViewModel.inputText.value = inputText // ViewModel에 텍스트 저장
             binding.myEditText.isEnabled = true
             binding.myEditText.requestFocus()
             saveState()
