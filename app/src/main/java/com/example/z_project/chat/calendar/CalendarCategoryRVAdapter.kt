@@ -48,9 +48,10 @@ class CalendarCategoryRVAdapter(
             binding.calendarCategoryName.text = category.name
             Log.d("카테고리 이름", "${category.name}")
 
-            category.color?.let { colorEnum ->
-                Log.d("카테고리 색깔", "${colorEnum}")
-                val colorResId = colorEnum.toColorInt() ?: R.color.main_gray // null일 경우 기본 색상 설정
+            category.color?.let {
+                Log.d("카테고리 색깔", it)
+                val colorEnum = category.getColorEnum()
+                val colorResId = colorEnum!!.color ?: R.color.main_gray // null일 경우 기본 색상 설정
                 val color = ContextCompat.getColor(binding.root.context, colorResId)
                 binding.calendarCategoryColor.background.setTint(color)
             }

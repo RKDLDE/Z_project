@@ -34,7 +34,7 @@ class AddCategoryActivity : AppCompatActivity() {
 
 
         // Firebase에서 이미 저장되어 있는 카테고리 리스트 불러오기
-        fetchUsedColors { usedColors ->
+        fetchUsedColors("1") { usedColors ->
             // 카테고리 color RecyclerView 설정 & Adapter 연결
             setupRecyclerView(usedColors)
         }
@@ -89,10 +89,10 @@ class AddCategoryActivity : AppCompatActivity() {
 
 
     // firebase 에서 카테고리 데이터 받아오기
-    private fun fetchUsedColors(onColorsFetched: (List<ColorEnum>) -> Unit) {
+    private fun fetchUsedColors(groupId: String, onColorsFetched: (List<ColorEnum>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
         db.collection("categories")
-            .whereEqualTo("groupId", "1")
+            .whereEqualTo("groupId", groupId)
             .get()
             .addOnSuccessListener { result ->
                 val usedColors = result.mapNotNull { document ->

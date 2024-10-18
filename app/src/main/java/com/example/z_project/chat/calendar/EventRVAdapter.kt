@@ -12,11 +12,17 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarEventBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
-class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
+class EventRVAdapter (private var events: ArrayList<ScheduleModel>, private val context: Context):
     RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
+
+    private val firestore = FirebaseFirestore.getInstance()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventRVAdapter.ViewHolder {
         // itemview 객체 생성
         val binding: ItemCalendarEventBinding = ItemCalendarEventBinding.inflate(
@@ -38,6 +44,21 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
     // position 위치의 데이터를 삭제 후 어댑터 갱신
     fun removeData(position: Int) {
         events.removeAt(position)
+
+//        // Firestore에서 문서 삭제
+//        firestore.collection("events") // 컬렉션 이름 변경
+//            .whereEqualTo("authId", ) // authId 또는 groupId로 문서 접근
+//            .delete()
+//            .addOnSuccessListener {
+//                Log.d("Firestore", "Document successfully deleted!")
+//                events.removeAt(position) // 로컬 리스트에서 삭제
+//                notifyItemRemoved(position) // 어댑터 갱신
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w("Firestore", "Error deleting document", e)
+//                Toast.makeText(context, "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+//            }
+
         notifyItemRemoved(position)
     }
 
@@ -48,11 +69,24 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
         fun bind(event: ScheduleModel) {
             binding.calendarEventContent.text = event.title
             Log.d("일정내용", "${event.title}")
-            Log.d("유저색상", "userColor: ${event.category.color}, color: ${event.category.color}")
-            event.category.color?.let { colorEnum ->
-                val colorResId = colorEnum.toColorInt() ?: R.color.main_gray // null일 경우 기본 색상 설정
+            Log.d("카테고리색상", "categoryColor: ${event.category.color}")
+
+            event.category.let {
+                Log.d("카테고리 색깔", "${it.color}")
+                val colorEnum = it.getColorEnum()
+                val colorResId = colorEnum!!.color ?: R.color.main_gray // null일 경우 기본 색상 설정
                 val color = ContextCompat.getColor(binding.root.context, colorResId)
                 binding.itemCalendarEvent.background.setTint(color)
+            }
+
+            // Firestore에서 authId를 기반으로 프로필 이미지 가져오기
+            loadProfileImage(event.authId!!)
+
+            if(event.startTime != event.endTime){ // 시작날짜와 종료날짜가 같지 않으면 (=하루종일 일정이 아니라면)
+                binding.calendarEventTime.visibility = View.VISIBLE
+                binding.calendarEventTime.text = "${event.startTime} ~ ${event.endTime}"
+            } else{
+                binding.calendarEventTime.visibility = View.GONE
             }
 
             // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
@@ -115,6 +149,29 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>):
                 // 키보드 숨기기
                 imm.hideSoftInputFromWindow(editEventContent.windowToken, 0)
             }
+        }
+
+        // 일정을 추가한 유저 이미지 가져오기
+        private fun loadProfileImage(authId: String) {
+            firestore.collection("users").document(authId).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val profileImage = document.getString("profileImage")
+                        profileImage?.let { imageUrl ->
+                            Glide.with(context)
+                                .load(imageUrl)
+                                .apply(RequestOptions.circleCropTransform())
+                                .placeholder(R.drawable.profile) // 로딩 중에 보여줄 기본 이미지
+                                .error(R.drawable.profile) // 에러 발생 시 보여줄 이미지
+                                .into(binding.calendarEventUser) // 이곳에 사용자 프로필 이미지가 들어갈 ImageView의 binding 추가 필요
+                        }
+                    } else {
+                        Log.d("EventRVAdapter", "No such user document")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("EventRVAdapter", "Error getting user document: ", exception)
+                }
         }
     }
 }
