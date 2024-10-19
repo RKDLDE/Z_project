@@ -396,7 +396,9 @@ class GroupCalendarActivity : AppCompatActivity() {
 
         // Firestore 문서를 ScheduleModel 객체로 변환
         for (document in documents) {
-            val event = document.toObject(ScheduleModel::class.java)
+            val event = document.toObject(ScheduleModel::class.java).apply{
+                documentId = document.id
+            }
             eventList.add(event) // 리스트에 추가
         }
 

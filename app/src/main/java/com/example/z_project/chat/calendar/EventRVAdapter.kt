@@ -18,8 +18,10 @@ import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarEventBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
-class EventRVAdapter (private var events: ArrayList<ScheduleModel>, private val context: Context):
-    RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
+class EventRVAdapter (
+    private var events: ArrayList<ScheduleModel>,
+    private val context: Context
+) : RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
 
     private val firestore = FirebaseFirestore.getInstance()
 
@@ -43,23 +45,26 @@ class EventRVAdapter (private var events: ArrayList<ScheduleModel>, private val 
 
     // position 위치의 데이터를 삭제 후 어댑터 갱신
     fun removeData(position: Int) {
-        events.removeAt(position)
+        val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("UNIQUE_CODE", null)
+        val event = events[position]
 
-//        // Firestore에서 문서 삭제
-//        firestore.collection("events") // 컬렉션 이름 변경
-//            .whereEqualTo("authId", ) // authId 또는 groupId로 문서 접근
-//            .delete()
-//            .addOnSuccessListener {
-//                Log.d("Firestore", "Document successfully deleted!")
-//                events.removeAt(position) // 로컬 리스트에서 삭제
-//                notifyItemRemoved(position) // 어댑터 갱신
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w("Firestore", "Error deleting document", e)
-//                Toast.makeText(context, "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
-//            }
-
-        notifyItemRemoved(position)
+        if (event.authId == userId && event.groupId == "1") {
+            firestore.collection("events")
+                .document(event.documentId!!)
+                .delete()
+                .addOnSuccessListener {
+                    Log.d("Firestore", "Document successfully deleted!")
+                    events.removeAt(position)
+                    notifyItemRemoved(position)
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error deleting document", e)
+                    Toast.makeText(context, "삭제에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(context, "삭제 권한이 없습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     inner class ViewHolder(val binding: ItemCalendarEventBinding, private val context: Context):

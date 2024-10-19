@@ -42,10 +42,11 @@ class DialogSelectCategory (
 
         // 카테고리 리스트가 비어있지 않은 경우에만 어댑터 설정
         if (categoryList.isNotEmpty()) {
-            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>) { selectedCategory: Categories ->
-                dialog.dismiss()
-                onCategorySelected(selectedCategory)
-            }
+//            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>) { selectedCategory: Categories ->
+//                dialog.dismiss()
+//                onCategorySelected(selectedCategory)
+//            }
+            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>, onCategorySelected, context)
 
             bindingDialog.selectCategoryList.adapter = categoryAdapter
             bindingDialog.selectCategoryList.visibility = View.VISIBLE

@@ -10,6 +10,7 @@ data class ScheduleModel(
     //val key: String?,
     val authId: String? = null, //개인 user Id
     val groupId: String? = null, //그룹방 Id
+    var documentId: String? = null, //일정 문서 Id
     var title: String? = null, //일정 내용
     val startDate: String? = null,
     val endDate: String? = null,
@@ -23,11 +24,12 @@ data class ScheduleModel(
 data class Categories(
     val authId: String? = null,
     val groupId: String? = null,
+    var categoryId: String? = null,
     val name: String? = null, // 카테고리 이름
     val color: String? = null, // 카테고리 색상 (예: Color.RED)
 ){
     // 색상 문자열을 ColorEnum으로 변환하는 함수
-    fun getColorEnum(): ColorEnum? {
+    fun getColorEnum(): ColorEnum {
         return when (color) {
             "RED" -> ColorEnum.RED
             "ORANGE" -> ColorEnum.ORANGE

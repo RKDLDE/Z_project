@@ -63,7 +63,7 @@ class AddCategoryActivity : AppCompatActivity() {
             val color = selectedCategory // 선택한 카테고리의 색상
 
             // Category 객체 생성
-            val category = Categories(authId, groupId, name, color.color.toString())
+            val category = Categories(authId, groupId, "", name, color.toString())
 
             // Firestore에 저장
             saveCategoryToFirestore(category)
@@ -81,10 +81,30 @@ class AddCategoryActivity : AppCompatActivity() {
         categoriesCollection.add(category)
             .addOnSuccessListener { documentReference ->
                 Log.d("Firestore", "Category added with ID: ${documentReference.id}")
+
+                // 생성된 문서 ID를 Categories에 설정
+                category.categoryId = documentReference.id
+                updateCategoryInFirestore(category)
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding event", e)
             }
+    }
+    // Categories을 Firestore에 업데이트하는 함수
+    private fun updateCategoryInFirestore(category: Categories) {
+        val db = FirebaseFirestore.getInstance()
+        val eventsCollection = db.collection("categories")
+
+        // documentId가 null이 아니면 업데이트 진행
+        category.categoryId?.let { id ->
+            eventsCollection.document(id).set(category)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "category updated with ID: $id")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error updating category", e)
+                }
+        }
     }
 
 

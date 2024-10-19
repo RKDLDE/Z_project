@@ -160,7 +160,7 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
             val endTime = bindingDialog.selectEndTime.text.toString()
 
             // Event 객체 생성
-            val event = ScheduleModel(uniqueCode, "1", title, startDate, endDate, startTime, endTime, selectedCategory)
+            val event = ScheduleModel(uniqueCode, "1", "", title, startDate, endDate, startTime, endTime, selectedCategory)
 
             // Firestore에 저장
             saveEventToFirestore(event)
@@ -358,9 +358,30 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
         eventsCollection.add(event)
             .addOnSuccessListener { documentReference ->
                 Log.d("Firestore", "Event added with ID: ${documentReference.id}")
+
+                // 생성된 문서 ID를 ScheduleModel에 설정
+                event.documentId = documentReference.id
+                updateEventInFirestore(event)
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding event", e)
             }
+    }
+
+    // ScheduleModel을 Firestore에 업데이트하는 함수
+    private fun updateEventInFirestore(event: ScheduleModel) {
+        val db = FirebaseFirestore.getInstance()
+        val eventsCollection = db.collection("events")
+
+        // documentId가 null이 아니면 업데이트 진행
+        event.documentId?.let { id ->
+            eventsCollection.document(id).set(event)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "Event updated with ID: $id")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error updating event", e)
+                }
+        }
     }
 }
