@@ -96,8 +96,13 @@ class EventRVAdapter (
 
             // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
             itemView.setOnClickListener {
-                startEditing(position)
+                showEditDialog(event)
             }
+        }
+        private fun showEditDialog(event: ScheduleModel) {
+            // DialogEditEvent 생성 및 표시
+            val dialog = DialogEditEvent(context) // context를 DialogEditEvent에 전달
+            dialog.show(event) // event를 매개변수로 전달하여 다이얼로그에서 사용할 수 있도록
         }
 
         private fun startEditing(position: Int) {
