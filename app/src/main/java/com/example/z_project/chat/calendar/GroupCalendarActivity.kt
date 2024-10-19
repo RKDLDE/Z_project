@@ -113,25 +113,38 @@ class GroupCalendarActivity : AppCompatActivity() {
             // 월 표시 부분 커스텀 (한국어) -> 데이터를 로드한 후에 바로 적용
             binding.calendarView.setTitleFormatter(CalendarDecorators.koreanMonthTitleFormatter())
 
-            val events = fetchEvents("1")
-            val categories = fetchCategories("1")
+            val eventsDeferred = CompletableDeferred<List<ScheduleModel>>()
+            val categoriesDeferred = CompletableDeferred<List<Categories>>()
 
-            groupCalendarEventList = events
-            groupCategoryList = categories
+//            val events = fetchEvents("1")
+//            val categories = fetchCategories("1")
+//
+//            groupCalendarEventList = events
+//            groupCategoryList = categories
 
-            Log.d("일정목록들22", "${groupCalendarEventList}")
-            Log.d("카테고리목록들22", "${groupCategoryList}")
+            fetchEvents("1") { events ->
+                groupCalendarEventList = events
+                Log.d("일정목록들22", "${groupCalendarEventList}")
+                eventsDeferred.complete(events) // 완료 시 콜백 호출
+            }
 
-//            // 이벤트 데코레이터 추가
-//            if (groupCalendarEventList.isNotEmpty()) {
-//                eventDecorator = CalendarDecorators.eventDecorator(this@GroupCalendarActivity, groupCalendarEventList)
-//                binding.calendarView.addDecorator(eventDecorator)
-//            } else {
-//                Log.d("GroupCalendarActivity", "No events found for the group.")
-//            }
+            fetchCategories("1") { categories ->
+                groupCategoryList = categories
+                Log.d("카테고리목록들22", "${groupCategoryList}")
+                categoriesDeferred.complete(categories) // 완료 시 콜백 호출
+            }
+            // 모든 데이터가 로드될 때까지 대기
+            eventsDeferred.await()
+            categoriesDeferred.await()
 
-            // initView 호출하여 캘린더 데코레이터 등 설정
+            // 데이터 로드 후 initView 호출
             initView()
+
+//            Log.d("일정목록들22", "${groupCalendarEventList}")
+//            Log.d("카테고리목록들22", "${groupCategoryList}")
+
+//            // initView 호출하여 캘린더 데코레이터 등 설정
+//            initView()
         }
     }
 
@@ -347,66 +360,117 @@ class GroupCalendarActivity : AppCompatActivity() {
     }
 
 
-    // Firebase에서 카테고리 정보 가져오기
-    private suspend fun fetchCategories(groupId: String): List<Categories> {
+//    // Firebase에서 카테고리 정보 가져오기
+//    private suspend fun fetchCategories(groupId: String): List<Categories> {
+//        val db = FirebaseFirestore.getInstance()
+//        val categoryList = mutableListOf<Categories>()
+//
+//        // Firestore 데이터 가져오기
+//        val documents = db.collection("categories")
+//            .whereEqualTo("groupId", groupId) // groupId가 "1"인 문서들만 가져옴
+//            .get()
+//            .await() // `await()`를 사용하여 결과를 대기합니다.
+//
+//        if (documents != null) {
+//            for (document in documents) {
+//                // Firestore 문서를 Categories 객체로 변환
+//                val category = document.toObject(Categories::class.java)
+//                categoryList.add(category) // 리스트에 추가
+//            }
+//
+//            // 색상 정보를 ColorEnum으로 변환하여 사용할 수 있음
+//            for (category in categoryList) {
+//                val colorEnum = category.getColorEnum()
+//                Log.d("카테고리 색상", "Category: ${category.name}, ColorEnum: ${colorEnum}")
+//            }
+//
+//            // categories 리스트의 내용 확인
+//            for (category in categoryList) {
+//                Log.d("카테고리", "Name: ${category.name}, Color: ${category.color}")
+//            }
+//        } else {
+//            Log.d("fetchCategories", "No Category documents found for groupId: $groupId")
+//        }
+//
+//        return categoryList // 리스트 반환
+//    }
+//
+//
+//    // Firebase에서 일정 정보 가져오기
+//    private suspend fun fetchEvents(groupId: String): List<ScheduleModel> {
+//        val db = FirebaseFirestore.getInstance()
+//        val eventList = mutableListOf<ScheduleModel>()
+//
+//        // Firestore 데이터 가져오기
+//        val documents = db.collection("events")
+//            .whereEqualTo("groupId", groupId) // groupId가 "1"인 문서들만 가져옴
+//            .get()
+//            .await() // `await()`를 사용하여 결과를 대기합니다.
+//
+//        // Firestore 문서를 ScheduleModel 객체로 변환
+//        for (document in documents) {
+//            val event = document.toObject(ScheduleModel::class.java).apply{
+//                documentId = document.id
+//            }
+//            eventList.add(event) // 리스트에 추가
+//        }
+//
+//        // categories 리스트의 내용 확인
+//        for (event in eventList) {
+//            Log.d("캘린더 일정", "Name: ${event.title}")
+//        }
+//
+//        return eventList // 리스트 반환
+//    }
+
+
+    // Firebase에서 이벤트 정보를 실시간으로 가져오는 메서드
+    private fun fetchEvents(groupId: String, onSuccess: (List<ScheduleModel>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
-        val categoryList = mutableListOf<Categories>()
 
-        // Firestore 데이터 가져오기
-        val documents = db.collection("categories")
-            .whereEqualTo("groupId", groupId) // groupId가 "1"인 문서들만 가져옴
-            .get()
-            .await() // `await()`를 사용하여 결과를 대기합니다.
+        // Firestore의 events 컬렉션에 대한 실시간 리스너 추가
+        db.collection("events")
+            .whereEqualTo("groupId", groupId)
+            .addSnapshotListener { documents, error ->
+                if (error != null) {
+                    Log.w("fetchEvents", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
 
-        if (documents != null) {
-            for (document in documents) {
-                // Firestore 문서를 Categories 객체로 변환
-                val category = document.toObject(Categories::class.java)
-                categoryList.add(category) // 리스트에 추가
+                val eventList = mutableListOf<ScheduleModel>()
+                documents?.forEach { document ->
+                    val event = document.toObject(ScheduleModel::class.java).apply {
+                        documentId = document.id
+                    }
+                    eventList.add(event) // 리스트에 추가
+                }
+
+                // 이벤트 목록 업데이트
+                onSuccess(eventList)
             }
-
-            // 색상 정보를 ColorEnum으로 변환하여 사용할 수 있음
-            for (category in categoryList) {
-                val colorEnum = category.getColorEnum()
-                Log.d("카테고리 색상", "Category: ${category.name}, ColorEnum: ${colorEnum}")
-            }
-
-            // categories 리스트의 내용 확인
-            for (category in categoryList) {
-                Log.d("카테고리", "Name: ${category.name}, Color: ${category.color}")
-            }
-        } else {
-            Log.d("fetchCategories", "No Category documents found for groupId: $groupId")
-        }
-
-        return categoryList // 리스트 반환
     }
 
-
-    // Firebase에서 일정 정보 가져오기
-    private suspend fun fetchEvents(groupId: String): List<ScheduleModel> {
+    // Firebase에서 카테고리 정보를 실시간으로 가져오는 메서드
+    private fun fetchCategories(groupId: String, onSuccess: (List<Categories>) -> Unit) {
         val db = FirebaseFirestore.getInstance()
-        val eventList = mutableListOf<ScheduleModel>()
 
-        // Firestore 데이터 가져오기
-        val documents = db.collection("events")
-            .whereEqualTo("groupId", groupId) // groupId가 "1"인 문서들만 가져옴
-            .get()
-            .await() // `await()`를 사용하여 결과를 대기합니다.
+        // Firestore의 categories 컬렉션에 대한 실시간 리스너 추가
+        db.collection("categories")
+            .whereEqualTo("groupId", groupId)
+            .addSnapshotListener { documents, error ->
+                if (error != null) {
+                    Log.w("fetchCategories", "Listen failed.", error)
+                    return@addSnapshotListener
+                }
 
-        // Firestore 문서를 ScheduleModel 객체로 변환
-        for (document in documents) {
-            val event = document.toObject(ScheduleModel::class.java).apply{
-                documentId = document.id
+                val categoryList = mutableListOf<Categories>()
+                documents?.forEach { document ->
+                    val category = document.toObject(Categories::class.java)
+                    categoryList.add(category) // 리스트에 추가
+                }
+
+                // 카테고리 목록 업데이트
+                onSuccess(categoryList)
             }
-            eventList.add(event) // 리스트에 추가
-        }
-
-        // categories 리스트의 내용 확인
-        for (event in eventList) {
-            Log.d("캘린더 일정", "Name: ${event.title}")
-        }
-
-        return eventList // 리스트 반환
     }
 }

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.z_project.databinding.DialogAddEventBinding
 import com.example.z_project.databinding.DialogSelectCategoryBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -25,6 +26,8 @@ class DialogSelectCategory (
 ){
     private val dialog = BottomSheetDialog(context)
     val bindingDialog = DialogSelectCategoryBinding.inflate(LayoutInflater.from(context))
+    private val db = FirebaseFirestore.getInstance() // Firestore 인스턴스 생성
+    private lateinit var categoryAdapter: CalendarCategoryRVAdapter
 
     @SuppressLint("ClickableViewAccessibility")
     fun show(
@@ -101,4 +104,21 @@ class DialogSelectCategory (
         // 다이얼로그 보여주기
         dialog.show()
     }
+
+//    // DB 데이터 가져오기 (firebase)
+//    private fun fetchCategories(selectedDate: CalendarDay) {
+//        val formattedDate = formatDateWithE(selectedDate) // 원하는 형식으로 날짜 포맷팅
+//        db.collection("events") // "events"는 Firestore의 컬렉션 이름
+//            .whereEqualTo("startDate", formattedDate) // 날짜로 필터링
+//            .addSnapshotListener { querySnapshot, exception ->
+//                if (exception != null) {
+//                    Log.w("DialogEventDetails", "Listen failed.", exception)
+//                    return@addSnapshotListener
+//                }
+//
+//                // 새로운 이벤트 리스트 가져오기
+//                val events = querySnapshot?.toObjects(ScheduleModel::class.java) ?: emptyList()
+//                eventAdapter.updateEvents(events) // 어댑터의 데이터를 업데이트
+//            }
+//    }
 }

@@ -36,6 +36,12 @@ class CalendarCategoryRVAdapter(
 
     override fun getItemCount(): Int = categories.size
 
+    fun updateCategories(newCategories: List<Categories>) {
+        categories.clear()
+        categories.addAll(newCategories)
+        notifyDataSetChanged() // UI 업데이트
+    }
+
     // position 위치의 데이터를 삭제 후 어댑터 갱신
     fun removeData(position: Int) {
         val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
