@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -81,10 +82,26 @@ class FinalFragment : Fragment() {
             }
         }
 
+
+//        // ViewModel에서 텍스트 관찰
+//        sharedViewModel.inputText.observe(viewLifecycleOwner) { inputText ->
+//            Log.e("Final", "받은 텍스트: ${inputText!!?: ""}")
+//            saveDataToFirestoreWithoutImage(currentTime, emoji, inputText?.takeIf { it.isNotEmpty() } ?: "") // 텍스트 및 데이터 업로드
+//        }
         // ViewModel에서 텍스트 관찰
         sharedViewModel.inputText.observe(viewLifecycleOwner) { inputText ->
-            Log.e("Final", "받은 텍스트: ${inputText!!}")
-            saveDataToFirestoreWithoutImage(currentTime, emoji, inputText) // 텍스트 및 데이터 업로드
+            Log.e("Final", "받은 텍스트: ${inputText ?: ""}")
+
+            // 텍스트가 null이거나 빈 문자열이면 빈 문자열로 저장
+            val textToSave = inputText?.takeIf { it.isNotEmpty() } ?: ""
+
+            // Firebase에 데이터 저장
+            saveDataToFirestoreWithoutImage(currentTime, emoji, textToSave)
+        }
+
+        // 초기 텍스트 저장 - 관찰자가 호출되지 않을 때
+        if (sharedViewModel.inputText.value.isNullOrEmpty()) {
+            saveDataToFirestoreWithoutImage(currentTime, emoji, "")
         }
 
         if (userId != null) {
@@ -96,10 +113,12 @@ class FinalFragment : Fragment() {
 
         val backButton = view.findViewById<ImageButton>(R.id.ib_back)
         // 이미지 버튼 클릭 이벤트 처리
+        val uploadFragment = UploadFragment()
         backButton.setOnClickListener {
-            // 이전 Fragment로 이동
-            requireActivity().supportFragmentManager.popBackStack()
-        }
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, uploadFragment)
+                .addToBackStack("UploadFragmentTag") // 태그 설정
+                .commit()}
     }
 
     // 현재 시간을 "yyyy-MM-dd HH:mm" 형식으로 반환
@@ -113,8 +132,8 @@ class FinalFragment : Fragment() {
             val userData = hashMapOf(
                 "uniqueCode" to userId,
                 "uploadTime" to currentTime,
-                "emoji" to emoji, // 이모티콘 추가
-                "inputText" to (inputText ?: "") // 텍스트 추가 (입력 값이 없으면 빈 문자열)
+                "emoji" to (emoji?.ifEmpty { "" } ?: ""),// 이모티콘 추가
+                "inputText" to (inputText?.ifEmpty { "" } ?: "") // 텍스트 추가 (입력 값이 없으면 빈 문자열)
             )
 
             // Firestore의 "images" 컬렉션에 새로운 문서 추가

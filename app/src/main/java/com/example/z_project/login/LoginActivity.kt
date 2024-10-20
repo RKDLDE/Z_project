@@ -63,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
         // 로컬 저장
         sharedPreferences.edit().putString("UNIQUE_CODE", code).apply()
+        Log.d("Login","내 고유코드:{$code}")
         Log.d("Login","고유코드 로컬 저장")
     }
 

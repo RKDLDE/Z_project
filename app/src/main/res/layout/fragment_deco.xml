@@ -23,7 +23,7 @@
             android:layout_height="400dp"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="45dp"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:background="#EEEEEE"
             tools:ignore="ContentDescription" />
 
@@ -104,7 +104,7 @@
             android:minWidth="50dp"
             android:background="@drawable/background_upload_text"
             android:inputType="text"
-            android:padding="5dp"
+            android:padding="6dp"
             android:maxLength="10"
             android:visibility="gone"
             />
