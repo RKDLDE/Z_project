@@ -1,5 +1,6 @@
 package com.example.z_project.upload
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -9,6 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -70,17 +73,27 @@ class DecoFragment : Fragment(), View.OnClickListener {
             saveState()
         }
 
-
-
         binding.aaBtn.setOnClickListener {
             /*binding.myEditText.isEnabled = true
             binding.myEditText.requestFocus()  // 포커스를 설정하여 바로 입력 가능*/
             binding.photo.enableDrawingMode(false)
             val inputText = binding.myEditText.text.toString()
-            binding.photo.setText(inputText, 0f, 0f)  // 텍스트 전달, 터치로 위치 결정
             binding.myEditText.isEnabled = true
             binding.myEditText.requestFocus()
             saveState()
+        }
+
+        // 키보드 내리기 위한 Listener 설정
+        binding.myEditText.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // 키보드 내리기
+                val imm = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                binding.myEditText.isEnabled = false  // 키보드 내린 후 비활성화
+                true
+            } else {
+                false
+            }
         }
 
         // Undo 버튼 클릭 시 이전 상태 복구
@@ -131,14 +144,33 @@ class DecoFragment : Fragment(), View.OnClickListener {
     }
 
     // 사진 크기 조정을 위한 함수
-    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
+    private fun resizeImage(uri: Uri, maxWidth: Int, maxHeight: Int): Bitmap? {
         val inputStream = requireContext().contentResolver.openInputStream(uri)
         val originalBitmap = BitmapFactory.decodeStream(inputStream)
         inputStream?.close()
 
-        // Bitmap 크기 조정
-        return originalBitmap?.let {
-            Bitmap.createScaledBitmap(it, width, height, true)
+        originalBitmap?.let {
+            // 이미지의 원래 가로, 세로
+            val originalWidth = it.width
+            val originalHeight = it.height
+
+            // 비율을 계산
+            val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
+
+            var newWidth = maxWidth
+            var newHeight = maxHeight
+
+            // 비율에 맞춰 크기 조정
+            if (originalWidth > originalHeight) {
+                newHeight = (newWidth / aspectRatio).toInt()
+            } else {
+                newWidth = (newHeight * aspectRatio).toInt()
+            }
+
+            // Bitmap 크기 조정
+            return Bitmap.createScaledBitmap(it, newWidth, newHeight, true)
         }
+
+        return null
     }
 }
