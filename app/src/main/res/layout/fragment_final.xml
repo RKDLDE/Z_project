@@ -27,9 +27,49 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="40dp"
                 tools:ignore="ContentDescription" />
+
+            <EditText
+                android:visibility="gone"
+                android:id="@+id/myEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_margin="50dp"
+                android:gravity="center"
+                android:enabled="false"
+                android:textSize="28dp"
+                android:minWidth="50dp"
+                android:background="@drawable/background_upload_text"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="@android:color/black"
+                android:maxLength="10"
+                android:alpha="1"
+                />
+
         </FrameLayout>
 
 
+        <EditText
+            android:id="@+id/myEmoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="640dp"
+            android:background="@drawable/background_upload_text"
+            android:enabled="false"
+            android:inputType="text"
+            android:maxLength="10"
+            android:minWidth="30dp"
+            android:padding="7dp"
+            android:textSize="28dp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/main_bg"
+            android:alpha="1"
+        />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -87,6 +127,7 @@
                     android:textAlignment="center"
                     android:textSize="15sp" />
             </RelativeLayout>
+
 
         </LinearLayout>
 

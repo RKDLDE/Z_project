@@ -38,6 +38,13 @@ class EmojiFragment : Fragment()  {
 
         binding.sendingBtn.setOnClickListener{
             val finalFragment = FinalFragment()
+
+            // 이모티콘 데이터를 번들로 전달
+            val bundle = Bundle()
+            bundle.putString("emoji", textView.text.toString()) // 선택한 이모티콘
+            finalFragment.arguments = bundle
+            Log.d("Emoji", "Selected emoji: {$textView.text.toString()}")
+
             val fragmentTransaction = parentFragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.main_frm, finalFragment)
             fragmentTransaction.addToBackStack(null)  // 백스택에 추가하여 뒤로 가기 가능하게 함

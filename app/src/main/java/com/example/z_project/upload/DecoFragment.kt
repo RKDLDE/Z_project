@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.z_project.R
@@ -79,7 +80,9 @@ class DecoFragment : Fragment(), View.OnClickListener {
             binding.myEditText.visibility = View.VISIBLE // myEditText를 보이게 설정
             val inputText = binding.myEditText.text.toString()
             //binding.photo.setText(inputText, 0f, 0f)  // 텍스트 전달, 터치로 위치 결정
-            sharedViewModel.inputText.value = inputText // ViewModel에 텍스트 저장
+            binding.myEditText.doAfterTextChanged { editable ->
+                sharedViewModel.setInputText(editable.toString())
+            }
             binding.myEditText.isEnabled = true
             binding.myEditText.requestFocus()
             saveState()

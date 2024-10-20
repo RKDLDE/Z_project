@@ -23,6 +23,7 @@
             android:layout_height="400dp"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="45dp"
+            android:scaleType="fitCenter"
             android:background="#EEEEEE"
             tools:ignore="ContentDescription" />
 
@@ -34,7 +35,9 @@
             android:layout_marginEnd="35dp"
             android:layout_marginTop="25dp"
             android:contentDescription="@null"
-            app:srcCompat="@drawable/sss_img" />
+            app:srcCompat="@drawable/sss_img"
+            android:clickable="true"
+            android:focusable="true" /> <!-- 포커스 가능 -->/>
 
         <LinearLayout
             android:id="@+id/colorButtonsLayout"
@@ -85,18 +88,26 @@
             app:srcCompat="@drawable/aa_img"
             android:contentDescription="@null"
             tools:ignore="ContentDescription"
+            android:clickable="true"
+            android:focusable="true"
             android:text="활성화 버튼"/>
 
         <EditText
             android:id="@+id/myEditText"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_margin="50dp"
             android:gravity="center"
             android:enabled="false"
             android:textSize="28dp"
-            android:inputType="text" />
+            android:minWidth="50dp"
+            android:background="@drawable/background_upload_text"
+            android:inputType="text"
+            android:padding="5dp"
+            android:maxLength="10"
+            android:visibility="gone"
+            />
 
     </FrameLayout>
 
