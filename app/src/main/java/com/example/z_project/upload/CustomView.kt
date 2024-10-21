@@ -80,8 +80,9 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             val rotatedBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
 
             // XML에서 설정한 크기 가져오기
-            val targetWidth =500
-            val targetHeight = 600
+            // 탭 500, 600
+            val targetWidth = 1200
+            val targetHeight = 1300
 
             // 비율 유지: 원래 크기를 기준으로 비율을 계산
             val originalWidth = rotatedBitmap.width

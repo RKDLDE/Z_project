@@ -17,7 +17,7 @@
             android:layout_width="330dp"
             android:layout_height="480dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="110dp"
             android:background="@drawable/cam_bg_rec">
 
             <ImageView
@@ -55,7 +55,7 @@
             android:id="@+id/myEmoji"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="640dp"
+            android:layout_marginTop="600dp"
             android:background="@drawable/background_upload_text"
             android:enabled="false"
             android:inputType="text"
@@ -75,8 +75,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:layout_marginStart="20dp">
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="10dp">
 
             <ImageButton
                 android:id="@+id/ib_back"
@@ -90,8 +90,8 @@
             <ImageView
                 android:background="@drawable/profile_round"
                 android:id="@+id/iv_profile"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_weight="3"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
@@ -108,7 +108,7 @@
                     android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="10dp"
                     android:fontFamily="@font/noto_sans_kr_semibold"
                     android:includeFontPadding="false"
                     android:text="name"
@@ -121,8 +121,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/nickname"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/noto_sans_kr_semibold"
                     android:includeFontPadding="false"
                     android:text="time"
