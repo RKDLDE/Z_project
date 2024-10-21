@@ -63,6 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
         // 로컬 저장
         sharedPreferences.edit().putString("UNIQUE_CODE", code).apply()
+        Log.d("Login","내 고유코드:{$code}")
         Log.d("Login","고유코드 로컬 저장")
     }
 
@@ -84,6 +85,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun refreshAccessToken() {
         val refreshToken = sharedPreferences.getString("REFRESH_TOKEN", null)
+        val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", "")
+
         Log.d("Login", "로컬 리프레시 토큰: $refreshToken")
         if (refreshToken != null) {
             // 새로 엑세스 토큰 발급 요청
@@ -99,33 +102,38 @@ class LoginActivity : AppCompatActivity() {
                     val newAccessToken = token.accessToken
                     Log.d("새 엑세스 토큰", newAccessToken)
                     Log.e("Login error", error?.message.toString())
-                    kakaologin()
+
+                    // 1. 애뮬레이터 용
+                    //kakaologin()
+
+                    // 2. 카톡 설치된 안드로이드 용 (애뮬레이터 사용 시 주석처리 부탁)
+                    goToMainActivity(token)
+
                 } else if (token != null) {
                     Log.d("Login new AccessToken", token.accessToken)
-
-                    // 사용자 정보 요청
-                    UserApiClient.instance.me { user, error ->
-                        if (user != null) {
-                            val nickname = user.kakaoAccount?.profile?.nickname
-                            val profileImageUrl = user.kakaoAccount?.profile?.thumbnailImageUrl
-
-                            // Firestore에 사용자 이름과 프로필 사진, 고유 코드 저장
-                            //saveUserToFirestore(nickname ?: "이름 없음", profileImageUrl, sharedPreferences.getString("UNIQUE_CODE", ""))
-                            //Log.d("Login", "사용자 정보 저장")
-
-                            // MainActivity로 이동
-                            goToMainActivity(token)
-                        } else {
-                            Log.e("Login error", error?.message.toString())
-                        }
-                    }
                 }
             }
         } else {
             kakaologin()
         }
     }
-
+    private fun fetchUserFromFirestore(uniqueCode: String, nickname: String?, profileImageUrl: String?) {
+        if (uniqueCode.isNotEmpty()) {
+            db.collection("users").document(uniqueCode).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        // 사용자 정보가 존재할 경우 처리
+                        Log.d("Login", "사용자 정보 가져오기 성공: ${document.data}")
+                    } else {
+                        // 사용자 정보가 없으면 Firestore에 새로 저장
+                        saveUserToFirestore(nickname ?: "이름 없음", profileImageUrl, uniqueCode)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("Login", "사용자 정보 가져오기 실패", e)
+                }
+        }
+    }
     private fun kakaologin() {
         val kakaoLoginButton = findViewById<ImageButton>(R.id.ib_kakao)
         Log.d("Login", "kakaologin")

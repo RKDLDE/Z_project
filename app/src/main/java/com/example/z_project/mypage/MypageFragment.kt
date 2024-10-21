@@ -113,14 +113,14 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
             .addOnSuccessListener { document ->
                 if (document != null) {
                     val userName = document.getString("name")
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImage = document.getString("profileImage")
 
                     // 사용자 이름과 프로필 사진 설정
                     tv_name.text = userName ?: "이름 없음"
                     Log.d("Mypage", "이름 불러오기: ${userName}")
 
-                    if (!profileImageUrl.isNullOrEmpty()) {
-                        loadProfileImage(profileImageUrl)
+                    if (!profileImage.isNullOrEmpty()) {
+                        loadProfileImage(profileImage)
                     } else {
                         profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
                     }
@@ -146,7 +146,7 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
     }
 
     private fun updateUserProfileImage(imageUrl: String) {
-        firestore.collection("users").document(userId!!).update("profileImageUrl", imageUrl)
+        firestore.collection("users").document(userId!!).update("profileImage", imageUrl)
             .addOnSuccessListener {
                 Log.d("Mypage", "바뀐 이미지 저장")
             }

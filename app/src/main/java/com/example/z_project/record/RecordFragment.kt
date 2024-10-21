@@ -1,5 +1,6 @@
 package com.example.z_project.record
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,186 +12,27 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z_project.R
-import com.example.z_project.chat.calendar.CalendarDecorators
-import com.example.z_project.chat.calendar.ColorEnum
 import com.example.z_project.chat.calendar.GroupCalendarActivity
-import com.example.z_project.chat.calendar.ScheduleModel
-import com.example.z_project.chat.calendar.YearSpinnerAdapter
 import com.example.z_project.databinding.FragmentRecordBinding
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.DayViewDecorator
-import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
+import com.example.z_project.chat.calendar.YearSpinnerAdapter
 
 class RecordFragment : Fragment() {
-    lateinit var binding: FragmentRecordBinding
+    private lateinit var binding: FragmentRecordBinding
+    private lateinit var recordFeedRVAdapter: RecordFeedRVAdapter
+    private val firestore = FirebaseFirestore.getInstance()
 
+    // 현재 년도와 월
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
     private val currentMonth: String = (Calendar.getInstance().get(Calendar.MONTH) + 1).toString()
-
-    var dummyList = listOf(
-        FeedModel(
-            id = 1,
-            userImage = R.drawable.person1,
-            uploadDate = "2024.10.07",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워",
-        ),
-        FeedModel(
-            id = 2,
-            userImage = R.drawable.person2,
-            uploadDate = "2024.10.03",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 3,
-            userImage = R.drawable.person3,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-        FeedModel(
-            id = 4,
-            userImage = R.drawable.person4,
-            uploadDate = "2024.10.15",
-            uploadImage = R.drawable.image,
-            uploadEmoji = R.drawable.emoji,
-            feedText = "강아지 귀여워"
-        ),
-
-        )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -199,33 +41,31 @@ class RecordFragment : Fragment() {
     ): View {
         binding = FragmentRecordBinding.inflate(inflater, container, false)
 
-        //임시 <- 최종 때 지우기
+        // 임시 - 캘린더 클릭 시 GroupCalendarActivity로 이동
         binding.iconCalendar.setOnClickListener {
             val intent = Intent(context, GroupCalendarActivity::class.java)
             startActivity(intent)
         }
 
-        // 스피너 초기화
+        // Spinner 초기화
         initYearSpinner()
         initMonthSpinner()
 
-        // RecyclerView 설정 & Adapter 연결
+        // RecyclerView 설정
         binding.recordFeedRv.layoutManager = GridLayoutManager(context, 3)
-        val eventAdapter = RecordFeedRVAdapter(dummyList)
-        binding.recordFeedRv.adapter = eventAdapter
+        recordFeedRVAdapter = RecordFeedRVAdapter(emptyList()) // 빈 리스트로 초기화
+        binding.recordFeedRv.adapter = recordFeedRVAdapter // Adapter 연결
 
+        // Firestore 데이터 가져오기
+        fetchData()
 
         return binding.root
     }
 
     private fun initMonthSpinner() = with(binding) {
-        //recyclerViewSchedule.adapter = scheduleListAdapter
-        val exampleDate = CalendarDay.today()
+        val months = (1..12).toList() // 1부터 12까지의 월 리스트
 
-        // Month Spinner Adapter 연결
-        val months = (1..12).toList() // 원하는 범위를 설정
         var isMonthInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-
         Log.d("현재 달월", "${currentMonth}")
 
         val monthSpinnerAdapter = YearSpinnerAdapter(requireContext(), R.layout.item_spinner_year, months, currentMonth)
@@ -236,29 +76,23 @@ class RecordFragment : Fragment() {
                     monthSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
 
                     val selectedMonth = months[position]
-
                     val value = parent.getItemAtPosition(position).toString()
                     Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else{
+                } else {
                     isMonthInitialSelected = true
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
-        // Spinner 초기화 시 currentYear를 기본으로 설정
+        // Spinner 초기화 시 currentMonth를 기본으로 설정
         val currentMonthPosition = months.indexOf(currentMonth.toInt())
         binding.recordMonthSpinner.setSelection(currentMonthPosition)
     }
 
     private fun initYearSpinner() = with(binding) {
-        //recyclerViewSchedule.adapter = scheduleListAdapter
-        val exampleDate = CalendarDay.today()
-
-        val years = (2024..2050).toList() // 원하는 년도 범위를 설정
+        val years = (2024..2050).toList() // 원하는 년도 범위 설정
         var isYearInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-
         Log.d("현재 년도", "${currentYear}")
 
         val yearSpinnerAdapter = RecordYearSpinnerAdapter(requireContext(), R.layout.item_record_spinner_year, years, currentYear)
@@ -268,20 +102,129 @@ class RecordFragment : Fragment() {
                 if (isYearInitialSelected) {
                     yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
 
-                    val selectedMonth = years[position]
-
+                    val selectedYear = years[position]
                     val value = parent.getItemAtPosition(position).toString()
                     Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else{
+                } else {
                     isYearInitialSelected = true
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
         // Spinner 초기화 시 currentYear를 기본으로 설정
-        val currentYearPosition = years.indexOf(currentMonth.toInt())
+        val currentYearPosition = years.indexOf(currentYear.toInt())
         binding.recordYearSpinner.setSelection(currentYearPosition)
+    }
+
+    private fun fetchData() {
+        // SharedPreferences에서 uniqueCodes 가져오기
+        val sharedPreferences = requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
+        val friendCodes = sharedPreferences.all.keys.filter { (it != "UNIQUE_CODE") && (it != "REFRESH_TOKEN")}
+
+        Log.d("RecordFeed","내 코드: ${uniqueCode}")
+        Log.d("RecordFeed","친구 코드: ${friendCodes}")
+
+        val uniqueCodes = mutableListOf<String>()
+        uniqueCode?.let { uniqueCodes.add(it) }
+        uniqueCodes.addAll(friendCodes)
+        Log.d("RecordFeed","총 코드: ${uniqueCodes}")
+
+        if (uniqueCodes.isNotEmpty()) {
+            firestore.collection("images")
+                .whereIn("uniqueCode", uniqueCodes)
+                .orderBy("uploadTime", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { result ->
+                    if (result.isEmpty) {
+                        Log.d("RecordFragment", "No documents found.")
+                        return@addOnSuccessListener
+                    }
+
+                    val feedItems = mutableListOf<FeedModel>()
+                    val fetchCount = result.size() // 결과 개수 저장
+                    Log.d("RecordFeed","피드 개수: ${fetchCount}")
+
+                    for (document in result) {
+                        val uploadImage = document.getString("UploadImageUrl") ?: ""
+                        val uniqueCode = document.getString("uniqueCode") ?: ""
+                        val uploadEmoji = document.getString("emoji") ?: ""
+                        val feedText = document.getString("inputText") ?: ""
+                        val uploadTime = document.getTimestamp("uploadTime") ?: Timestamp.now()
+                        //Log.d("RecordFeed","uploadTime: ${uploadTime}")
+                        Log.d("RecordFeed","uploadImage: ${uploadImage}")
+                        firestore.collection("users").document(uniqueCode).get()
+                            .addOnSuccessListener { userResult ->
+                                if (userResult.exists()) {
+                                    val profileImage = userResult.getString("profileImage") ?: ""
+                                    val uploadDate = formatTimestampToString(uploadTime)
+                                    val userName = userResult.getString("name")?:""
+                                    //Log.d("RecordFeed","uploadTime String 변환: ${uploadDate}")
+
+                                    val feedItem = FeedModel(
+                                        uniqueCode = uniqueCode,
+                                        userName = userName,
+                                        profileImage = profileImage,
+                                        uploadDate = uploadDate,
+                                        uploadImage = uploadImage,
+                                        uploadEmoji = uploadEmoji,
+                                        feedText = feedText
+                                    )
+                                    feedItems.add(feedItem)
+
+                                    // 모든 친구의 프로필 이미지를 가져오면 Adapter 업데이트
+                                    if (feedItems.size == fetchCount) {
+                                        recordFeedRVAdapter.updateItems(feedItems)
+                                    }
+
+                                    // 클릭 리스너 설정 (모든 데이터 가져온 후에 설정)
+                                    recordFeedRVAdapter.onItemClick = { feedItem ->
+                                        val bundle = Bundle().apply {
+                                            Log.d("click","uploadEmoji: ${feedItem.uploadEmoji}")
+                                            Log.d("click","feedText: ${feedItem.feedText}")
+                                            Log.d("click","uploadImage: ${feedItem.uploadImage}")
+                                            Log.d("click","userName: ${feedItem.userName}")
+                                            Log.d("click","uploadDate: ${feedItem.uploadDate}")
+                                            Log.d("click","profileImage: ${feedItem.profileImage}")
+
+
+                                            putString("uploadEmoji", feedItem.uploadEmoji)
+                                            putString("feedText", feedItem.feedText)
+                                            putString("uploadImage", feedItem.uploadImage)
+                                            putString("userName", feedItem.userName)
+                                            putString("uploadDate", feedItem.uploadDate)
+                                            putString("profileImage", feedItem.profileImage)
+                                        }
+
+                                        // FeedFinalFragment로 이동
+                                        val feedFinalFragment = FeedFinalFragment().apply {
+                                            arguments = bundle
+                                        }
+
+                                        // Fragment 전환
+                                        parentFragmentManager.beginTransaction()
+                                            .replace(R.id.main_frm, feedFinalFragment) // fragment_container는 실제 Container의 ID로 수정
+                                            .addToBackStack(null)
+                                            .commit()
+                                    }
+                                }
+                            }
+
+
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w("RecordFragment", "Error getting documents: ", e)
+                }
+        } else {
+            Log.w("RecordFragment", "No unique codes available for query.")
+        }
+    }
+
+    // Timestamp를 문자열로 변환하는 함수
+    private fun formatTimestampToString(timestamp: Timestamp): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+        return dateFormat.format(timestamp.toDate()) // Timestamp를 Date로 변환 후 문자열로 변환
     }
 }

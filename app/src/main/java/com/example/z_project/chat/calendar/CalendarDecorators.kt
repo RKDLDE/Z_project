@@ -341,117 +341,117 @@ object CalendarDecorators {
 
 
     // 피드 기록 캘린더에 해당하는 이벤트 데코
-    fun recordEventDecorator(context: Context, feedList: List<FeedModel>): DayViewDecorator {
-        return object : DayViewDecorator {
-            private val eventDates = HashMap<CalendarDay, Int>()
-
-            private var currentDay: CalendarDay? = null // 현재 데코레이션할 날짜를 저장
-
-            init {
-                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
-
-                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가
-                feedList.forEach { feed ->
-                    val uploadDateTime = dateFormat.parse(feed.uploadDate)
-                    if (uploadDateTime != null) {
-                        // Date를 Calendar로 변환
-                        val calendar = Calendar.getInstance().apply {
-                            time = uploadDateTime
-                        }
-
-                        // Calendar에서 연도, 월, 일 추출
-                        val year = calendar.get(Calendar.YEAR)
-                        val month = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작하므로 +1 필요
-                        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-                        // CalendarDay 객체로 변환하여 eventDates에 추가
-                        val calendarDay = CalendarDay.from(year, month, day)
-                        eventDates[calendarDay] = feed.uploadEmoji
-                    }
-                }
-            }
-
-            override fun shouldDecorate(day: CalendarDay?): Boolean {
-                return eventDates.contains(day)
-            }
-
-            override fun decorate(view: DayViewFacade) {
-                    eventDates.forEach { day, emojiResId ->
-                        if (shouldDecorate(day)) { // 날짜가 매칭되는지 확인
-                            Log.d("이모지내용", "${emojiResId} for date ${day}")
-
-
-                            val drawable = ContextCompat.getDrawable(context, R.drawable.logo)
-
-                            //ImageSpan 버전
-                            drawable?.setBounds(0, 0, 100, 100)
-                            val imageSpan = ImageSpan(drawable!!, ImageSpan.ALIGN_BOTTOM)
-                            view.addSpan(imageSpan)
-
-
-//                        drawable?.let {
-//                            view.addSpan(imageSpan)
+//    fun recordEventDecorator(context: Context, feedList: List<FeedModel>): DayViewDecorator {
+//        return object : DayViewDecorator {
+//            private val eventDates = HashMap<CalendarDay, Int>()
+//
+//            private var currentDay: CalendarDay? = null // 현재 데코레이션할 날짜를 저장
+//
+//            init {
+//                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+//
+//                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가
+//                feedList.forEach { feed ->
+//                    val uploadDateTime = dateFormat.parse(feed.uploadDate)
+//                    if (uploadDateTime != null) {
+//                        // Date를 Calendar로 변환
+//                        val calendar = Calendar.getInstance().apply {
+//                            time = uploadDateTime
 //                        }
-                        }
-                    }
-
-//                // 이벤트가 있는 날짜에 점을 추가하여 표시
-//                eventDates.forEach { (calendarDay, emoji) ->
-//                    feedList.forEach{ feed ->
-//                        if(feed.id == 2){ // 사용자 본인이라면 (예시: 2)
-//                            if (view is DayViewFacade) {
-//                                view.apply {
-//                                    setBackgroundDrawable(ContextCompat.getDrawable(context, feed.uploadEmoji)!!)
-//                                    addSpan(
-//                                        ForegroundColorSpan(
-//                                            ContextCompat.getColor(context, R.color.white)
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                        } else{
-//                            view.addSpan(ForegroundColorSpan(
-//                                ContextCompat.getColor(
-//                                    context,
-//                                    R.color.red
-//                                )
-//                            ))
-//                        }
+//
+//                        // Calendar에서 연도, 월, 일 추출
+//                        val year = calendar.get(Calendar.YEAR)
+//                        val month = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작하므로 +1 필요
+//                        val day = calendar.get(Calendar.DAY_OF_MONTH)
+//
+//                        // CalendarDay 객체로 변환하여 eventDates에 추가
+//                        val calendarDay = CalendarDay.from(year, month, day)
+//                        eventDates[calendarDay] = feed.uploadEmoji
 //                    }
 //                }
-            }
-
-            /**
-             * 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져오는 함수
-             * @param startDate 시작 날짜
-             * @param endDate 종료 날짜
-             * @return 날짜 범위 목록
-             */
-            private fun getDateRange(startDate: Date, endDate: Date): List<CalendarDay> {
-                val datesInRange = mutableListOf<CalendarDay>()
-                val calendar = Calendar.getInstance()
-                calendar.time = startDate
-
-                while (calendar.time.before(endDate)) {
-                    datesInRange.add(
-                        CalendarDay.from(
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH) + 1,
-                            calendar.get(Calendar.DAY_OF_MONTH)
-                        )
-                    )
-                    calendar.add(Calendar.DAY_OF_MONTH, 1)
-                }
-                datesInRange.add(
-                    CalendarDay.from(
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH) + 1,
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                    )
-                ) // Add the end date itself
-
-                return datesInRange
-            }
-        }
-    }
+//            }
+//
+//            override fun shouldDecorate(day: CalendarDay?): Boolean {
+//                return eventDates.contains(day)
+//            }
+//
+//            override fun decorate(view: DayViewFacade) {
+//                    eventDates.forEach { day, emojiResId ->
+//                        if (shouldDecorate(day)) { // 날짜가 매칭되는지 확인
+//                            Log.d("이모지내용", "${emojiResId} for date ${day}")
+//
+//
+//                            val drawable = ContextCompat.getDrawable(context, R.drawable.logo)
+//
+//                            //ImageSpan 버전
+//                            drawable?.setBounds(0, 0, 100, 100)
+//                            val imageSpan = ImageSpan(drawable!!, ImageSpan.ALIGN_BOTTOM)
+//                            view.addSpan(imageSpan)
+//
+//
+////                        drawable?.let {
+////                            view.addSpan(imageSpan)
+////                        }
+//                        }
+//                    }
+//
+////                // 이벤트가 있는 날짜에 점을 추가하여 표시
+////                eventDates.forEach { (calendarDay, emoji) ->
+////                    feedList.forEach{ feed ->
+////                        if(feed.id == 2){ // 사용자 본인이라면 (예시: 2)
+////                            if (view is DayViewFacade) {
+////                                view.apply {
+////                                    setBackgroundDrawable(ContextCompat.getDrawable(context, feed.uploadEmoji)!!)
+////                                    addSpan(
+////                                        ForegroundColorSpan(
+////                                            ContextCompat.getColor(context, R.color.white)
+////                                        )
+////                                    )
+////                                }
+////                            }
+////                        } else{
+////                            view.addSpan(ForegroundColorSpan(
+////                                ContextCompat.getColor(
+////                                    context,
+////                                    R.color.red
+////                                )
+////                            ))
+////                        }
+////                    }
+////                }
+//            }
+//
+//            /**
+//             * 시작 날짜와 종료 날짜 사이의 모든 날짜를 가져오는 함수
+//             * @param startDate 시작 날짜
+//             * @param endDate 종료 날짜
+//             * @return 날짜 범위 목록
+//             */
+//            private fun getDateRange(startDate: Date, endDate: Date): List<CalendarDay> {
+//                val datesInRange = mutableListOf<CalendarDay>()
+//                val calendar = Calendar.getInstance()
+//                calendar.time = startDate
+//
+//                while (calendar.time.before(endDate)) {
+//                    datesInRange.add(
+//                        CalendarDay.from(
+//                            calendar.get(Calendar.YEAR),
+//                            calendar.get(Calendar.MONTH) + 1,
+//                            calendar.get(Calendar.DAY_OF_MONTH)
+//                        )
+//                    )
+//                    calendar.add(Calendar.DAY_OF_MONTH, 1)
+//                }
+//                datesInRange.add(
+//                    CalendarDay.from(
+//                        calendar.get(Calendar.YEAR),
+//                        calendar.get(Calendar.MONTH) + 1,
+//                        calendar.get(Calendar.DAY_OF_MONTH)
+//                    )
+//                ) // Add the end date itself
+//
+//                return datesInRange
+//            }
+//        }
+    //}
 }
