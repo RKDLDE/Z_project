@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-//import com.example.z_project.chat.ChatFragment
-import com.example.z_project.chatting2.ChatFragment
+import com.example.z_project.chat.ChatFragment
+//import com.example.z_project.chatting2.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
