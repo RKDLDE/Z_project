@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/decoBG"
         android:layout_width="330dp"
-        android:layout_height="520dp"
+        android:layout_height="500dp"
         android:background="@drawable/cam_bg_rec"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
             android:layout_height="35dp"
             android:layout_gravity="top|end"
             android:layout_marginEnd="35dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             android:contentDescription="@null"
             app:srcCompat="@drawable/sss_img"
             android:clickable="true"
@@ -46,7 +46,7 @@
             android:layout_height="35dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:layout_marginStart="90dp"
             android:visibility="gone">
 
@@ -85,7 +85,7 @@
             android:layout_height="40dp"
             android:layout_gravity="top|start"
             android:layout_marginStart="35dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="15dp"
             app:srcCompat="@drawable/aa_img"
             android:contentDescription="@null"
             tools:ignore="ContentDescription"
@@ -121,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@+id/decoBG"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/emoji" />
 
@@ -132,8 +132,8 @@
         app:srcCompat="@drawable/clear"
         app:layout_constraintBottom_toTopOf="@+id/decoBG"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginBottom="30dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="30dp"
         android:text="Undo"
         android:contentDescription="delete"/>
 
