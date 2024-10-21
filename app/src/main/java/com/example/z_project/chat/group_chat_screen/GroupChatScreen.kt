@@ -124,7 +124,6 @@ fun GroupChatScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val imageRes = uiState.groupChat?.image ?: com.example.z_project.R.drawable.baseline_groups_24
-                val imageRes = uiState.groupChat?.image ?: R.drawable.group
                 val imagePainter = painterResource(id = imageRes)
 
                 Image(
@@ -136,9 +135,8 @@ fun GroupChatScreen(
 
 
 
-                    painter = imagePainter,
-                    contentDescription = "ProfileImage",
-                    contentScale = ContentScale.Crop
+
+                    //contentScale = ContentScale.Crop
                 )
                 //GroupChatIcon(imageRes = uiState.groupChat?.image ?: R.drawable.group)
 
@@ -527,7 +525,6 @@ fun InputChat(
                         .clickable { onClickRemoveReply() },
 
                     painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_close),
-                    painter = painterResource(id = R.drawable.ic_baseline_close),
 
                     contentDescription = "close"
                 )
@@ -578,8 +575,6 @@ fun InputChat(
                     modifier = Modifier.size(28.dp),
 
                     painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_arrow_upward),
-
-                    painter = painterResource(id = R.drawable.ic_baseline_arrow_upward),
 
                     contentDescription = "Send",
                     tint = Color.White
