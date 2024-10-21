@@ -9,18 +9,19 @@
 
     <!--title-->
     <TextView
+        android:layout_marginTop="20dp"
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_bold"
         android:text="MY PAGE"
-        android:textSize="38sp"
+        android:textSize="35sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.09" />
+        app:layout_constraintVertical_bias="0.08" />
 
     <!--profile - frame으로 image + button-->
     <FrameLayout
@@ -45,7 +46,6 @@
 
         <ImageButton
             android:id="@+id/ib_change_profile"
-            android:foreground="?attr/selectableItemBackground"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_gravity="bottom|right"
@@ -56,8 +56,9 @@
 
     <!--name - relativelayout으로 name + button-->
     <RelativeLayout
+
         android:id="@+id/rl_name"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +81,7 @@
 
         <ImageButton
             android:id="@+id/ib_rename"
-            android:foreground="?attr/selectableItemBackground"
+            android:elevation="0dp"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignBottom="@id/tv_name"
@@ -92,6 +93,8 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="10dp"
+        android:padding="1dp"
         android:layout_width="wrap_content"
         app:layout_constraintWidth_percent="0.89"
         android:layout_height="wrap_content"
@@ -108,10 +111,9 @@
         <!--친구관리 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_friend"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="25dp"
@@ -119,6 +121,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/btn_flist"
             app:layout_constraintTop_toBottomOf="@+id/rl_name">
 
             <ImageView
@@ -156,14 +159,14 @@
         <!--로그아웃 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_logout"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="25dp"
             android:paddingBottom="25dp"
+            android:background="@drawable/btn_logout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -204,10 +207,9 @@
         <!--계정삭제 LinearLayout으로 button custom-->
         <LinearLayout
             android:id="@+id/ll_delete"
-            android:layout_width="350dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingTop="25dp"
@@ -215,6 +217,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/btn_delete"
             app:layout_constraintTop_toBottomOf="@+id/ll_logout">
 
             <ImageView

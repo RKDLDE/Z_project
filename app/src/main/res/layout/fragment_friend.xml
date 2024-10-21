@@ -22,28 +22,38 @@
         <ImageButton
             android:id="@+id/ib_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#00FFFFFF"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="#00FFFFFF"
             app:srcCompat="@drawable/back" />
 
 
         <TextView
+            android:layout_marginTop="6dp"
             android:id="@+id/tv_friend_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
             android:fontFamily="@font/noto_sans_kr_semibold"
             android:includeFontPadding="false"
             android:text="친구 관리"
-            android:textAlignment="center"
-            android:layout_weight="5"
+            android:textStyle="bold"
+            android:layout_weight="2"
             android:textSize="30sp" />
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2.5">
+            android:layout_weight="5">
         </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/ib_friend_plus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#00FFFFFF"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/friend_plus" />
 
     </LinearLayout>
 
@@ -51,11 +61,10 @@
         android:id="@+id/tv_invite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="250dp"
+        android:layout_marginEnd="230dp"
         android:fontFamily="@font/noto_sans_kr_semibold"
         android:includeFontPadding="false"
         android:text="초대링크 보내기"
-        android:layout_marginLeft="3dp"
         android:textColor="#757575"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -64,7 +73,8 @@
         app:layout_constraintTop_toBottomOf="@+id/ll_title"
         app:layout_constraintVertical_bias="0.04" />
 
-    <LinearLayout
+    <FrameLayout
+        android:padding="1dp"
         android:id="@+id/ll_kakao"
         app:layout_constraintWidth_percent="0.9"
         android:layout_width="0dp"
@@ -73,51 +83,57 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:background="@drawable/friend_frame"
-        android:foreground="?attr/selectableItemBackground"
-        android:gravity="center"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_invite"
         app:layout_constraintVertical_bias="0.014">
 
-        <ImageView
-            android:id="@+id/iv_kakao"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/kakao_circle" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@drawable/btn_kakaolink">
 
-        <TextView
-            android:id="@+id/tv_link"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/noto_sans_kr_semibold"
-            android:includeFontPadding="false"
-            android:text="카카오톡"
-            android:textAlignment="textStart"
-            android:textSize="20sp" />
+            <ImageView
+                android:id="@+id/iv_kakao"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/kakaocircle" />
 
-        <ImageView
-            android:id="@+id/iv_friend_click"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/next_buttom" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans_kr_semibold"
+                android:includeFontPadding="false"
+                android:text="카카오톡"
+                android:textAlignment="textStart"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/iv_friend_click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/next_buttom" />
+        </LinearLayout>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_friend_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="330dp"
+        android:layout_marginEnd="300dp"
         android:fontFamily="@font/noto_sans_kr_semibold"
         android:includeFontPadding="false"
         android:text="친구"
-        android:layout_marginLeft="3dp"
         android:textColor="#757575"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

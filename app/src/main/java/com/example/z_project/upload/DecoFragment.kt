@@ -1,193 +1,144 @@
-/*package com.example.z_project.upload*/
+package com.example.z_project.upload
 
-//class DecoFragment : Fragment() {
-//    private lateinit var binding: FragmentDecoBinding
-//    private lateinit var _binding: FragmentDrawBinding
-//
-//    private lateinit var img: ImageView // 이미지를 표시할 ImageView(=canvasContainer)
-//
-//    private lateinit var fbPen: FloatingActionButton
-//    private lateinit var fbEraser: FloatingActionButton
-//    private lateinit var save: FloatingActionButton
-//
-//    private lateinit var drawCanvas: DrawFragment.DrawCanvas
-//    private lateinit var canvasContainer: ConstraintLayout
-//
-//
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-//        binding = FragmentDecoBinding.inflate(inflater, container, false)
-//        val view = inflater.inflate(R.layout.fragment_draw, container, false)
-//        img = binding.photo
-//
-//        arguments?.getString("photoUri")?.let { uriString ->
-//            val photoUri = Uri.parse(uriString)
-//
-//            // Glide를 사용하여 이미지 로드
-//            Glide.with(this)
-//                .load(photoUri)
-//                .into(img) // photoLayout이 ImageView이어야 함
-//
-//        // Initialize UI elements
-//        /*canvasContainer = view.findViewById(R.id.lo_canvas)*/
-//        fbPen = view.findViewById(R.id.fb_pen)
-//        fbEraser = view.findViewById(R.id.fb_eraser)
-//        save = view.findViewById(R.id.fb_save)
-//
-//
-//        binding.sss.setOnClickListener{
-//            drawCanvas = DrawFragment.DrawCanvas(requireContext())
-//            canvasContainer.addView(drawCanvas)
-//            arguments?.getString("photoUri")?.let { uriString ->
-//                val photoUri = Uri.parse(uriString)
-//
-//                // Glide를 사용하여 이미지 로드
-//                Glide.with(this)
-//                    .load(photoUri)
-//                    .into(binding.photo) // photoLayout이 ImageView이어야 함
-//            }
-//        }
-//
-//       /* setOnClickListener()*/
-//
-//        return binding.root
-//    }
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.net.Uri
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.example.z_project.R
+import com.example.z_project.databinding.FragmentDecoBinding
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        binding.sss.setOnClickListener{
-//            drawCanvas = DrawFragment.DrawCanvas(requireContext())
-//            canvasContainer.addView(drawCanvas)
-//            arguments?.getString("photoUri")?.let { uriString ->
-//                val photoUri = Uri.parse(uriString)
-//
-//                // Glide를 사용하여 이미지 로드
-//                Glide.with(this)
-//                    .load(photoUri)
-//                    .into(binding.photo) // photoLayout이 ImageView이어야 함
-//            }
-//        }
-//
-//
-//        binding.emoji.setOnClickListener{
-//            val emojiFragment = EmojiFragment()
-//            val fragmentManager = parentFragmentManager
-//            val fragmentTransaction = fragmentManager.beginTransaction()
-//            fragmentTransaction.replace(R.id.container, emojiFragment)
-//            /*fragmentTransaction.addToBackStack(null)*/
-//            fragmentTransaction.commit()
-//        }
-//    }
-//
-//    private fun setOnClickListener() {
-//        fbPen.setOnClickListener {
-//            drawCanvas.changeTool(DrawFragment.DrawCanvas.MODE_PEN)
-//        }
-//
-//        fbEraser.setOnClickListener {
-//            drawCanvas.changeTool(DrawFragment.DrawCanvas.MODE_ERASER)
-//        }
-//
-//        save.setOnClickListener {
-//            drawCanvas.invalidate()
-//            val saveBitmap = drawCanvas.getCurrentCanvas()
-//            DrawFragment.CanvasIO.saveBitmap(requireContext(), saveBitmap)
-//        }
+class DecoFragment : Fragment(), View.OnClickListener {
+    private lateinit var binding: FragmentDecoBinding
+    private var undoStack = mutableListOf<String>()  // 이전 상태 저장
+    private var photoUri: Uri? = null
+    private val sharedViewModel: SharedViewModel by activityViewModels()  // ViewModel 인스턴스
 
-//        fbOpen.setOnClickListener {
-//            drawCanvas.init()
-//            drawCanvas.loadDrawImage = CanvasIO.openBitmap(requireContext())
-//            drawCanvas.invalidate()
-//        }
-//    }
+    private var currentColor: Int = Color.BLACK
 
-//    class DrawCanvas(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
-//        companion object {
-//            const val MODE_PEN = 1
-//            const val MODE_ERASER = 0
-//        }
-//
-//        private val PEN_SIZE = 3
-//        private val ERASER_SIZE = 30
-//
-//        private val drawCommandList = ArrayList<DrawFragment.Pen>()
-//        private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-//        var loadDrawImage: Bitmap? = null
-//        private var color = Color.BLACK
-//        private var size = PEN_SIZE
-//
-//        init {
-//            initCanvas()
-//        }
-//
-//        private fun initCanvas() {
-//            paint.color = color
-//            paint.strokeWidth = size.toFloat()
-//        }
-//
-//        fun getCurrentCanvas(): Bitmap {
-//            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-//            val canvas = Canvas(bitmap)
-//            draw(canvas)
-//            return bitmap
-//        }
-//
-//        fun changeTool(toolMode: Int) {
-//            if (toolMode == MODE_PEN) {
-//                color = Color.BLACK
-//                size = PEN_SIZE
-//            } else {
-//                color = Color.WHITE
-//                size = ERASER_SIZE
-//            }
-//            paint.color = color
-//        }
-//
-//        override fun onDraw(canvas: Canvas) {
-//            canvas.drawColor(Color.WHITE)
-//
-//            loadDrawImage?.let {
-//                canvas.drawBitmap(it, 0f, 0f, null)
-//            }
-//
-//            for (i in drawCommandList.indices) {
-//                val p = drawCommandList[i]
-//                paint.color = p.color
-//                paint.strokeWidth = p.size.toFloat()
-//
-//                if (p.isMove) {
-//                    val prevP = drawCommandList[i - 1]
-//                    canvas.drawLine(prevP.x, prevP.y, p.x, p.y, paint)
-//                }
-//            }
-//        }
-//
-//        override fun onTouchEvent(event: MotionEvent): Boolean {
-//            val state = if (event.action == MotionEvent.ACTION_DOWN) Pen.STATE_START else Pen.STATE_MOVE
-//            drawCommandList.add(Pen(event.x, event.y, state, color, size))
-//            invalidate()
-//            return true
-//        }
-//    }
-//
-//    class Pen(var x: Float, var y: Float, var moveStatus: Int, var color: Int, var size: Int) {
-//        object {
-//            const val STATE_START = 0
-//            const val STATE_MOVE = 1
-//        }
-//
-//        val isMove: Boolean
-//            get() = moveStatus == STATE_MOVE
-//    }
-//
-//    // 사진 크기 조정을 위한 함수
-//    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
-//        val inputStream = requireContext().contentResolver.openInputStream(uri)
-//        val originalBitmap = BitmapFactory.decodeStream(inputStream)
-//        inputStream?.close()
-//        // Bitmap 크기 조정
-//        return originalBitmap?.let {
-//            Bitmap.createScaledBitmap(it, width, height, true)
-//        }
-//    }
-//}
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentDecoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        photoUri = arguments?.getString("photoUri")?.let { Uri.parse(it) }
+        if (photoUri != null) {
+            resizeImage(photoUri!!, 300, 400)
+            binding.photo.setImageUri(photoUri!!)
+            Log.d("Deco","${photoUri}")
+        }
+        // 이전 상태 저장 (글자 입력이나 다른 동작이 이루어지기 전에)
+        saveState()
+
+        binding.colorButtonsLayout.visibility = View.GONE
+        binding.drawBtn.setOnClickListener{
+            binding.photo.enableDrawingMode(true)
+            binding.colorButtonsLayout.visibility = View.VISIBLE
+            /*drawCanvas = DrawFragment.DrawCanvas(requireContext())
+            canvasContainer.addView(drawCanvas)*/
+            saveState()
+        }
+        binding.btnRed.setOnClickListener{
+            currentColor = Color.RED
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+        binding.btnGreen.setOnClickListener {
+            currentColor = Color.GREEN
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+        binding.btnBlue.setOnClickListener {
+            currentColor = Color.BLUE
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+        binding.btnBlack.setOnClickListener {
+            currentColor = Color.BLACK
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+
+
+
+        binding.aaBtn.setOnClickListener {
+            /*binding.myEditText.isEnabled = true
+            binding.myEditText.requestFocus()  // 포커스를 설정하여 바로 입력 가능*/
+            binding.photo.enableDrawingMode(false)
+            val inputText = binding.myEditText.text.toString()
+            binding.photo.setText(inputText, 0f, 0f)  // 텍스트 전달, 터치로 위치 결정
+            binding.myEditText.isEnabled = true
+            binding.myEditText.requestFocus()
+            saveState()
+        }
+
+        // Undo 버튼 클릭 시 이전 상태 복구
+        binding.undoButton.setOnClickListener {
+            binding.photo.undo()  // undo 호출
+        }
+
+        binding.emoji.setOnClickListener{
+            val filePath = "${context?.getExternalFilesDir(null)?.absolutePath}/saved_drawing.png"
+            binding.photo.saveDrawingToFile(filePath)  // Save drawing to file
+            sharedViewModel.imageUri.value = Uri.parse(filePath)  // URI를 ViewModel에 저장
+
+            val emojiFragment = EmojiFragment()
+            val fragmentManager = parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.main_frm, emojiFragment)
+            /*fragmentTransaction.addToBackStack(null)*/
+            fragmentTransaction.commit()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.btnRed -> {
+                currentColor = Color.RED
+            }
+            R.id.btnGreen -> {
+                currentColor = Color.GREEN
+            }
+            R.id.btnBlue -> {
+                currentColor = Color.BLUE
+            }
+            R.id.btnBlack -> {
+                currentColor = Color.BLACK
+            }
+        }
+        binding.photo.setColor(currentColor)
+    }
+
+    // 현재 상태를 저장하는 함수
+    private fun saveState() {
+        val currentText = binding.myEditText.text.toString()
+        undoStack.add(currentText)  // 현재 상태 저장
+    }
+    companion object {
+        private var xPos: Float = 0f  // 텍스트 입력 위치 x좌표
+        private var yPos: Float = 0f  // 텍스트 입력 위치 y좌표
+    }
+
+    // 사진 크기 조정을 위한 함수
+    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
+        val inputStream = requireContext().contentResolver.openInputStream(uri)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+
+        // Bitmap 크기 조정
+        return originalBitmap?.let {
+            Bitmap.createScaledBitmap(it, width, height, true)
+        }
+    }
+}

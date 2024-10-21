@@ -26,9 +26,13 @@ class YearSpinnerAdapter (
         val binding =
             ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-
-        binding.itemSpinnerYearTv.text =
-            if (selectedPosition == -1) "${currentYear}년" else "${yearList[selectedPosition]}년"
+        if(yearList.size > 12){
+            binding.itemSpinnerYearTv.text =
+                if (selectedPosition == -1) "${currentYear}년" else "${yearList[selectedPosition]}년"
+        } else{
+            binding.itemSpinnerYearTv.text =
+                if (selectedPosition == -1) "${currentYear}월" else "${yearList[selectedPosition]}월"
+        }
 
         Log.d("현재년도", "${currentYear}")
         Log.d("현재selectPosition", "${selectedPosition}")

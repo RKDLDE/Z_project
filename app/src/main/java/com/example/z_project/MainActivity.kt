@@ -14,6 +14,7 @@ import com.example.z_project.chat.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
 import com.example.z_project.record.RecordFragment
+import com.example.z_project.upload.FinalFragment
 import com.example.z_project.upload.UploadFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,22 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Intent로부터 데이터 가져오기
-        val userName = intent.getStringExtra("USER_NAME")
-        val profileImageUrl = intent.getStringExtra("PROFILE_IMAGE")
-        val token = intent.getStringExtra("TOKEN")
-
-        Log.d("메인카카오정보", "이름: $userName")
-        Log.d("메인카카오정보", "토큰: $token")
-        // Fragment에 데이터 전달
-        val fragment = MypageFragment().apply {
-            arguments = Bundle().apply {
-                putString("USER_NAME", userName)
-                putString("PROFILE_IMAGE", profileImageUrl)
-                putString("TOKEN", token)
-            }
-        }
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -97,6 +82,7 @@ class MainActivity : AppCompatActivity() {
             false
         }
     }
+
 
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()

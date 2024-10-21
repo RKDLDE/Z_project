@@ -1,5 +1,6 @@
 package com.example.z_project.chat.calendar
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.z_project.R
 import com.example.z_project.chat.calendar.CalendarDecorators.otherMonthDecorator
 import com.example.z_project.databinding.ActivityGroupCalendarBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
@@ -42,6 +44,27 @@ class GroupCalendarActivity : AppCompatActivity() {
     private lateinit var customDayViewDecorator: DayViewDecorator
     private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
 
+    private var dummyCategoryList = listOf(
+        Categorys(
+            name = "중요",
+            color = ColorEnum.getByColor(R.color.calendar_color_pink),
+        ),
+        Categorys(
+            name = "일상",
+            color = ColorEnum.getByColor(R.color.calendar_color_blue),
+        ),
+        Categorys(
+            name = "개인 약속",
+            color = ColorEnum.getByColor(R.color.calendar_color_yellow),
+        ),
+        Categorys(
+            name = "학교",
+            color = ColorEnum.getByColor(R.color.calendar_color_gray),
+        ),
+    ).toMutableList()
+    //private var dummyCategoryList = mutableListOf<Categorys>()
+
+
     private var dummyScheduleList = listOf(
         ScheduleModel(
             authId = 1,
@@ -49,7 +72,9 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "회의",
             startDate = "2024.10.07",
             endDate = "2024.10.08",
-            userColor = ColorEnum.getByColor(R.color.calendar_color_pink)
+            startTime = "오후 6:00",
+            endTime = "오후 9:00",
+            category = Categorys("중요", ColorEnum.getByColor(R.color.calendar_color_pink))
         ),
         ScheduleModel(
             authId = 2,
@@ -57,16 +82,20 @@ class GroupCalendarActivity : AppCompatActivity() {
             title = "개강",
             startDate = "2024.10.02",
             endDate = "2024.10.02",
-            userColor = ColorEnum.getByColor(R.color.calendar_color_blue)
+            startTime = "",
+            endTime = "",
+            category = Categorys("일상", ColorEnum.getByColor(R.color.calendar_color_blue))
         ),
         ScheduleModel(
             authId = 3,
             groupId = 1,
             title = "출근",
             startDate = "2024.10.02",
-            endDate = "2024.10.02",
-            userColor = ColorEnum.getByColor(R.color.calendar_color_yellow)
-        )
+            endDate = "2024.10.04",
+            startTime = "오전 9:00",
+            endTime = "오후 6:00",
+            category = Categorys("개인 약속", ColorEnum.getByColor(R.color.calendar_color_yellow))
+        ),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -287,7 +316,22 @@ class GroupCalendarActivity : AppCompatActivity() {
 
         //Dialog 표시 (더미데이터)
         dialogEventDetails.show(filteredEvents, selectedDate) {
-            showAddEventDialog(selectedDate) // 일정 작성 다이얼로그 호출
+            showSelectCategoryDialog(selectedDate) // 일정 작성 다이얼로그 호출
+        }
+    }
+
+    private fun showSelectCategoryDialog(selectedDate: CalendarDay) { // 카테고리 선택 창
+
+        //Dialog 정의
+        val dialogSelectCategory = DialogSelectCategory(this) {
+            binding.calendarView.clearSelection() // 날짜 선택 해제
+        }
+
+        //Dialog 표시 (더미데이터)
+        dialogSelectCategory.show(dummyCategoryList, selectedDate) {
+            // 카테고리 추가 activity 이동
+            val intent = Intent(this, AddCategoryActivity::class.java)
+            startActivity(intent)
         }
     }
 

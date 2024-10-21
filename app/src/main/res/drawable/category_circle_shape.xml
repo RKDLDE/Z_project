@@ -1,0 +1,4 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/calendar_color_yellow" /> <!-- 여기서 동적으로 색상 변경 -->
+    <corners android:radius="25dp" />
+</shape>

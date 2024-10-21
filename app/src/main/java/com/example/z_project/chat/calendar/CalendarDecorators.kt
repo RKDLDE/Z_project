@@ -22,7 +22,13 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.graphics.Color // 색상 관련
+import android.graphics.ColorFilter
 import android.graphics.Paint // 페인팅 관련
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.ScaleDrawable
+import android.graphics.drawable.VectorDrawable
+import android.text.style.ImageSpan
 import com.example.z_project.record.FeedModel
 
 
@@ -111,6 +117,45 @@ object CalendarDecorators {
         }
     }
 
+    fun pastAndTodayDecorator(context: Context): DayViewDecorator {
+        val today = CalendarDay.today() // 오늘 날짜
+
+        return object : DayViewDecorator {
+            override fun shouldDecorate(day: CalendarDay): Boolean {
+                // 오늘 날짜와 이전 날짜는 데코레이션 대상
+                return day.isBefore(today) || day == today
+            }
+
+            override fun decorate(view: DayViewFacade) {
+                view.addSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.black))) // 검정색
+            }
+        }
+    }
+
+    fun futureDatesDecorator(context: Context): DayViewDecorator {
+        val today = CalendarDay.today() // 오늘 날짜
+
+        return object : DayViewDecorator {
+            override fun shouldDecorate(day: CalendarDay): Boolean {
+                // 현재 날짜 이후인 경우 true를 반환
+                return day.isAfter(today)
+            }
+
+            override fun decorate(view: DayViewFacade) {
+                // 날짜를 회색으로 설정
+                view.addSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.gray // 선택되지 않은 달의 날짜들을 회색으로 변경
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+
     /**
      * 일요일을 강조하는 데코레이터를 생성하기 위한 함수
      * @return DayViewDecorator 객체
@@ -155,48 +200,6 @@ object CalendarDecorators {
                 ))
             }
         }
-    }
-
-    fun PaddingDayViewDecorator(context: Context, calendarDay: CalendarDay): DayViewDecorator{
-        return object : DayViewDecorator{
-            private val inflater: LayoutInflater = LayoutInflater.from(context)
-
-            override fun decorate(view: DayViewFacade) {
-                // 날짜 커스텀 레이아웃으로 설정
-                val dayView = inflater.inflate(R.layout.custom_day_view, null)
-                val dayText: TextView = dayView.findViewById(R.id.dayText)
-
-                dayText.text = calendarDay.day.toString()
-
-                // 뷰의 사이즈 측정
-                dayView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                dayView.layout(0, 0, dayView.measuredWidth, dayView.measuredHeight)
-
-                // 뷰를 비트맵으로 변환
-                val bitmap = viewToBitmap(dayView)
-                val drawable = bitmapToDrawable(context, bitmap)
-
-                // 날짜 뷰 설정
-                view.apply {
-                    // 커스텀 스타일 적용
-                    setBackgroundDrawable(drawable)
-                }
-            }
-
-            override fun shouldDecorate(day: CalendarDay): Boolean = true
-        }
-    }
-
-    fun viewToBitmap(view: View): Bitmap {
-        val width = view.width
-        val height = view.height
-        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        return bitmap
-    }
-    fun bitmapToDrawable(context: Context, bitmap: Bitmap): BitmapDrawable {
-        return BitmapDrawable(context.resources, bitmap)
     }
 
     fun koreanMonthTitleFormatter(): TitleFormatter {
@@ -244,7 +247,7 @@ object CalendarDecorators {
 
                                 datesInRange.forEach { date ->
                                     // 유저의 색상 추가
-                                    val userColor = schedule.userColor?.color ?: ContextCompat.getColor(context, R.color.select_blue)
+                                    val userColor = schedule.category.color?.color ?: ContextCompat.getColor(context, R.color.select_blue)
 
                                     // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
                                     eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
@@ -389,13 +392,24 @@ object CalendarDecorators {
             }
 
             override fun decorate(view: DayViewFacade) {
-                eventDates.forEach { day, emojiResId ->
-                    if (shouldDecorate(day)) { // 날짜가 매칭되는지 확인
-                        Log.d("이모지내용", "${emojiResId} for date ${day}")
-                        val drawable = ContextCompat.getDrawable(context, emojiResId)
-                        drawable?.let { view.setBackgroundDrawable(drawable) }
+                    eventDates.forEach { day, emojiResId ->
+                        if (shouldDecorate(day)) { // 날짜가 매칭되는지 확인
+                            Log.d("이모지내용", "${emojiResId} for date ${day}")
+
+
+                            val drawable = ContextCompat.getDrawable(context, R.drawable.logo)
+
+                            //ImageSpan 버전
+                            drawable?.setBounds(0, 0, 100, 100)
+                            val imageSpan = ImageSpan(drawable!!, ImageSpan.ALIGN_BOTTOM)
+                            view.addSpan(imageSpan)
+
+
+//                        drawable?.let {
+//                            view.addSpan(imageSpan)
+//                        }
+                        }
                     }
-                }
 
 //                // 이벤트가 있는 날짜에 점을 추가하여 표시
 //                eventDates.forEach { (calendarDay, emoji) ->

@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class DialogAddEvent (private val context: Context, private val calendarClearSelection: () -> Unit){
@@ -142,6 +143,18 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
         // 체크 버튼 (저장 버튼)
         bindingDialog.dialogEventDetailsCheckIconOn.setOnClickListener {
             // 확인 버튼 클릭 시 수행할 작업
+            val title = bindingDialog.dialogEventDetailsContent.text.toString()
+            val startDate = bindingDialog.selectStartDate.text.toString()
+            val endDate = bindingDialog.selectEndDate.text.toString()
+            val startTime = bindingDialog.selectStartTime.text.toString()
+            val endTime = bindingDialog.selectEndTime.text.toString()
+
+            // Event 객체 생성
+            val event = ScheduleModel(1, 1, title, startDate, endDate, startTime, endTime, Categorys("중요", ColorEnum.getByColor(R.color.calendar_color_yellow)))
+
+            // Firestore에 저장
+            saveEventToFirestore(event)
+
             dialog.dismiss() // 다이얼로그 닫기
         }
 
@@ -308,17 +321,36 @@ class DialogAddEvent (private val context: Context, private val calendarClearSel
         return format.format(calendar.time)
     }
 
+    // 하루종일 토글 상태 변경 함수
     private fun dateToggle(isSelected: Boolean){
         if(isSelected){
             bindingDialog.dialogEventDetailsToggleOff.visibility = View.GONE
             bindingDialog.dialogEventDetailsToggleOn.visibility = View.VISIBLE
             bindingDialog.dialogEventDetailsStarttimeSelect.visibility = View.GONE
             bindingDialog.dialogEventDetailsEndtimeSelect.visibility = View.GONE
+
+            bindingDialog.selectStartTime.text = ""
+            bindingDialog.selectEndTime.text = ""
+
         } else{
             bindingDialog.dialogEventDetailsToggleOff.visibility = View.VISIBLE
             bindingDialog.dialogEventDetailsToggleOn.visibility = View.GONE
             bindingDialog.dialogEventDetailsStarttimeSelect.visibility = View.VISIBLE
             bindingDialog.dialogEventDetailsEndtimeSelect.visibility = View.VISIBLE
         }
+    }
+
+    // firebase 일정 데이터 업로드
+    private fun saveEventToFirestore(event: ScheduleModel) {
+        val db = FirebaseFirestore.getInstance()
+        val eventsCollection = db.collection("events") // "events"라는 컬렉션에 저장
+
+        eventsCollection.add(event)
+            .addOnSuccessListener { documentReference ->
+                Log.d("Firestore", "Event added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error adding event", e)
+            }
     }
 }

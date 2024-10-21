@@ -25,6 +25,13 @@ fun GroupChatRoute(
             onClickExit = { onExitGroupChat(uiState.groupChat?.id ?: 0L) }, //채팅방 나가기 버튼 클릭 시 호출되며, onExitGroupChat이 실행됩니다. uiState.groupChat?.id를 가져와서 그룹 채팅의 ID를 넘겨줍니다. ID가 없을 경우 기본값 0L이 전달
             onClickSend = viewModel::sendChat, //채팅 메시지를 전송할 때 viewModel.sendChat 함수가 호출
             onClickRemoveReply = { viewModel.selectReplyChat(null) } //답장 모드를 취소할 때 viewModel.selectReplyChat(null)을 호출하여 선택한 답장을 취소
+            uiState = uiState,
+            onNavigateUp = onNavigateUp,
+            onClickMenu = viewModel::openExitMenu,
+            onSwipeSelect = viewModel::selectReplyChat,
+            onClickExit = { onExitGroupChat(uiState.groupChat?.id ?: 0L) },
+            onClickSend = viewModel::sendChat,
+            onClickRemoveReply = { viewModel.selectReplyChat(null) }
         )
     }
 }

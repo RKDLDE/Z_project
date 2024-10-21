@@ -76,6 +76,7 @@ import android.R.id
 
 
 
+
 @Composable
 fun GroupChatScreen(
     uiState: GroupChatUiState, //현재 그룹 채팅의 UI 상태를 나타내는 GroupChatUiState 객체입니다. 채팅 메시지, 그룹 정보 등을 포함
@@ -123,6 +124,7 @@ fun GroupChatScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val imageRes = uiState.groupChat?.image ?: com.example.z_project.R.drawable.baseline_groups_24
+                val imageRes = uiState.groupChat?.image ?: R.drawable.group
                 val imagePainter = painterResource(id = imageRes)
 
                 Image(
@@ -133,6 +135,10 @@ fun GroupChatScreen(
                     contentDescription = "ProfileImage" // 접근성을 위한 설명
 
 
+
+                    painter = imagePainter,
+                    contentDescription = "ProfileImage",
+                    contentScale = ContentScale.Crop
                 )
                 //GroupChatIcon(imageRes = uiState.groupChat?.image ?: R.drawable.group)
 
@@ -519,7 +525,10 @@ fun InputChat(
                             end.linkTo(parent.end)
                         }
                         .clickable { onClickRemoveReply() },
+
                     painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_close),
+                    painter = painterResource(id = R.drawable.ic_baseline_close),
+
                     contentDescription = "close"
                 )
             }
@@ -567,7 +576,11 @@ fun InputChat(
             ) {
                 Icon(
                     modifier = Modifier.size(28.dp),
+
                     painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_arrow_upward),
+
+                    painter = painterResource(id = R.drawable.ic_baseline_arrow_upward),
+
                     contentDescription = "Send",
                     tint = Color.White
                 )

@@ -10,7 +10,7 @@ import com.example.z_project.R
 import kotlin.math.min
 
 // 롱터치 후 드래그, 스와이프 동작 제어
-class SwipeHelperCallback(private val recyclerView: RecyclerView, private val recyclerViewAdapter : EventRVAdapter)
+class SwipeHelperCallback(private val recyclerView: RecyclerView, private val recyclerViewAdapter : RecyclerView.Adapter<*>)
     : ItemTouchHelper.Callback() {
 
     // swipe_view 를 swipe 했을 때 <삭제> 화면이 보이도록 고정하기 위한 변수들
@@ -121,7 +121,11 @@ class SwipeHelperCallback(private val recyclerView: RecyclerView, private val re
             if (isClamped) {
                 eraseView.setOnClickListener { view ->
                     // 스와이프가 완료된 경우에만 삭제 처리
-                    recyclerViewAdapter.removeData(viewHolder.layoutPosition)
+                    if (recyclerViewAdapter is EventRVAdapter) {
+                        (recyclerViewAdapter as EventRVAdapter).removeData(viewHolder.layoutPosition)
+                    } else if (recyclerViewAdapter is CalendarCategoryRVAdapter){
+                        (recyclerViewAdapter as CalendarCategoryRVAdapter).removeData(viewHolder.layoutPosition)
+                    }
                     Toast.makeText(viewHolder.itemView.context, "일정이 삭제됐습니다", Toast.LENGTH_SHORT).show()
                 }
             } else {

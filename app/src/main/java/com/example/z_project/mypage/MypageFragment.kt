@@ -1,5 +1,8 @@
 package com.example.z_project.mypage
 
+import FriendFragment
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -21,14 +24,17 @@ import com.example.z_project.MainActivity
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentMypageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.firestore.FirebaseFirestore
 import java.io.InputStream
 import java.net.URL
 
 class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
-
+    private lateinit var sharedPreferences: SharedPreferences
     lateinit var binding: FragmentMypageBinding
     private lateinit var tv_name: TextView
     private lateinit var profileImageView: ImageView
+    private val firestore = FirebaseFirestore.getInstance()
+    private var userId: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMypageBinding.inflate(inflater, container, false)
@@ -38,35 +44,36 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sharedPreferences = requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        userId = sharedPreferences.getString("UNIQUE_CODE", null)
+        Log.d("Mypage", "로컬 userId: $userId")
 
-        // MainActivity로부터 전달된 데이터 가져오기
-        val userName = arguments?.getString("USER_NAME", "name")
-        val profileImageUrl = arguments?.getString("PROFILE_IMAGE")
-        val token = arguments?.getString("TOKEN")
-
-        Log.d("마이페이지카카오정보", "이름: $userName")
-        Log.d("마이페이지카카오정보", "토큰: $token")
-        // 초기화
         tv_name = binding.tvName // TV 이름 초기화
         profileImageView = binding.ivProfile // ImageView 초기화
 
-        // 사용자 이름과 프로필 사진 설정
-        if (!userName.isNullOrEmpty()) {
-            tv_name.text = userName
-        }
-
-        // 프로필 이미지 로드
-        if (!profileImageUrl.isNullOrEmpty()) {
-            Log.d("기본프로필~","${profileImageUrl}")
-            if (profileImageUrl == "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg") {
-                profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
-            }
-            else{
-                loadProfileImage(profileImageUrl)
-            }
+        // 사용자 정보 가져오기
+        if (userId != null) {
+            fetchUserInfo()
         } else {
-            profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
+            Log.e("Mypage", "userId가 null입니다.")
         }
+//        // 사용자 이름과 프로필 사진 설정
+//        if (!userName.isNullOrEmpty()) {
+//            tv_name.text = userName
+//        }
+//
+//        // 프로필 이미지 로드
+//        if (!profileImageUrl.isNullOrEmpty()) {
+//            //Log.d("기본프로필~","${profileImageUrl}")
+//            if (profileImageUrl == "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg") {
+//                profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
+//            }
+//            else{
+//                loadProfileImage(profileImageUrl)
+//            }
+//        } else {
+//            profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
+//        }
 
         // 친구 관리 버튼 클릭
         binding.llFriend.setOnClickListener {
@@ -101,17 +108,32 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
         }
     }
 
+    private fun fetchUserInfo() {
+        firestore.collection("users").document(userId!!).get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    val userName = document.getString("name")
+                    val profileImageUrl = document.getString("profileImageUrl")
+
+                    // 사용자 이름과 프로필 사진 설정
+                    tv_name.text = userName ?: "이름 없음"
+                    Log.d("Mypage", "이름 불러오기: ${userName}")
+
+                    if (!profileImageUrl.isNullOrEmpty()) {
+                        loadProfileImage(profileImageUrl)
+                    } else {
+                        profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                // 데이터 가져오기 실패 처리
+                Log.e("Mypage", "데이터 가져오기 실패", exception)
+            }
+    }
+
     // 이미지 선택 시 호출되는 메서드
     override fun onImageSelected(imageUri: Uri) {
-        // 선택된 이미지의 비트맵 가져오기
-        //val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, imageUri)
-
-        // ImageView의 크기와 비율에 맞게 자르기
-//        val width = profileImageView.width
-//        val height = profileImageView.height
-
-        // Glide를 사용하여 선택된 이미지를 둥글게 설정
-        // Glide를 사용하여 URI로 이미지 로드
         Glide.with(this)
             .load(imageUri) // 비트맵 대신 URI 사용
             .apply(RequestOptions.circleCropTransform()) // 비트맵을 둥글게 처리
@@ -119,27 +141,21 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
             .error(R.drawable.profile) // 오류 발생 시 기본 이미지 표시
             .into(profileImageView)
 
-        // 비트맵을 ImageView 크기에 맞게 조정 (중앙에서 잘라냄)
-        //val resizedBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
+        // 이미지 URI를 Firebase에 업데이트
+        updateUserProfileImage(imageUri.toString())
+    }
 
-        // 비트맵을 ImageView에 설정
-//        profileImageView.setImageBitmap(resizedBitmap)
+    private fun updateUserProfileImage(imageUrl: String) {
+        firestore.collection("users").document(userId!!).update("profileImageUrl", imageUrl)
+            .addOnSuccessListener {
+                Log.d("Mypage", "바뀐 이미지 저장")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Mypage", "업데이트 실패", exception)
+            }
     }
 
     private fun loadProfileImage(url: String) {
-        // 비동기적으로 이미지 로드
-//        AsyncTask.execute {
-//            try {
-//                val inputStream: InputStream = URL(url).openStream()
-//                val bitmap: Bitmap = BitmapFactory.decodeStream(inputStream)
-//
-//                // UI 스레드에서 이미지 설정
-//                activity?.runOnUiThread {
-//                    profileImageView.setImageBitmap(bitmap)
-//                }
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
             // Glide를 사용하여 프로필 이미지 둥글게 로드
             Glide.with(this)
                 .load(url)
@@ -173,8 +189,19 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
 
     private fun showRenameDialog() {
         val renameDialog = RenameFragment(requireContext()) { newName ->
-            tv_name.text = newName // 다이얼로그에서 변경된 이름을 TextView에 표시
+            tv_name.text = newName
+            updateUserName(newName) // 이름 업데이트
         }
         renameDialog.show()
+    }
+
+    private fun updateUserName(newName: String) {
+        firestore.collection("users").document(userId!!).update("name", newName)
+            .addOnSuccessListener {
+                Log.d("Mypage", "바뀐 이름 저장")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Mypage", "바뀐 이름 저장 실패", exception)
+            }
     }
 }

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="320dp"
     android:layout_height="wrap_content"
-    android:padding="3dp"
     android:background="@drawable/dialog_round"
     android:gravity="center"
     android:orientation="vertical">
@@ -15,7 +14,7 @@
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:gravity="center"
-        android:minHeight="55dp"
+        android:minHeight="57dp"
         android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -45,7 +44,7 @@
             android:id="@+id/noButton"
             style="drawable/dialog_custombutton"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="57dp"
             android:layout_weight="1"
             android:background="#00ff0000"
             android:includeFontPadding="false"
@@ -57,14 +56,14 @@
         <View
             android:background="#D7D8DC"
             android:layout_width="1dp"
-            android:layout_height="55dp"
+            android:layout_height="60dp"
             />
 
         <Button
             android:id="@+id/yesButton"
             style="drawable/dialog_custombutton"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="57dp"
             android:layout_weight="1"
             android:includeFontPadding="false"
             android:text="삭제"
