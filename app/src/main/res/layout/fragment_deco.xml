@@ -18,13 +18,13 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.example.z_project.upload.CustomView
+            android:padding="10dp"
             android:id="@+id/photo"
             android:layout_width="300dp"
             android:layout_height="400dp"
-            android:adjustViewBounds="true"
             android:layout_gravity="center|bottom"
+            android:adjustViewBounds="true"
             android:layout_marginBottom="45dp"
-            android:scaleType="centerCrop"
             android:background="#EEEEEE"
             tools:ignore="ContentDescription" />
 
@@ -38,7 +38,7 @@
             android:contentDescription="@null"
             app:srcCompat="@drawable/sss_img"
             android:clickable="true"
-            android:focusable="true" /> <!-- 포커스 가능 -->/>
+            android:focusable="true" />
 
         <LinearLayout
             android:id="@+id/colorButtonsLayout"
