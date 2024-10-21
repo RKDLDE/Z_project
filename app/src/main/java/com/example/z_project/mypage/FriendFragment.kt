@@ -103,7 +103,7 @@ class FriendFragment : Fragment() {
                     if (document != null && document.exists()) {
                         val friendName = document.getString("name") ?: "이름 없음"
                         val friendProfileImage =
-                            document.getString("profileImageUrl") ?: "" // 프로필 이미지 URL
+                            document.getString("profileImage") ?: "" // 프로필 이미지 URL
 
                         // FriendData 객체 생성 후 리스트에 추가
                         friendList.add(FriendData(friendCode, friendName, friendProfileImage))
