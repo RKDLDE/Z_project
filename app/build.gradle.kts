@@ -26,6 +26,9 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
@@ -67,7 +70,9 @@ android {
     dependencies {
 
         implementation(libs.androidx.core.ktx)
+
         implementation(libs.androidx.appcompat)
+
         implementation(libs.material)
         implementation(libs.androidx.activity)
         implementation(libs.androidx.constraintlayout)
@@ -137,12 +142,11 @@ android {
         //채팅
         //implementation("com.squareup.retrofit2:retrofit:2.9.0")
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
-        implementation("com.google.dagger:hilt-android:2.41")
-        kapt("com.google.dagger:hilt-compiler:2.41")
+        implementation("com.google.dagger:hilt-android:2.51.1")
+        kapt("com.google.dagger:hilt-compiler:2.51.1")
         implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
         implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
         implementation(libs.androidx.navigation.compose)
-
 
         //테드 퍼미션
         /*implementation("gun0912.ted:tedpermission:2.2.3")*/

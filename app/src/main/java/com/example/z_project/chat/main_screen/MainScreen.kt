@@ -180,11 +180,11 @@ fun ChangeType(
 
 @Composable
 fun GroupChatList(
-    modifier: Modifier = Modifier,
-    chats: List<GroupChat>,
-    itemClick: (GroupChat) -> Unit
+    modifier: Modifier = Modifier, //UI 요소의 외부 속성을 수정할 수 있는 Modifier입니다. 기본값은 Modifier
+    chats: List<GroupChat>, //GroupChat 객체의 리스트로, 각 그룹 채팅의 데이터가 포함
+    itemClick: (GroupChat) -> Unit // 각 그룹 채팅 항목이 클릭되었을 때 호출되는 람다 함수입니다. 클릭된 GroupChat 객체를 인자로 받습니다.
 ) {
-    LazyVerticalGrid(
+    LazyVerticalGrid(//수직으로 나열된 그리드 형태의 목록을 표시하는 컴포넌트입니다. GridCells.Fixed(2)로 설정하여 두 개의 열로 구성
         modifier = modifier,
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(12.dp)
@@ -193,16 +193,16 @@ fun GroupChatList(
             GroupChatItem(
                 chatGroup = chats[index],
                 onClick = itemClick
-            )
+            ) //제공된 chats 리스트의 크기만큼 반복하여 각 GroupChat 항목을 생성
         }
     }
 }
 
 @Composable
 fun GroupChatItem(
-    modifier: Modifier = Modifier,
-    chatGroup: GroupChat,
-    onClick: (GroupChat) -> Unit
+    modifier: Modifier = Modifier, //UI 요소의 외부 속성을 수정할 수 있는 Modifier
+    chatGroup: GroupChat, //현재 항목을 표시할 GroupChat 객체
+    onClick: (GroupChat) -> Unit //항목이 클릭될 때 호출되는 람다 함수로, 클릭된 GroupChat 객체를 인자로 받습
 ) {
     val screenWidth = (LocalConfiguration.current.screenWidthDp / 2) - 52
 
@@ -214,7 +214,7 @@ fun GroupChatItem(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(modifier = Modifier) {
-            Image(
+            Image( //그룹 채팅의 이미지를 표시
                 modifier = Modifier
                     .size(screenWidth.dp)
                     .clip(RoundedCornerShape(24.dp))
@@ -223,8 +223,8 @@ fun GroupChatItem(
                         color = Color(0xffe2e2e2),
                         shape = RoundedCornerShape(24.dp)
                     ),
-                painter = painterResource(id = chatGroup.image),
-                contentDescription = "이미지",
+                painter = painterResource(id = chatGroup.image), //chatGroup.image에서 이미지 리소스를 가져옵니다.
+                contentDescription = "이미지", //접근성을 위해 이미지의 설명을 제공
                 contentScale = ContentScale.Crop
             )
             ChatCount(
@@ -327,14 +327,7 @@ fun BottomBar(
             modifier = Modifier.weight(0.25f),
             contentAlignment = Alignment.Center
         ) {
-//            Icon(
-//                modifier = Modifier
-//                    .size(32.dp)
-//                    .fillMaxWidth(0.25f)
-//                    .alpha(0.4f),
-//                painter = painterResource(id = R.drawable.ic_upload),
-//                contentDescription = "BottomBarIcon"
-//            )
+
         }
         Box(
             modifier = Modifier.weight(0.25f),

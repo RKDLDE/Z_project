@@ -62,7 +62,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.z_project.R
+import com.example.z_project.R as AppR
 import com.example.z_project.chat.model.Chat
 import com.example.z_project.chat.model.getDefaultGroupChats
 import com.example.z_project.chat.personal_chat_screen.InputChat
@@ -70,11 +70,16 @@ import com.example.z_project.chat.ui.theme.ChatUITheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.R
+import android.R.id
+
+
+
 
 
 @Composable
 fun GroupChatScreen(
-    uiState: GroupChatUiState,
+    uiState: GroupChatUiState, //현재 그룹 채팅의 UI 상태를 나타내는 GroupChatUiState 객체입니다. 채팅 메시지, 그룹 정보 등을 포함
     onNavigateUp: () -> Unit,
     onClickMenu: (Boolean) -> Unit,
     onSwipeSelect: (Chat) -> Unit,
@@ -105,7 +110,7 @@ fun GroupChatScreen(
                     }
                     .clip(CircleShape)
                     .clickable { onNavigateUp() },
-                painter = painterResource(id = R.drawable.ic_baseline_arrow_back_ios_new),
+                painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_arrow_back_ios_new),
                 contentDescription = "NavigateBack"
             )
             Row(
@@ -118,6 +123,7 @@ fun GroupChatScreen(
                 },
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val imageRes = uiState.groupChat?.image ?: com.example.z_project.R.drawable.baseline_groups_24
                 val imageRes = uiState.groupChat?.image ?: R.drawable.group
                 val imagePainter = painterResource(id = imageRes)
 
@@ -125,6 +131,11 @@ fun GroupChatScreen(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape),
+                    painter = painterResource(id = com.example.z_project.R.drawable.baseline_groups_24), // 벡터 리소스 ID로 수정
+                    contentDescription = "ProfileImage" // 접근성을 위한 설명
+
+
+
                     painter = imagePainter,
                     contentDescription = "ProfileImage",
                     contentScale = ContentScale.Crop
@@ -156,12 +167,12 @@ fun GroupChatScreen(
                 end.linkTo(parent.end)
             }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_calendar_month),
+                    painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_calendar_month),
                     contentDescription = "Calendar"
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_user_talk),
+                    painter = painterResource(id = com.example.z_project.R.drawable.ic_upload),  //수정해야함
                     contentDescription = "UserTalk"
                 )
                 Spacer(modifier = Modifier.width(12.dp))
@@ -169,7 +180,7 @@ fun GroupChatScreen(
                     modifier = Modifier
                         .clip(CircleShape)
                         .clickable { onClickMenu(!uiState.isExit) },
-                    painter = painterResource(id = R.drawable.ic_baseline_menu),
+                    painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_menu),
                     contentDescription = "Menu"
                 )
             }
@@ -514,7 +525,10 @@ fun InputChat(
                             end.linkTo(parent.end)
                         }
                         .clickable { onClickRemoveReply() },
+
+                    painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_close),
                     painter = painterResource(id = R.drawable.ic_baseline_close),
+
                     contentDescription = "close"
                 )
             }
@@ -562,7 +576,11 @@ fun InputChat(
             ) {
                 Icon(
                     modifier = Modifier.size(28.dp),
+
+                    painter = painterResource(id = com.example.z_project.R.drawable.ic_baseline_arrow_upward),
+
                     painter = painterResource(id = R.drawable.ic_baseline_arrow_upward),
+
                     contentDescription = "Send",
                     tint = Color.White
                 )
