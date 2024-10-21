@@ -51,19 +51,71 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     // 이미지 Bitmap을 설정하는 함수
     fun setImageUri(uri: Uri) {
         val inputStream = context.contentResolver.openInputStream(uri)
-        bitmap = BitmapFactory.decodeStream(inputStream)
+        val originalBitmap = BitmapFactory.decodeStream(inputStream)
         inputStream?.close()
-        if (bitmap == null) {
-            // 비트맵이 null일 경우의 처리 (예: 로그 출력)
+
+        if (originalBitmap != null) {
+            // 비트맵을 뷰 크기에 맞게 비율에 맞게 조정
+            bitmap = Bitmap.createScaledBitmap(originalBitmap, width, height, true)
+        } else {
             Log.e("CustomView", "Failed to decode bitmap from uri")
         }
         invalidate()  // 뷰를 다시 그리기
     }
 
+    // 새로운 메서드 추가
+    fun setImageBitmap(bitmap: Bitmap?) {
+        this.bitmap = rotateBitmap(bitmap) // 전달된 비트맵을 현재 비트맵으로 설정
+        invalidate() // 뷰를 다시 그리기
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap?): Bitmap?  {
+        bitmap?.let {
+            // 90도 회전하기 위한 Matrix 생성
+            val matrix = android.graphics.Matrix().apply {
+                postRotate(90f) // 90도 회전
+            }
+
+            // 회전된 비트맵 생성
+            val rotatedBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
+
+            // XML에서 설정한 크기 가져오기
+            val targetWidth =500
+            val targetHeight = 600
+
+            // 비율 유지: 원래 크기를 기준으로 비율을 계산
+            val originalWidth = rotatedBitmap.width
+            val originalHeight = rotatedBitmap.height
+            val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
+
+            // 새 크기 계산 (XML의 크기에 맞춤)
+            val newWidth: Int
+            val newHeight: Int
+
+            if (targetWidth > targetHeight) {
+                newWidth = targetWidth
+                newHeight = (targetWidth / aspectRatio).toInt()
+            } else {
+                newHeight = targetHeight
+                newWidth = (targetHeight * aspectRatio).toInt()
+            }
+
+            // 고품질 비트맵 생성
+            val scaledBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(scaledBitmap)
+
+            // 품질 높은 비트맵을 새로운 크기로 그리기
+            canvas.drawBitmap(rotatedBitmap, null, android.graphics.Rect(0, 0, newWidth, newHeight), null)
+
+            return scaledBitmap
+        }
+        return null
+    }
 
     override fun onDraw(canvas: Canvas) {
         // Bitmap이 존재하면 그리기
         bitmap?.let {
+
             canvas.drawBitmap(it, 0f, 0f, null)
         }
 

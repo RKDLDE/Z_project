@@ -175,6 +175,10 @@ class RecordFragment : Fragment() {
 
                                     // 모든 친구의 프로필 이미지를 가져오면 Adapter 업데이트
                                     if (feedItems.size == fetchCount) {
+                                        // 업로드 시간 기준으로 정렬
+                                        feedItems.sortByDescending { it.uploadDate }
+
+                                        // RecyclerView Adapter 업데이트
                                         recordFeedRVAdapter.updateItems(feedItems)
                                     }
 

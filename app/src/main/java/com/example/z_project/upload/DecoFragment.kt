@@ -38,8 +38,8 @@ class DecoFragment : Fragment(), View.OnClickListener {
 
         photoUri = arguments?.getString("photoUri")?.let { Uri.parse(it) }
         if (photoUri != null) {
-            resizeImage(photoUri!!, 300, 400)
-            binding.photo.setImageUri(photoUri!!)
+            val resizedBitmap = resizeImage(photoUri!!, 300, 400) // 고정 크기 300x400
+            binding.photo.setImageBitmap(resizedBitmap) // 이미지를 설정
             Log.d("Deco","${photoUri}")
         }
         // 이전 상태 저장 (글자 입력이나 다른 동작이 이루어지기 전에)
@@ -153,7 +153,7 @@ class DecoFragment : Fragment(), View.OnClickListener {
     }
 
     // 사진 크기 조정을 위한 함수
-    private fun resizeImage(uri: Uri, maxWidth: Int, maxHeight: Int): Bitmap? {
+    private fun resizeImage(uri: Uri, fixedWidth: Int, fixedHeight: Int): Bitmap? {
         val inputStream = requireContext().contentResolver.openInputStream(uri)
         val originalBitmap = BitmapFactory.decodeStream(inputStream)
         inputStream?.close()
@@ -166,14 +166,15 @@ class DecoFragment : Fragment(), View.OnClickListener {
             // 비율을 계산
             val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
 
-            var newWidth = maxWidth
-            var newHeight = maxHeight
+            // 새 너비 및 높이 초기화
+            var newWidth = fixedWidth
+            var newHeight = fixedHeight
 
-            // 비율에 맞춰 크기 조정
+            // 고정된 비율을 유지하면서 크기 조정
             if (originalWidth > originalHeight) {
-                newHeight = (newWidth / aspectRatio).toInt()
+                newHeight = (fixedWidth / aspectRatio).toInt()
             } else {
-                newWidth = (newHeight * aspectRatio).toInt()
+                newWidth = (fixedHeight * aspectRatio).toInt()
             }
 
             // Bitmap 크기 조정
