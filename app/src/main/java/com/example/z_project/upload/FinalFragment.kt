@@ -38,9 +38,7 @@ class FinalFragment : Fragment() {
     private val firestore = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
 
-
     private var imageUri: Uri? = null // imageUri를 클래스 수준에서 선언
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,17 +75,10 @@ class FinalFragment : Fragment() {
                 // FileProvider를 통해 content:// URI 얻기
                 val imageFile = File(uri.path!!) // 경로를 사용하여 파일 객체 생성
                 imageUri = FileProvider.getUriForFile(
-
-                val imageUri: Uri = FileProvider.getUriForFile(
-
                     requireContext(),
                     "${BuildConfig.APPLICATION_ID}.provider",
                     imageFile
                 )
-
-
-                uploadImageToFirebase(imageUri, currentTime) // 이미지 업로드 및 Firestore 저장
-
             }
         }
 
@@ -166,8 +157,7 @@ class FinalFragment : Fragment() {
     private fun uploadImageAndSaveUrl(documentId: String) {
         val userId = sharedPreferences.getString("UNIQUE_CODE", null)
         val timestamp = System.currentTimeMillis() // 현재 시간으로 파일 이름 생성
-        val storageRef =
-            FirebaseStorage.getInstance().reference.child("images/${userId}_profile_$timestamp.jpg")
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/${userId}_profile_$timestamp.jpg")
 
         // 이미지 업로드
         storageRef.putFile(imageUri!!)
@@ -197,12 +187,12 @@ class FinalFragment : Fragment() {
             .addOnSuccessListener { document ->
                 if (document != null) {
                     val userName = document.getString("name")
-                    val profileImageUrl = document.getString("profileImageUrl")
+                    val profileImage = document.getString("profileImage")
 
                     tv_name.text = userName ?: "이름 없음"
 
-                    if (!profileImageUrl.isNullOrEmpty()) {
-                        loadProfileImage(profileImageUrl)
+                    if (!profileImage.isNullOrEmpty()) {
+                        loadProfileImage(profileImage)
                     } else {
                         profileImageView.setImageResource(R.drawable.profile)
                     }

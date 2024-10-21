@@ -15,6 +15,7 @@ class RecordFeedRVAdapter(private var items: List<FeedModel>) :
     RecyclerView.Adapter<RecordFeedRVAdapter.ViewHolder>() {
     // 클릭 리스너 정의
     var onItemClick: ((FeedModel) -> Unit)? = null
+
     interface onItemClickListener {
         fun onItemClick(position: Int)
     }
@@ -30,7 +31,8 @@ class RecordFeedRVAdapter(private var items: List<FeedModel>) :
         viewType: Int
     ): RecordFeedRVAdapter.ViewHolder {
         val binding: ItemRecordFeedBinding = ItemRecordFeedBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false)
+            LayoutInflater.from(parent.context), parent, false
+        )
         return ViewHolder(binding, parent.context)
     }
 
@@ -64,13 +66,11 @@ class RecordFeedRVAdapter(private var items: List<FeedModel>) :
             }
 
 
-
             // 클릭 리스너 설정
             binding.root.setOnClickListener {
                 onItemClick?.invoke(item) // 클릭 시 아이템 전달
             }
         }
-
 
 
         private fun loadProfileImage(url: String) {
@@ -83,17 +83,19 @@ class RecordFeedRVAdapter(private var items: List<FeedModel>) :
                 .into(binding.itemRecordUser) // 프로필 이미지 뷰
         }
     }
+
     // Adapter의 아이템 업데이트 함수
     fun updateItems(newItems: List<FeedModel>) {
         items = newItems
         notifyDataSetChanged() // 데이터 변경 통지
 
-    RecyclerView.ViewHolder(binding.root) {
-        fun bindItems(items: FeedModel) {
-            binding.itemRecordFeedImage.setImageResource(items.uploadImage) // 업로드한 메인 이미지
-            binding.itemRecordUser.setImageResource((items.userImage)) // 업로드한 유저의 프로필
-            binding.itemRecordEmoji.setImageResource((items.uploadEmoji)) // 업로드한 내용의 이모티콘
-            binding.itemRecordText.text = items.feedText // 업로드한 내용의 텍스트
-        }
+//    RecyclerView.ViewHolder(binding.root) {
+//        fun bindItems(items: FeedModel) {
+//            binding.itemRecordFeedImage.setImageResource(items.uploadImage) // 업로드한 메인 이미지
+//            binding.itemRecordUser.setImageResource((items.userImage)) // 업로드한 유저의 프로필
+//            binding.itemRecordEmoji.setImageResource((items.uploadEmoji)) // 업로드한 내용의 이모티콘
+//            binding.itemRecordText.text = items.feedText // 업로드한 내용의 텍스트
+//        }
+//    }
     }
 }
