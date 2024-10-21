@@ -26,11 +26,6 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         style = Paint.Style.STROKE
         isAntiAlias = true
     }
-    private val textPaint = Paint().apply {
-        color = Color.RED
-        textSize = 60f
-        isAntiAlias = true
-    }
 
     private var xPos: Float = 0f
     private var yPos: Float = 0f
@@ -79,11 +74,6 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
         // Path를 따라 그리기 (현재 그리는 그림)
         canvas.drawPath(path, currentPaint)
-
-        // 사용자가 입력한 텍스트를 그리기
-        if (inputText.isNotEmpty()) {
-            canvas.drawText(inputText, xPos, yPos, textPaint)
-        }
     }
 
 
@@ -104,27 +94,12 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                         path.reset()
                     }
                 }
-            } else {
-                // 텍스트 입력 모드일 때, 터치한 좌표에 텍스트 추가
-                when (it.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        xPos = it.x
-                        yPos = it.y
-                        invalidate()
-                    }
-                }
             }
         }
         return true
     }
 
-    // 텍스트 입력 위치와 내용을 설정
-    fun setText(newText: String, x: Float, y: Float) {
-        inputText = newText
-        xPos = x
-        yPos = y
-        invalidate()  // View 다시 그리기
-    }
+
     // 그림 그리기 모드 설정 함수
     fun enableDrawingMode(enable: Boolean) {
         drawingMode = enable
