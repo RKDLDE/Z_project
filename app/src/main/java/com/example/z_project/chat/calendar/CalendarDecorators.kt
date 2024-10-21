@@ -29,6 +29,7 @@ import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.VectorDrawable
 import android.text.style.ImageSpan
+import androidx.core.graphics.toColorInt
 import com.example.z_project.record.FeedModel
 
 
@@ -221,62 +222,55 @@ object CalendarDecorators {
     fun eventDecorator(context: Context, scheduleList: List<ScheduleModel>): DayViewDecorator {
         return object : DayViewDecorator {
             private val eventMap = mutableMapOf<CalendarDay, MutableList<Int>>() // 이벤트 날짜마다 여러 색상을 저장하는 맵
-            private lateinit var eventColors: IntArray
-            private val eventDates = HashSet<CalendarDay>()
-
-            private var currentDay: CalendarDay? = null
+            private var eventColors: IntArray = intArrayOf()
+            private val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.getDefault()) // 날짜 포맷 설정
 
             init {
-                val dateFormat = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
+                if (scheduleList.isEmpty()) {
+                    Log.d("eventDecorator", "scheduleList is empty.")
+                } else{
+                    // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
+                    scheduleList.forEach { schedule ->
+                        schedule.startDate?.let { startDate ->
+                            try {
+                                // 시작 날짜를 파싱
+                                val startDateTime = dateFormat.parse(startDate)
+                                val endDateTime = schedule.endDate?.let { endDate ->
+                                    // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
+                                    dateFormat.parse(endDate)
+                                } ?: startDateTime
 
-                // 스케줄 목록에서 이벤트가 있는 날짜를 파싱하여 이벤트 날짜 목록에 추가한다.
-                scheduleList.forEach { schedule ->
-                    schedule.startDate?.let { startDate ->
-                        try {
-                            // 시작 날짜를 파싱
-                            val startDateTime = dateFormat.parse(startDate)
-                            val endDateTime = schedule.endDate?.let { endDate ->
-                                // 종료 날짜를 파싱 (종료 날짜가 없으면 시작 날짜로 설정)
-                                dateFormat.parse(endDate)
-                            } ?: startDateTime
+                                if (startDateTime != null && startDateTime <= endDateTime) {
+                                    // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
+                                    val datesInRange = getDateRange(startDateTime, endDateTime)
+                                    //eventDates.addAll(datesInRange)
 
-                            if (startDateTime != null && startDateTime <= endDateTime) {
-                                // 날짜 범위를 가져와서 이벤트 날짜 목록에 추가
-                                val datesInRange = getDateRange(startDateTime, endDateTime)
-                                //eventDates.addAll(datesInRange)
+                                    datesInRange.forEach { date ->
+                                        // 유저의 색상 추가
+                                        val userColor = schedule.category.let { category ->
+                                            val colorEnum = category.getColorEnum()
+                                            val colorResId = colorEnum!!.color ?: R.color.main_gray // null일 경우 기본 색상 설정
+                                            ContextCompat.getColor(context, colorResId)
+                                        }
 
-                                datesInRange.forEach { date ->
-                                    // 유저의 색상 추가
-                                    val userColor = schedule.category.color?.color ?: ContextCompat.getColor(context, R.color.select_blue)
-
-                                    // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
-                                    eventMap.computeIfAbsent(date) { mutableListOf() }.add(userColor)
-                                    Log.d("eventMap", "${eventMap}")
+                                        // 날짜에 색상을 추가 (여러 색상이 있을 경우 리스트로 저장)
+                                        userColor.let { color ->
+                                            eventMap.computeIfAbsent(date) { mutableListOf() }.add(color)
+                                            Log.d("eventMap", "$date: $color")
+                                        }
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                     }
                 }
+
             }
 
             override fun shouldDecorate(day: CalendarDay?): Boolean {
-//                return eventDates.contains(day)
-//                if (day == null) {
-//                    Log.d("엥", "day가 null입니다.")
-//                    return false
-//                }
-//                val containsKey = eventMap.containsKey(day)
-//                Log.d("엥", "day: $day, containsKey: $containsKey")
-//                return containsKey
-//                if(eventMap.containsKey(day)){
-//                    currentDay = day
-//                }
-//                Log.d("이벤트날짜22", "${currentDay}")
                 return day != null && eventMap.containsKey(day)
-
-                //return eventMap.containsKey(day)
             }
 
             override fun decorate(view: DayViewFacade?) {
@@ -340,16 +334,6 @@ object CalendarDecorators {
                     )
                 ) // Add the end date itself
 
-//                while (calendar.time.before(endDate) || calendar.time == endDate) {
-//                    datesInRange.add(
-//                        CalendarDay.from(
-//                            calendar.get(Calendar.YEAR),
-//                            calendar.get(Calendar.MONTH) + 1,
-//                            calendar.get(Calendar.DAY_OF_MONTH)
-//                        )
-//                    )
-//                    calendar.add(Calendar.DAY_OF_MONTH, 1)
-//                }
                 return datesInRange
             }
         }

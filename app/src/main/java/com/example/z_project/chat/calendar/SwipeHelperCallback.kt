@@ -163,12 +163,30 @@ class SwipeHelperCallback(private val recyclerView: RecyclerView, private val re
     }
 
     // swipe_view 반환 -> swipe_view만 이동할 수 있게 해줌
-    private fun getView(viewHolder: RecyclerView.ViewHolder) : View = viewHolder.itemView.findViewById(
-        R.id.item_calendar_event)
+    private fun getView(viewHolder: RecyclerView.ViewHolder) : View {
+        return when {
+            viewHolder.itemView.findViewById<View>(R.id.item_calendar_event) != null -> {
+                viewHolder.itemView.findViewById(R.id.item_calendar_event)
+            }
+            viewHolder.itemView.findViewById<View>(R.id.item_calendar_category) != null -> {
+                viewHolder.itemView.findViewById(R.id.item_calendar_category)
+            }
+            else -> {
+                throw IllegalStateException("Unknown view type in SwipeHelperCallback")
+            }
+        }
+    }
 
     // erase_item_view 찾는 함수 추가
     private fun getEraseView(viewHolder: RecyclerView.ViewHolder): View {
-        return viewHolder.itemView.findViewById(R.id.erase_item_view)
+        return when {
+            viewHolder.itemView.findViewById<View>(R.id.erase_item_view) != null -> {
+                viewHolder.itemView.findViewById(R.id.erase_item_view)
+            }
+            else -> {
+                throw IllegalStateException("Unknown erase view in SwipeHelperCallback")
+            }
+        }
     }
 
     // swipe_view 를 swipe 했을 때 <삭제> 화면이 보이도록 고정

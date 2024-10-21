@@ -3,6 +3,7 @@ package com.example.z_project.chat.calendar
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
@@ -22,6 +23,7 @@ import java.util.Locale
 
 class DialogEventDetails(private val context: Context, private val calendarClearSelection: () -> Unit) {
     private val dialog = Dialog(context)
+    private lateinit var sharedPreferences: SharedPreferences
     val bindingDialog = DialogEventDetailsBinding.inflate(LayoutInflater.from(context))
     private val db = FirebaseFirestore.getInstance() // Firestore 인스턴스 생성
 
@@ -30,12 +32,16 @@ class DialogEventDetails(private val context: Context, private val calendarClear
         dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        // 본인 고유코드 가져오기
+        sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("UNIQUE_CODE", null)
+
         // 선택 날짜를 텍스트로 보여주기
         bindingDialog.addCalendarDate.text = formatDateWithE(selectedDate)
 
         // RecyclerView 설정 & Adapter 연결
         bindingDialog.addCalendarEventContentRv.layoutManager = LinearLayoutManager(context)
-        val eventAdapter = EventRVAdapter(events as ArrayList<ScheduleModel>)
+        val eventAdapter = EventRVAdapter(events as ArrayList<ScheduleModel>, context)
         bindingDialog.addCalendarEventContentRv.adapter = eventAdapter
 
         // 리사이클러뷰에 스와이프 기능 달기

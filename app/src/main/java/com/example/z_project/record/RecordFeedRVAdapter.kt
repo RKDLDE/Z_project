@@ -87,5 +87,13 @@ class RecordFeedRVAdapter(private var items: List<FeedModel>) :
     fun updateItems(newItems: List<FeedModel>) {
         items = newItems
         notifyDataSetChanged() // 데이터 변경 통지
+
+    RecyclerView.ViewHolder(binding.root) {
+        fun bindItems(items: FeedModel) {
+            binding.itemRecordFeedImage.setImageResource(items.uploadImage) // 업로드한 메인 이미지
+            binding.itemRecordUser.setImageResource((items.userImage)) // 업로드한 유저의 프로필
+            binding.itemRecordEmoji.setImageResource((items.uploadEmoji)) // 업로드한 내용의 이모티콘
+            binding.itemRecordText.text = items.feedText // 업로드한 내용의 텍스트
+        }
     }
 }

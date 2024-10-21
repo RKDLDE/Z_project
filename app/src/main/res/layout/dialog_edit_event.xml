@@ -15,7 +15,7 @@
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/add_calendar_dialog"
+            android:id="@+id/edit_event_dialog"
             android:layout_width="match_parent"
             android:layout_height="582dp"
             android:background="@drawable/bottomsheet_style"
@@ -24,40 +24,42 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/dialog_event_details_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="9월 7일 토요일"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+<!--            <TextView-->
+<!--                android:id="@+id/dialog_edit_event_date"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:gravity="center"-->
+<!--                android:text="9월 7일 토요일"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="15sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
 
             <ImageView
-                android:id="@+id/dialog_event_details_check_icon_off"
+                android:id="@+id/dialog_event_edit_check_icon_off"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/calendar_event_check_off"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_date" />
+                app:layout_constraintTop_toTopOf="parent" />
             <ImageView
-                android:id="@+id/dialog_event_details_check_icon_on"
+                android:id="@+id/dialog_event_edit_check_icon_on"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:src="@drawable/calendar_event_check_on"
+                android:layout_marginTop="25dp"
                 android:layout_marginEnd="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_date"
+                app:layout_constraintTop_toTopOf="parent"
                 android:visibility="gone"/>
 
             <TextView
-                android:id="@+id/dialog_event_details_title"
+                android:id="@+id/dialog_event_edit_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
@@ -66,10 +68,10 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_date" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/dialog_event_details_content"
+                android:id="@+id/dialog_event_edit_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
@@ -84,7 +86,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_title" />
+                app:layout_constraintTop_toBottomOf="@id/dialog_event_edit_title" />
 
             <View
                 android:id="@+id/divider"
@@ -94,11 +96,11 @@
                 android:background="@color/main_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_content"
+                app:layout_constraintTop_toBottomOf="@id/dialog_event_edit_content"
                 app:layout_constraintWidth_percent="0.95" />
 
             <TextView
-                android:id="@+id/dialog_event_details_allday"
+                android:id="@+id/dialog_event_edit_allday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="하루종일"
@@ -111,22 +113,22 @@
 
 
             <ImageView
-                android:id="@+id/dialog_event_details_toggle_off"
+                android:id="@+id/dialog_event_edit_toggle_off"
                 android:layout_width="33dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_allday"
-                app:layout_constraintBottom_toBottomOf="@id/dialog_event_details_allday"
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_allday"
+                app:layout_constraintBottom_toBottomOf="@id/dialog_event_edit_allday"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/toggle_off"
                 android:visibility="visible"/>
             <ImageView
-                android:id="@+id/dialog_event_details_toggle_on"
+                android:id="@+id/dialog_event_edit_toggle_on"
                 android:layout_width="33dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_allday"
-                app:layout_constraintBottom_toBottomOf="@id/dialog_event_details_allday"
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_allday"
+                app:layout_constraintBottom_toBottomOf="@id/dialog_event_edit_allday"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:src="@drawable/toggle_on"
                 android:visibility="gone"/>
@@ -139,11 +141,11 @@
                 android:background="@color/main_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_allday"
+                app:layout_constraintTop_toBottomOf="@id/dialog_event_edit_allday"
                 app:layout_constraintWidth_percent="0.95" />
 
             <TextView
-                android:id="@+id/dialog_event_details_starttime"
+                android:id="@+id/dialog_event_edit_starttime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="시작"
@@ -155,16 +157,16 @@
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/dialog_event_details_startdate_select"
+                android:id="@+id/dialog_event_edit_startdate_select"
                 android:layout_width="85dp"
                 android:layout_height="25dp"
                 android:background="@drawable/dialog_calendar_time_bg"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_starttime"
-                app:layout_constraintEnd_toStartOf="@id/dialog_event_details_starttime_select">
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_starttime"
+                app:layout_constraintEnd_toStartOf="@id/dialog_event_edit_starttime_select">
 
                 <TextView
-                    android:id="@+id/select_start_date"
+                    android:id="@+id/edit_start_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024. 09. 07"
@@ -178,16 +180,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/dialog_event_details_starttime_select"
+                android:id="@+id/dialog_event_edit_starttime_select"
                 android:layout_width="85dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/dialog_calendar_time_bg"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_starttime">
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_starttime">
 
                 <TextView
-                    android:id="@+id/select_start_time"
+                    android:id="@+id/edit_start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="오전 1:00"
@@ -208,11 +210,11 @@
                 android:background="@color/main_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_starttime"
+                app:layout_constraintTop_toBottomOf="@id/dialog_event_edit_starttime"
                 app:layout_constraintWidth_percent="0.95" />
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/dialog_start_calendar_view"
+                android:id="@+id/dialog_edit_start_calendar_view"
                 android:layout_width="match_parent"
                 android:layout_height="290dp"
                 android:padding="12dp"
@@ -231,7 +233,7 @@
                 android:visibility="gone"/>
 
             <TimePicker
-                android:id="@+id/dialog_calendar_start_timepicker"
+                android:id="@+id/dialog_edit_calendar_start_timepicker"
                 android:layout_width="340dp"
                 android:layout_height="140dp"
                 android:timePickerMode="spinner"
@@ -242,14 +244,14 @@
                 android:visibility="gone"/>
 
             <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/start_time_barrier"
+                android:id="@+id/edit_start_time_barrier"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="dialog_calendar_start_timepicker,dialog_start_calendar_view"/>
+                app:constraint_referenced_ids="dialog_edit_calendar_start_timepicker,dialog_edit_start_calendar_view"/>
 
             <TextView
-                android:id="@+id/dialog_event_details_endtime"
+                android:id="@+id/dialog_event_edit_endtime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="종료"
@@ -258,20 +260,20 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="15dp"
-                app:layout_constraintTop_toBottomOf="@id/start_time_barrier"
+                app:layout_constraintTop_toBottomOf="@id/edit_start_time_barrier"
                 app:layout_constraintStart_toStartOf="parent"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/dialog_event_details_enddate_select"
+                android:id="@+id/dialog_event_edit_enddate_select"
                 android:layout_width="85dp"
                 android:layout_height="25dp"
                 android:background="@drawable/dialog_calendar_time_bg"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_endtime"
-                app:layout_constraintEnd_toStartOf="@id/dialog_event_details_endtime_select">
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_endtime"
+                app:layout_constraintEnd_toStartOf="@id/dialog_event_edit_endtime_select">
 
                 <TextView
-                    android:id="@+id/select_end_date"
+                    android:id="@+id/edit_end_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024. 09. 07"
@@ -284,16 +286,16 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/dialog_event_details_endtime_select"
+                android:id="@+id/dialog_event_edit_endtime_select"
                 android:layout_width="85dp"
                 android:layout_height="25dp"
                 android:background="@drawable/dialog_calendar_time_bg"
                 android:layout_marginEnd="20dp"
-                app:layout_constraintTop_toTopOf="@id/dialog_event_details_endtime"
+                app:layout_constraintTop_toTopOf="@id/dialog_event_edit_endtime"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <TextView
-                    android:id="@+id/select_end_time"
+                    android:id="@+id/edit_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="오전 1:00"
@@ -314,11 +316,11 @@
                 android:background="@color/main_gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dialog_event_details_endtime"
+                app:layout_constraintTop_toBottomOf="@id/dialog_event_edit_endtime"
                 app:layout_constraintWidth_percent="0.95" />
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                android:id="@+id/dialog_end_calendar_view"
+                android:id="@+id/dialog_edit_end_calendar_view"
                 android:layout_width="match_parent"
                 android:layout_height="290dp"
                 android:padding="12dp"
@@ -337,7 +339,7 @@
                 android:visibility="gone"/>
 
             <TimePicker
-                android:id="@+id/dialog_calendar_end_timepicker"
+                android:id="@+id/dialog_edit_calendar_end_timepicker"
                 android:layout_width="340dp"
                 android:layout_height="140dp"
                 android:timePickerMode="spinner"
@@ -348,14 +350,14 @@
                 android:visibility="gone"/>
 
             <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/end_time_barrier"
+                android:id="@+id/edit_end_time_barrier"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:barrierDirection="bottom"
-                app:constraint_referenced_ids="dialog_calendar_end_timepicker,dialog_end_calendar_view"/>
+                app:constraint_referenced_ids="dialog_edit_calendar_end_timepicker,dialog_edit_end_calendar_view"/>
 
             <TextView
-                android:id="@+id/dialog_event_details_category_title"
+                android:id="@+id/dialog_event_edit_category_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="카테고리"
@@ -364,12 +366,12 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginBottom="20dp"
-                app:layout_constraintTop_toBottomOf="@id/divider4"
+                app:layout_constraintTop_toBottomOf="@id/edit_end_time_barrier"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <TextView
-                android:id="@+id/dialog_event_details_category_name"
+                android:id="@+id/dialog_event_edit_category_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="일상"
@@ -378,7 +380,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="15dp"
-                app:layout_constraintTop_toBottomOf="@id/divider4"
+                app:layout_constraintTop_toBottomOf="@id/edit_end_time_barrier"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
 
