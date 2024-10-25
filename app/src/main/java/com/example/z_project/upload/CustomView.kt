@@ -81,8 +81,9 @@ class CustomView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
             // XML에서 설정한 크기 가져오기
             // 탭 500, 600
-            val targetWidth = 1200
-            val targetHeight = 1300
+            // 갤럭시 1200, 1300
+            val targetWidth = 500
+            val targetHeight = 600
 
             // 비율 유지: 원래 크기를 기준으로 비율을 계산
             val originalWidth = rotatedBitmap.width
