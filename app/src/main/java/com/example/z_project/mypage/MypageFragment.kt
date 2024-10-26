@@ -25,6 +25,7 @@ import com.example.z_project.R
 import com.example.z_project.databinding.FragmentMypageBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import java.io.InputStream
 import java.net.URL
 
@@ -35,6 +36,8 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
     private lateinit var profileImageView: ImageView
     private val firestore = FirebaseFirestore.getInstance()
     private var userId: String? = null
+    private val storage = FirebaseStorage.getInstance()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentMypageBinding.inflate(inflater, container, false)
@@ -108,6 +111,29 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
         }
     }
 
+//    private fun fetchUserInfo() {
+//        firestore.collection("users").document(userId!!).get()
+//            .addOnSuccessListener { document ->
+//                if (document != null) {
+//                    val userName = document.getString("name")
+//                    val profileImage = document.getString("profileImage")
+//
+//                    // 사용자 이름과 프로필 사진 설정
+//                    tv_name.text = userName ?: "이름 없음"
+//                    Log.d("Mypage", "이름 불러오기: ${userName}")
+//
+//                    if (!profileImage.isNullOrEmpty()) {
+//                        loadProfileImage(profileImage)
+//                    } else {
+//                        profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
+//                    }
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                // 데이터 가져오기 실패 처리
+//                Log.e("Mypage", "데이터 가져오기 실패", exception)
+//            }
+//    }
     private fun fetchUserInfo() {
         firestore.collection("users").document(userId!!).get()
             .addOnSuccessListener { document ->
@@ -120,35 +146,66 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
                     Log.d("Mypage", "이름 불러오기: ${userName}")
 
                     if (!profileImage.isNullOrEmpty()) {
-                        loadProfileImage(profileImage)
+                        loadProfileImage(profileImage) // URL 형식으로 이미지 로드
                     } else {
                         profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
                     }
                 }
             }
             .addOnFailureListener { exception ->
-                // 데이터 가져오기 실패 처리
                 Log.e("Mypage", "데이터 가져오기 실패", exception)
             }
     }
 
+//    // 이미지 선택 시 호출되는 메서드
+//    override fun onImageSelected(imageUri: Uri) {
+//        Glide.with(this)
+//            .load(imageUri) // 비트맵 대신 URI 사용
+//            .apply(RequestOptions.circleCropTransform()) // 비트맵을 둥글게 처리
+//            .placeholder(R.drawable.profile) // 로딩 중에 기본 이미지 표시
+//            .error(R.drawable.profile) // 오류 발생 시 기본 이미지 표시
+//            .into(profileImageView)
+//
+//        // 이미지 URI를 Firebase에 업데이트
+//        updateUserProfileImage(imageUri.toString())
+//    }
     // 이미지 선택 시 호출되는 메서드
     override fun onImageSelected(imageUri: Uri) {
-        Glide.with(this)
-            .load(imageUri) // 비트맵 대신 URI 사용
-            .apply(RequestOptions.circleCropTransform()) // 비트맵을 둥글게 처리
-            .placeholder(R.drawable.profile) // 로딩 중에 기본 이미지 표시
-            .error(R.drawable.profile) // 오류 발생 시 기본 이미지 표시
-            .into(profileImageView)
-
-        // 이미지 URI를 Firebase에 업데이트
-        updateUserProfileImage(imageUri.toString())
+        uploadProfileImage(imageUri) // 이미지를 Firebase Storage에 업로드
     }
 
+    private fun uploadProfileImage(imageUri: Uri) {
+        val storageReference = storage.reference
+        val userId = sharedPreferences.getString("UNIQUE_CODE", null)
+
+        // 이미지 URI를 Storage에 업로드
+        val profileImageRef = storageReference.child("profile_images/$userId.jpg")
+        profileImageRef.putFile(imageUri)
+            .addOnSuccessListener { taskSnapshot ->
+                // 업로드 완료 후 다운로드 가능한 URL 가져오기
+                profileImageRef.downloadUrl.addOnSuccessListener { uri ->
+                    updateUserProfileImage(uri.toString()) // URL을 Firestore에 저장
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Mypage", "이미지 업로드 실패", exception)
+            }
+    }
+
+//    private fun updateUserProfileImage(imageUrl: String) {
+//        firestore.collection("users").document(userId!!).update("profileImage", imageUrl)
+//            .addOnSuccessListener {
+//                Log.d("Mypage", "바뀐 이미지 저장")
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("Mypage", "업데이트 실패", exception)
+//            }
+//    }
     private fun updateUserProfileImage(imageUrl: String) {
         firestore.collection("users").document(userId!!).update("profileImage", imageUrl)
             .addOnSuccessListener {
                 Log.d("Mypage", "바뀐 이미지 저장")
+                loadProfileImage(imageUrl) // 이미지 업데이트 후 로드
             }
             .addOnFailureListener { exception ->
                 Log.e("Mypage", "업데이트 실패", exception)
@@ -167,16 +224,18 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
 
     // 이미지 삭제 시 호출되는 메서드
     override fun onImageDeleted() {
-        // 기본 이미지 가져오기
-        val defaultBitmap = BitmapFactory.decodeResource(resources, R.drawable.profile)
+        profileImageView.setImageResource(R.drawable.profile) // 기본 이미지로 설정
 
-        // ImageView의 크기와 비율에 맞게 자르기
-        val width = profileImageView.width
-        val height = profileImageView.height
-        val resizedBitmap = Bitmap.createScaledBitmap(defaultBitmap, width, height, true)
-
-        // 비트맵을 ImageView에 설정
-        profileImageView.setImageBitmap(resizedBitmap)
+//        // 기본 이미지 가져오기
+//        val defaultBitmap = BitmapFactory.decodeResource(resources, R.drawable.profile)
+//
+//        // ImageView의 크기와 비율에 맞게 자르기
+//        val width = profileImageView.width
+//        val height = profileImageView.height
+//        val resizedBitmap = Bitmap.createScaledBitmap(defaultBitmap, width, height, true)
+//
+//        // 비트맵을 ImageView에 설정
+//        profileImageView.setImageBitmap(resizedBitmap)
     }
 
     private fun showLogoutDialog() {

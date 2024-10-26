@@ -1,6 +1,9 @@
 package com.example.z_project.upload
 
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -17,6 +20,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.z_project.AppWidgetProvider
 import com.example.z_project.BuildConfig
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentFinalBinding
@@ -142,6 +146,7 @@ class FinalFragment : Fragment() {
                 .addOnSuccessListener { documentReference ->
                     Log.d("Final", "Firestore에 저장됨, 문서 ID: ${documentReference.id}")
 
+                    updateWidget()
                     // 이미지 업로드 후 URL을 해당 문서에 추가
                     if (imageUri != null) {
                         uploadImageAndSaveUrl(documentReference.id) // 이미지 업로드 및 URL 업데이트
@@ -151,6 +156,12 @@ class FinalFragment : Fragment() {
                     Log.e("Final", "데이터 저장 실패", exception)
                 }
         }
+    }
+    private fun updateWidget() {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+        val widgetIds = AppWidgetManager.getInstance(requireContext()).getAppWidgetIds(ComponentName(requireContext(), AppWidgetProvider::class.java))
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
+        context?.sendBroadcast(intent)
     }
 
     // Firebase Storage에 이미지 업로드 후 Firestore에 URL 업데이트
