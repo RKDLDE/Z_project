@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:background="@drawable/widget_circle"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:orientation="vertical">
+
+    <!-- 첫 번째 LinearLayout: 프로필 사진과 업데이트 수 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/profile_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="start"
+            android:src="@drawable/profile" /> <!-- 프로필 사진 리소스 -->
+
+    </LinearLayout>
+
+    <!-- 두 번째 LinearLayout: 업로드 이모지 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="1dp">
+
+        <TextView
+            android:id="@+id/upload_emoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😊"
+            android:textSize="30sp"
+            android:textColor="@android:color/black" />/>
+    </LinearLayout>
+
+    <!-- 세 번째 LinearLayout: 업로드 텍스트 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="2dp">
+
+        <TextView
+            android:background="@drawable/background_upload_text"
+            android:id="@+id/upload_text"
+            android:padding="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="text"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />/>
+    </LinearLayout>
+
+</LinearLayout>
