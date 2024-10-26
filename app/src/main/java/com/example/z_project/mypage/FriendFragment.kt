@@ -60,11 +60,10 @@ class FriendFragment : Fragment() {
         val recyclerView: RecyclerView = binding.rcvFriendList
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        customAdapter = CustomAdapter(friendList, requireContext())
-        recyclerView.adapter = customAdapter
-
         // 친구 목록 가져오기
         loadFriendList()
+        customAdapter = CustomAdapter(friendList, requireContext())
+        recyclerView.adapter = customAdapter
 
         // 뒤로가기 버튼
         val backButton = view.findViewById<ImageButton>(R.id.ib_back)
@@ -93,30 +92,55 @@ class FriendFragment : Fragment() {
     private fun loadFriendList() {
         val sharedPreferences =
             requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
-        val allEntries = sharedPreferences.all // 모든 SharedPreferences 엔트리 가져오기
+        val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
-        // 모든 친구 코드를 가져와서 Firebase에서 이름과 프로필 이미지를 가져옵니다.
-        allEntries.keys.forEach { friendCode ->
-            FirebaseFirestore.getInstance().collection("users").document(friendCode)
+        //friendList.clear() // 기존 리스트 초기화
+
+        if (uniqueCode != null) {
+            Log.d("FriendList", "사용자 고유코드: ${uniqueCode}")
+
+            // Firestore에서 현재 사용자의 친구 목록을 가져옵니다.
+            FirebaseFirestore.getInstance().collection("friends")
+                .document(uniqueCode)
+                .collection("friendsList")  // friendList 컬렉션을 가져옵니다.
                 .get()
-                .addOnSuccessListener { document ->
-                    if (document != null && document.exists()) {
-                        val friendName = document.getString("name") ?: "이름 없음"
-                        val friendProfileImage =
-                            document.getString("profileImage") ?: "" // 프로필 이미지 URL
+                .addOnSuccessListener { querySnapshot ->
+                    Log.d("FriendList", "친구 목록 문서 수: ${querySnapshot.size()}")
 
-                        // FriendData 객체 생성 후 리스트에 추가
-                        friendList.add(FriendData(friendCode, friendName, friendProfileImage))
+                    for (document in querySnapshot.documents) {
+                        val friendCode = document.getString("friendCode") // 친구 코드 가져오기
+                        if (friendCode != null) {
+                            // 친구 코드에 해당하는 사용자 정보를 Firestore에서 가져오기
+                            FirebaseFirestore.getInstance().collection("users").document(friendCode)
+                                .get()
+                                .addOnSuccessListener { userDocument ->
+                                    if (userDocument != null && userDocument.exists()) {
+                                        val friendName = userDocument.getString("name") ?: "이름 없음"
+                                        val friendProfileImage =
+                                            userDocument.getString("profileImage") ?: "" // 프로필 이미지 URL
 
-                        // 로그로 친구 목록 출력
-                        Log.d("FriendList", "친구 코드: ${friendCode}, 이름: ${friendName}")
+                                        // FriendData 객체 생성 후 리스트에 추가
+                                        friendList.add(FriendData(friendCode, friendName, friendProfileImage))
 
-                        customAdapter.notifyDataSetChanged() // 데이터 변경 알리기
+                                        // 로그로 친구 목록 출력
+                                        Log.d("FriendList", "친구 코드: ${friendCode}, 이름: ${friendName}")
+
+                                        customAdapter.notifyDataSetChanged() // 데이터 변경 알리기
+                                    }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.e("FriendList", "친구 데이터 로드 실패: ${exception.message}")
+                                }
+                        } else {
+                            Log.e("FriendList", "친구 코드가 null입니다.")
+                        }
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Log.e("FriendList", "친구 데이터 로드 실패: ${exception.message}")
+                    Log.e("FriendList", "친구 목록 조회 실패: ${exception.message}")
                 }
+        } else {
+            Log.e("FriendList", "고유 코드가 존재하지 않습니다.")
         }
     }
     private fun sendKakaoTalkInvite() {
