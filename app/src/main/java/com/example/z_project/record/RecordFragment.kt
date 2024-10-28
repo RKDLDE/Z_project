@@ -30,9 +30,9 @@ class RecordFragment : Fragment() {
     private lateinit var recordFeedRVAdapter: RecordFeedRVAdapter
     private val firestore = FirebaseFirestore.getInstance()
 
-    // 현재 년도와 월
-    private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
-    private val currentMonth: String = (Calendar.getInstance().get(Calendar.MONTH) + 1).toString()
+//    // 현재 년도와 월
+//    private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
+//    private val currentMonth: String = (Calendar.getInstance().get(Calendar.MONTH) + 1).toString()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,9 +47,9 @@ class RecordFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Spinner 초기화
-        initYearSpinner()
-        initMonthSpinner()
+//        // Spinner 초기화
+//        initYearSpinner()
+//        initMonthSpinner()
 
         // RecyclerView 설정
         binding.recordFeedRv.layoutManager = GridLayoutManager(context, 3)
@@ -62,60 +62,60 @@ class RecordFragment : Fragment() {
         return binding.root
     }
 
-    private fun initMonthSpinner() = with(binding) {
-        val months = (1..12).toList() // 1부터 12까지의 월 리스트
-
-        var isMonthInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-        Log.d("현재 달월", "${currentMonth}")
-
-        val monthSpinnerAdapter = YearSpinnerAdapter(requireContext(), R.layout.item_spinner_year, months, currentMonth)
-        binding.recordMonthSpinner.setAdapter(monthSpinnerAdapter)
-        binding.recordMonthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (isMonthInitialSelected) {
-                    monthSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
-
-                    val selectedMonth = months[position]
-                    val value = parent.getItemAtPosition(position).toString()
-                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else {
-                    isMonthInitialSelected = true
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        // Spinner 초기화 시 currentMonth를 기본으로 설정
-        val currentMonthPosition = months.indexOf(currentMonth.toInt())
-        binding.recordMonthSpinner.setSelection(currentMonthPosition)
-    }
-
-    private fun initYearSpinner() = with(binding) {
-        val years = (2024..2050).toList() // 원하는 년도 범위 설정
-        var isYearInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-        Log.d("현재 년도", "${currentYear}")
-
-        val yearSpinnerAdapter = RecordYearSpinnerAdapter(requireContext(), R.layout.item_record_spinner_year, years, currentYear)
-        binding.recordYearSpinner.setAdapter(yearSpinnerAdapter)
-        binding.recordYearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (isYearInitialSelected) {
-                    yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
-
-                    val selectedYear = years[position]
-                    val value = parent.getItemAtPosition(position).toString()
-                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else {
-                    isYearInitialSelected = true
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        // Spinner 초기화 시 currentYear를 기본으로 설정
-        val currentYearPosition = years.indexOf(currentYear.toInt())
-        binding.recordYearSpinner.setSelection(currentYearPosition)
-    }
+//    private fun initMonthSpinner() = with(binding) {
+//        val months = (1..12).toList() // 1부터 12까지의 월 리스트
+//
+//        var isMonthInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+//        Log.d("현재 달월", "${currentMonth}")
+//
+//        val monthSpinnerAdapter = YearSpinnerAdapter(requireContext(), R.layout.item_spinner_year, months, currentMonth)
+//        binding.recordMonthSpinner.setAdapter(monthSpinnerAdapter)
+//        binding.recordMonthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+//                if (isMonthInitialSelected) {
+//                    monthSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
+//
+//                    val selectedMonth = months[position]
+//                    val value = parent.getItemAtPosition(position).toString()
+//                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+//                } else {
+//                    isMonthInitialSelected = true
+//                }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
+//        // Spinner 초기화 시 currentMonth를 기본으로 설정
+//        val currentMonthPosition = months.indexOf(currentMonth.toInt())
+//        binding.recordMonthSpinner.setSelection(currentMonthPosition)
+//    }
+//
+//    private fun initYearSpinner() = with(binding) {
+//        val years = (2024..2050).toList() // 원하는 년도 범위 설정
+//        var isYearInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+//        Log.d("현재 년도", "${currentYear}")
+//
+//        val yearSpinnerAdapter = RecordYearSpinnerAdapter(requireContext(), R.layout.item_record_spinner_year, years, currentYear)
+//        binding.recordYearSpinner.setAdapter(yearSpinnerAdapter)
+//        binding.recordYearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+//                if (isYearInitialSelected) {
+//                    yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
+//
+//                    val selectedYear = years[position]
+//                    val value = parent.getItemAtPosition(position).toString()
+//                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+//                } else {
+//                    isYearInitialSelected = true
+//                }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
+//        // Spinner 초기화 시 currentYear를 기본으로 설정
+//        val currentYearPosition = years.indexOf(currentYear.toInt())
+//        binding.recordYearSpinner.setSelection(currentYearPosition)
+//    }
 
     private fun fetchData() {
         // SharedPreferences에서 uniqueCodes 가져오기

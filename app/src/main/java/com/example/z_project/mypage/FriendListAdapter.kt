@@ -93,6 +93,7 @@ class CustomAdapter(private val friendList: MutableList<FriendData>, private val
         }, position).show()
     }
 
+
     override fun getItemCount(): Int {
         return friendList.size
     }
