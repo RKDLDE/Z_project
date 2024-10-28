@@ -7,14 +7,6 @@
     android:background="@color/white"
     tools:ignore="PrivateResource">
 
-    <ImageView
-        android:id="@+id/icon_calendar"
-        android:visibility="gone"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:src="@drawable/icon_calendar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
 <!--    <Spinner-->
 <!--        android:id="@+id/record_year_spinner"-->

@@ -1,13 +1,11 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
-import com.example.z_project.databinding.ItemCalendarCategoryBinding
 import com.example.z_project.databinding.ItemCategoryColorBinding
 
 class ColorAdapter(

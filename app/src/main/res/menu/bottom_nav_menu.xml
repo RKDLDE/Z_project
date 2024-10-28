@@ -14,6 +14,10 @@
         android:icon="@drawable/navitem_chat"
         android:title="" />
     <item
+        android:id="@+id/calendarFragment"
+        android:icon="@drawable/navitem_calendar"
+        android:title="" />
+    <item
         android:id="@+id/mypageFragment"
         android:icon="@drawable/navitem_mypage"
         android:title="" />

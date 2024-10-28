@@ -1,36 +1,18 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import java.util.Date
-import android.graphics.drawable.BitmapDrawable
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.z_project.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView // 캘린더 뷰 관련
-import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import android.graphics.Color // 색상 관련
-import android.graphics.ColorFilter
-import android.graphics.Paint // 페인팅 관련
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ScaleDrawable
-import android.graphics.drawable.VectorDrawable
-import android.text.style.ImageSpan
-import androidx.core.graphics.toColorInt
-import com.example.z_project.record.FeedModel
 
 
 val tagMap: MutableMap<DayViewFacade, CalendarDay> = mutableMapOf()

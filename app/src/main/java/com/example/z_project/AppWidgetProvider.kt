@@ -75,7 +75,7 @@ class AppWidgetProvider: AppWidgetProvider() {
         val views = RemoteViews(context.packageName, R.layout.widget_feed)
 
         val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
-        val uniqueCode = "G4lpBRGkpSxM"//sharedPreferences.getString("UNIQUE_CODE", null)
+        val uniqueCode = "G4lpBRGkpSxM" //sharedPreferences.getString("UNIQUE_CODE", null)
 //"G4lpBRGkpSxM"//sharedPreferences.getString("UNIQUE_CODE", n
 
         Log.d("widget", "내 코드: $uniqueCode")

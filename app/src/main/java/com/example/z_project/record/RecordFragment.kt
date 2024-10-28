@@ -7,23 +7,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z_project.R
-import com.example.z_project.chat.calendar.GroupCalendarActivity
 import com.example.z_project.databinding.FragmentRecordBinding
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
-import com.example.z_project.chat.calendar.YearSpinnerAdapter
 
 class RecordFragment : Fragment() {
     private lateinit var binding: FragmentRecordBinding
@@ -40,12 +32,6 @@ class RecordFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRecordBinding.inflate(inflater, container, false)
-
-        // 임시 - 캘린더 클릭 시 GroupCalendarActivity로 이동
-        binding.iconCalendar.setOnClickListener {
-            val intent = Intent(context, GroupCalendarActivity::class.java)
-            startActivity(intent)
-        }
 
 //        // Spinner 초기화
 //        initYearSpinner()
