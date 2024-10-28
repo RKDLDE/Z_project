@@ -62,14 +62,14 @@ class CustomAdapter(private val friendList: MutableList<FriendData>, private val
                 // 내 친구 목록에서 삭제
                 db.collection("friends")
                     .document(userId!!)
-                    .collection("friendList")
+                    .collection("friendsList")
                     .document(friendCode)
                     .delete()
                     .addOnSuccessListener {
                         // 친구의 친구 목록에서 내 코드를 삭제
                         db.collection("friends")
                             .document(friendCode)
-                            .collection("friendList")
+                            .collection("friendsList")
                             .document(userId!!)
                             .delete()
                             .addOnSuccessListener {
@@ -92,6 +92,7 @@ class CustomAdapter(private val friendList: MutableList<FriendData>, private val
             }
         }, position).show()
     }
+
 
     override fun getItemCount(): Int {
         return friendList.size
