@@ -25,6 +25,9 @@
         android:theme="@style/Theme.Z_project"
         tools:targetApi="31">
 
+        <service android:name=".WidgetFirebase"
+            android:enabled="true"
+            android:exported="false"/>
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
@@ -120,5 +123,14 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidgetproviderinfo" />
         </receiver>
+
+        <receiver android:name=".WidgetUpdateReceiver"
+            android:exported="true"> <!-- 또는 "false"로 설정 -->
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+        </receiver>
+
+
     </application>
 </manifest>

@@ -2,6 +2,7 @@ package com.example.z_project
 
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        startService(Intent(this, WidgetFirebase::class.java))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //setContentView(R.layout.activity_main)
