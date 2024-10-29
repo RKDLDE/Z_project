@@ -102,9 +102,12 @@ class MainActivity : AppCompatActivity() {
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
+
+                //잠깐 테스트로 수정해놨습니다
                 R.id.chatFragment -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, ChatFragment())
+                        //.replace(R.id.main_frm, QuestionFeedFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
