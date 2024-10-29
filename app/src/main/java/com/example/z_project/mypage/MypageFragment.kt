@@ -222,8 +222,15 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
             .into(profileImageView)
     }
 
+    // 기본 이미지 URI를 Firebase Storage에 업로드
+    private fun uploadDefaultProfileImage() {
+        val defaultImageUri = Uri.parse("android.resource://${requireContext().packageName}/${R.drawable.profile}")
+        uploadProfileImage(defaultImageUri) // 기본 이미지 URI를 uploadProfileImage에 전달
+    }
+
     // 이미지 삭제 시 호출되는 메서드
     override fun onImageDeleted() {
+        uploadDefaultProfileImage()
         profileImageView.setImageResource(R.drawable.profile) // 기본 이미지로 설정
 
 //        // 기본 이미지 가져오기

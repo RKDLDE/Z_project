@@ -98,9 +98,6 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
-            android:name=".calendar.GroupCalendarActivity"
-            android:exported="false" />
 
         <activity
             android:name=".calendar.AddCategoryActivity"
@@ -129,6 +126,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidgetproviderinfo" />
         </receiver>
 
 
