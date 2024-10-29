@@ -25,6 +25,10 @@ class DialogEventDetails(private val context: Context, private val calendarClear
     val bindingDialog = DialogEventDetailsBinding.inflate(LayoutInflater.from(context))
     private val db = FirebaseFirestore.getInstance() // Firestore 인스턴스 생성
 
+    fun setAddCalendarIconVisibility(isVisible: Boolean) {
+        bindingDialog.addCalendarIcon.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     fun show(events: List<ScheduleModel>, selectedDate: CalendarDay, onAddEventClick: () -> Unit) {
         dialog.setContentView(bindingDialog.root)
@@ -103,6 +107,8 @@ class DialogEventDetails(private val context: Context, private val calendarClear
         bindingDialog.addCalendarIcon.setOnClickListener {
             onAddEventClick() // 카테고리 추가 다이얼로그 호출
         }
+
+        bindingDialog.addCalendarIcon.visibility
 
         // 다이얼로그 보여주기
         dialog.show()
