@@ -111,7 +111,7 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
         }
     }
 
-//    private fun fetchUserInfo() {
+    //    private fun fetchUserInfo() {
 //        firestore.collection("users").document(userId!!).get()
 //            .addOnSuccessListener { document ->
 //                if (document != null) {
@@ -157,7 +157,7 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
             }
     }
 
-//    // 이미지 선택 시 호출되는 메서드
+    //    // 이미지 선택 시 호출되는 메서드
 //    override fun onImageSelected(imageUri: Uri) {
 //        Glide.with(this)
 //            .load(imageUri) // 비트맵 대신 URI 사용
@@ -192,7 +192,7 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
             }
     }
 
-//    private fun updateUserProfileImage(imageUrl: String) {
+    //    private fun updateUserProfileImage(imageUrl: String) {
 //        firestore.collection("users").document(userId!!).update("profileImage", imageUrl)
 //            .addOnSuccessListener {
 //                Log.d("Mypage", "바뀐 이미지 저장")
@@ -213,13 +213,13 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
     }
 
     private fun loadProfileImage(url: String) {
-            // Glide를 사용하여 프로필 이미지 둥글게 로드
-            Glide.with(this)
-                .load(url)
-                .apply(RequestOptions.circleCropTransform()) // 이미지를 둥글게 처리
-                .placeholder(R.drawable.profile) // 로딩 중에 기본 이미지 표시
-                .error(R.drawable.profile) // 오류 발생 시 기본 이미지 표시
-                .into(profileImageView)
+        // Glide를 사용하여 프로필 이미지 둥글게 로드
+        Glide.with(this)
+            .load(url)
+            .apply(RequestOptions.circleCropTransform()) // 이미지를 둥글게 처리
+            .placeholder(R.drawable.profile) // 로딩 중에 기본 이미지 표시
+            .error(R.drawable.profile) // 오류 발생 시 기본 이미지 표시
+            .into(profileImageView)
     }
 
     // 이미지 삭제 시 호출되는 메서드

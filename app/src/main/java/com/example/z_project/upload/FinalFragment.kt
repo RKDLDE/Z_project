@@ -146,26 +146,20 @@ class FinalFragment : Fragment() {
                 .addOnSuccessListener { documentReference ->
                     Log.d("Final", "Firestore에 저장됨, 문서 ID: ${documentReference.id}")
 
-
-
+                    updateWidget()
                     // 이미지 업로드 후 URL을 해당 문서에 추가
                     if (imageUri != null) {
                         uploadImageAndSaveUrl(documentReference.id) // 이미지 업로드 및 URL 업데이트
-                    } else{
-                        updateWidget(true)
                     }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("Final", "데이터 저장 실패", exception)
-                    updateWidget(false)
                 }
         }
     }
-    private fun updateWidget(condition: Boolean) {
-        val intent = Intent(if (condition) AppWidgetManager.ACTION_APPWIDGET_UPDATE else "com.example.z_project.UPDATE_CONDITION")
-        val widgetIds = AppWidgetManager.getInstance(requireContext()).getAppWidgetIds(
-            ComponentName(requireContext(), AppWidgetProvider::class.java)
-        )
+    private fun updateWidget() {
+        val intent = Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
+        val widgetIds = AppWidgetManager.getInstance(requireContext()).getAppWidgetIds(ComponentName(requireContext(), AppWidgetProvider::class.java))
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds)
         context?.sendBroadcast(intent)
     }
