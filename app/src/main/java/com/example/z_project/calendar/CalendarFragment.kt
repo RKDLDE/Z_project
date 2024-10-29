@@ -23,6 +23,8 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.format.ArrayWeekDayFormatter
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.text.SimpleDateFormat
@@ -87,7 +89,10 @@ class CalendarFragment : Fragment() {
                         friendsListAdapter.setSelectedPosition(position) // 선택한 항목 설정
 
                         selectCode = friendList[position].code
-                        loadData(selectCode)  // 선택한 친구의 캘린더 데이터로 갱신
+
+                        lifecycleScope.launch {
+                            loadData(selectCode)  // 선택한 친구의 캘린더 데이터로 갱신
+                        }
 
                         val value = parent.getItemAtPosition(position).toString()
                         Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
@@ -107,11 +112,6 @@ class CalendarFragment : Fragment() {
 
         // Firebase 데이터 로드 및 캘린더 초기화
         loadData(uniqueCode!!)
-
-//        // X 아이콘 클릭 시 (캘린더 나가기)
-//        binding.groupCalenderExit.setOnClickListener {
-//            requireActivity().finish()
-//        }
     }
 
     private fun loadData(uniqueCode: String) {
@@ -151,6 +151,11 @@ class CalendarFragment : Fragment() {
         val exampleDate = CalendarDay.today()
         with(calendarView) {
             Log.d("일정 잘 들어왔니", "$calendarEventList")
+
+            // 일정 초기화!
+            calendarView.clearSelection() // 캘린더 위젯에서 현재 선택된 날짜를 모두 선택 해제
+            calendarView.removeDecorators() // 캘린더 위젯에 적용된 모든 데코레이터를 제거
+            calendarView.invalidateDecorators() // 데코레이터가 제거되고 위젯이 다시 그려지도록
 
             // 데코레이터 초기화
             dayDecorator = CalendarDecorators.dayDecorator(requireContext())
@@ -283,41 +288,6 @@ class CalendarFragment : Fragment() {
         }
     }
 
-
-
-//    // Spinner에서 친구를 선택했을 때 호출될 메서드 (캘린더 전환)
-//    private fun updateCalendarForSelectedFriend(friendCode: String) {
-//        // 캘린더를 잠시 숨김
-//        binding.fragmentCalendar.visibility = View.GONE
-//
-//        lifecycleScope.launch {
-//            val eventsDeferred = CompletableDeferred<List<ScheduleModel>>()
-//            val categoriesDeferred = CompletableDeferred<List<Categories>>()
-//
-//            fetchEvents(friendCode) { events ->
-//                calendarEventList = events.toMutableList()
-//                Log.d("친구의 일정목록들", "$calendarEventList")
-//                eventsDeferred.complete(events)
-//            }
-//
-//            fetchCategories(friendCode) { categories ->
-//                categoryList = categories.toMutableList()
-//                Log.d("친구의 카테고리목록들", "$categoryList")
-//                categoriesDeferred.complete(categories)
-//            }
-//
-//            // 캘린더 데코레이터를 재설정하고 화면을 업데이트
-//            binding.calendarView.removeDecorators()
-//            // 모든 데이터가 로드될 때까지 대기
-//            eventsDeferred.await()
-//            categoriesDeferred.await()
-//
-//            initView()  // 초기화 메서드 호출하여 데코레이터 재적용
-//            binding.fragmentCalendar.visibility = View.VISIBLE
-//        }
-//    }
-
-
     //일정 목록 확인 Dialog
     private fun showEventDetailsDialog() {
         val selectedDate = binding.calendarView.selectedDate // 선택된 날짜 가져오기
@@ -328,6 +298,16 @@ class CalendarFragment : Fragment() {
         //Dialog 정의
         val dialogEventDetails = DialogEventDetails(requireContext()) {
             binding.calendarView.clearSelection()
+        }
+
+        // 선택된 친구의 코드와 사용자 ID가 같을 경우에만 아이콘을 보이게 설정
+        dialogEventDetails.setAddCalendarIconVisibility(selectCode == uniqueCode)
+
+        // 조건 추가: selectCode와 uniqueCode가 같지 않고 filteredEvents가 비어있는 경우
+        if (selectCode != uniqueCode && filteredEvents.isEmpty()) {
+            // 아무것도 하지 않고 함수를 종료
+            binding.calendarView.clearSelection()
+            return
         }
 
         //Dialog 표시
@@ -407,6 +387,28 @@ class CalendarFragment : Fragment() {
         }
     }
 
+
+//    // Firestore에서 이벤트 비동기 로딩 함수
+//    private fun fetchEventsAsync(uniqueCode: String): Deferred<List<ScheduleModel>> = lifecycleScope.async {
+//        val events = mutableListOf<ScheduleModel>()
+//        db.collection("events").whereEqualTo("code", uniqueCode).get().addOnSuccessListener { querySnapshot ->
+//            for (document in querySnapshot) {
+//                events.add(document.toObject(ScheduleModel::class.java))
+//            }
+//        }
+//        events
+//    }
+//
+//    // Firestore에서 카테고리 비동기 로딩 함수
+//    private fun fetchCategoriesAsync(uniqueCode: String): Deferred<List<Categories>> = lifecycleScope.async {
+//        val categories = mutableListOf<Categories>()
+//        db.collection("categories").whereEqualTo("code", uniqueCode).get().addOnSuccessListener { querySnapshot ->
+//            for (document in querySnapshot) {
+//                categories.add(document.toObject(Categories::class.java))
+//            }
+//        }
+//        categories
+//    }
 
 
     // Firebase에서 이벤트 정보를 실시간으로 가져오는 메서드
