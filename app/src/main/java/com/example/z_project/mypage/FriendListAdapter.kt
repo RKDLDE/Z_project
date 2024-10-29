@@ -14,10 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.z_project.mypage.ListdeleteFragment
+import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomAdapter(private val friendList: MutableList<FriendData>, private val context: Context) :
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
-
+    private var userId: String? = null
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val userName: TextView = itemView.findViewById(R.id.tv_name)
         val userProfile: ImageView = itemView.findViewById(R.id.iv_profile) // 프로필 이미지
@@ -47,30 +48,51 @@ class CustomAdapter(private val friendList: MutableList<FriendData>, private val
     }
 
     private fun showListdeleteDialog(position: Int) {
-        val friendCode = friendList[position].code // 친구 코드 가져오기
+        val friend = friendList[position] // 삭제할 친구 정보 가져오기
+        val friendCode = friend.code // 친구 코드 가져오기
+
+        val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        userId = sharedPreferences.getString("UNIQUE_CODE", null)
 
         ListdeleteFragment(context, object : OnDeleteListener {
             override fun onDelete(pos: Int) {
                 // 해당 아이템 삭제 후 어댑터에 반영
-                friendList.removeAt(pos)
+                val db = FirebaseFirestore.getInstance()
 
-                // SharedPreferences에서 친구 정보 삭제
-                val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                Log.d("Friendlist", "${friendCode} 삭제 예정")
+                // 내 친구 목록에서 삭제
+                db.collection("friends")
+                    .document(userId!!)
+                    .collection("friendsList")
+                    .document(friendCode)
+                    .delete()
+                    .addOnSuccessListener {
+                        // 친구의 친구 목록에서 내 코드를 삭제
+                        db.collection("friends")
+                            .document(friendCode)
+                            .collection("friendsList")
+                            .document(userId!!)
+                            .delete()
+                            .addOnSuccessListener {
+                                // 어댑터에 반영
+                                friendList.removeAt(pos)
+                                notifyItemRemoved(pos)
+                                notifyItemRangeChanged(pos, friendList.size)
 
-                editor.remove(friendCode) // 친구 코드로 저장된 이름 삭제
-                editor.remove("${friendCode}_profileImage") // 프로필 이미지 삭제
-                editor.apply()
-
-                notifyItemRemoved(pos)
-                notifyItemRangeChanged(pos, friendList.size)
-
-                Log.d("Friendlist", "${friendCode} 친구 삭제")
-                Toast.makeText(context, "친구가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "친구가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w("CustomAdapter", "친구 목록에서 삭제 실패: ", e)
+                                Toast.makeText(context, "친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("CustomAdapter", "내 친구 목록에서 삭제 실패: ", e)
+                        Toast.makeText(context, "내 친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
+                    }
             }
         }, position).show()
     }
+
 
     override fun getItemCount(): Int {
         return friendList.size
