@@ -109,6 +109,7 @@ android {
         implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
         // Firebase Storage 의존성 추가
         implementation("com.google.firebase:firebase-storage")
+        implementation("com.google.firebase:firebase-database-ktx:20.0.4")
 
         // When using the BoM, don't specify versions in Firebase dependencies
         implementation("com.google.firebase:firebase-analytics")
@@ -116,8 +117,13 @@ android {
 
         implementation("com.google.firebase:firebase-auth")
 
-        //업로드 이모티콘
-//    implementation("androidx.emoji2:emojipicker:$version")
+        //firebase 알림
+        implementation(libs.firebase.messaging)
+        implementation("com.google.firebase:firebase-analytics-ktx")
+        implementation("com.google.firebase:firebase-messaging:23.0.3")
+/*        implementation(libs.androidx.databinding.runtime)*/
+        /*implementation(libs.androidx.library)*/
+        implementation(libs.androidx.work.runtime.ktx)
 
 
         //이모지
@@ -129,11 +135,11 @@ android {
 
 
         //카카오톡
-        implementation ("com.kakao.sdk:v2-common:2.20.6")
-        implementation ("com.kakao.sdk:v2-all:2.20.6") // 전체 모듈 설치, 2.11.0 버전부터 지원
-        implementation ("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
-        implementation ("com.kakao.sdk:v2-share:2.20.6") // 카카오톡 공유 API 모듈
-        implementation ("com.kakao.sdk:v2-talk:2.20.6") // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
+        implementation("com.kakao.sdk:v2-common:2.20.6")
+        implementation("com.kakao.sdk:v2-all:2.20.6") // 전체 모듈 설치, 2.11.0 버전부터 지원
+        implementation("com.kakao.sdk:v2-user:2.20.6") // 카카오 로그인 API 모듈
+        implementation("com.kakao.sdk:v2-share:2.20.6") // 카카오톡 공유 API 모듈
+        implementation("com.kakao.sdk:v2-talk:2.20.6") // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
 //    implementation "com.kakao.sdk:v2-friend:2.20.0" // 피커 API 모듈
 //    implementation "com.kakao.sdk:v2-navi:2.20.0" // 카카오내비 API 모듈
 //    implementation ("com.kakao.sdk:v2-cert:2.20.0") // 카카오톡 인증 서비스 API 모듈
@@ -148,13 +154,21 @@ android {
         implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
         implementation(libs.androidx.navigation.compose)
 
+        implementation("io.coil-kt:coil-compose:2.4.0")
+
+
+        implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
+
         //테드 퍼미션
         /*implementation("gun0912.ted:tedpermission:2.2.3")*/
 
         implementation("com.github.bumptech.glide:glide:4.12.0")
         implementation("com.github.bumptech.glide:annotations:4.12.0")
         annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-
-
     }
+
+
+
 }

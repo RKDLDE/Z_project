@@ -2,6 +2,8 @@ package com.example.z_project
 
 
 import android.Manifest
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +17,12 @@ import com.example.z_project.chat.ChatFragment
 //import com.example.z_project.chatting2.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
 import com.example.z_project.mypage.MypageFragment
+import com.example.z_project.qna.QuestionFeedFragment
 import com.example.z_project.record.RecordFragment
 import com.example.z_project.upload.FinalFragment
 import com.example.z_project.upload.UploadFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,12 +32,54 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        startService(Intent(this, WidgetFirebase::class.java))
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //setContentView(R.layout.activity_main)
+
+        // Intent에서 Fragment 정보를 확인하여 해당 Fragment로 이동
+        val openFragment = intent.getStringExtra("OPEN_FRAGMENT")
+        if (openFragment == "QuestionFeedFragment") {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, UploadFragment())
+                .commit()
+        } else {
+            // 기본 Fragment
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main_frm, UploadFragment())
+                .commit()
+        }
+
         initBottomNavigation()
+
+        handleIntentData()  // 푸시 알림 데이터 처리
+        fetchFcmToken()      // FCM 토큰 가져오기
     }
+
+    private fun handleIntentData() {
+        val intent = getIntent()
+        if(intent != null) {
+            val notificationData = intent.getStringExtra("test")
+            if(notificationData != null) {
+                Log.d("FCM_TEST", notificationData)
+            }
+        }
+    }
+
+    private fun fetchFcmToken() {
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("MainActivity", "Fetching FCM registration token failed")
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                Log.d("MainActivity", "FCM Token: $token")
+            })
+    }
+
 
     private fun initBottomNavigation(){
 
@@ -56,9 +103,12 @@ class MainActivity : AppCompatActivity() {
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
+
+                //잠깐 테스트로 수정해놨습니다
                 R.id.chatFragment -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, ChatFragment())
+                        //.replace(R.id.main_frm, QuestionFeedFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }
