@@ -86,17 +86,17 @@ class FriendPlusFragment(
         val currentUserFriendData = hashMapOf(
             "friendCode" to userId,
             "chatId" to chatId
-
-
-        // 현재 사용자와 친구의 관계 추가
-        val friendData = hashMapOf(
-            "friendCode" to friendCode
         )
 
-        val currentUserFriendData = hashMapOf(
-            "friendCode" to userId
 
-        )
+//        // 현재 사용자와 친구의 관계 추가
+//        val friendData = hashMapOf(
+//            "friendCode" to friendCode
+//        )
+//
+//        val currentUserFriendData = hashMapOf(
+//            "friendCode" to userId
+//        )
 
         // 현재 사용자 친구 목록에 추가
         db.collection("friends").document(userId)
