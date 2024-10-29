@@ -71,6 +71,40 @@ class CalendarFragment : Fragment() {
         // 첫 시작, 초기화
         selectCode = uniqueCode!!
 
+
+        // Spinner 초기화
+        fetchFriendList(uniqueCode!!) { userName ->
+            Log.d("사용자이름을말해라!", "${userName}")
+            var isInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+
+            val friendsListAdapter = FriendsListAdapter(
+                requireContext(), R.layout.item_spinner_year, friendList, userName!!
+            )
+            binding.friendsListSpinner.adapter = friendsListAdapter
+            binding.friendsListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    if (isInitialSelected) {
+                        friendsListAdapter.setSelectedPosition(position) // 선택한 항목 설정
+
+                        selectCode = friendList[position].code
+                        loadData(selectCode)  // 선택한 친구의 캘린더 데이터로 갱신
+
+                        val value = parent.getItemAtPosition(position).toString()
+                        Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
+                    } else {
+                        isInitialSelected = true
+                    }
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {}
+            }
+
+            // Spinner 초기화 시 사용자 본인의 이름을 기본으로 설정
+            val currentPosition = friendList.indexOfFirst { it.name == userName }
+            binding.friendsListSpinner.setSelection(currentPosition)
+        }
+
+
         // Firebase 데이터 로드 및 캘린더 초기화
         loadData(uniqueCode!!)
 
@@ -180,43 +214,9 @@ class CalendarFragment : Fragment() {
             setOnDateChangedListener { widget, date, selected ->
                 if (selected) showEventDetailsDialog() // 날짜 선택되었을 때 showEventDetails() 호출
             }
-
-
-            // Spinner 초기화
-            fetchFriendList(uniqueCode!!) { userName ->
-                Log.d("사용자이름을말해라!", "${userName}")
-                var isInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-
-                val friendsListAdapter = FriendsListAdapter(
-                    requireContext(), R.layout.item_spinner_year, friendList, userName!!
-                )
-                binding.friendsListSpinner.adapter = friendsListAdapter
-                binding.friendsListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                        if (isInitialSelected) {
-                            friendsListAdapter.setSelectedPosition(position) // 선택한 항목 설정
-
-                            selectCode = friendList[position].code
-                            loadData(selectCode!!)  // 선택한 친구의 캘린더 데이터로 갱신
-
-                            val value = parent.getItemAtPosition(position).toString()
-                            Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
-                        } else {
-                            isInitialSelected = true
-                        }
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {}
-                }
-
-                // Spinner 초기화 시 사용자 본인의 이름을 기본으로 설정
-                val currentPosition = friendList.indexOfFirst { it.name == userName }
-                binding.friendsListSpinner.setSelection(currentPosition)
-            }
         }
     }
 
-    // 친구 목록 불러오는 함수
     // 친구 목록 불러오는 함수
     fun fetchFriendList(uniqueCode: String, onComplete: (String) -> Unit) {
         if (uniqueCode.isNotEmpty()) {

@@ -24,7 +24,11 @@ class FriendsListAdapter (
         val binding =
             ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        binding.itemSpinnerYearTv.text = if (selectedPosition == -1) userName else selectedPosition.toString()
+        // 사용자 본인일 경우 "나"로 표시
+        binding.itemSpinnerYearTv.text =
+            if (selectedPosition == -1 || friendsList[selectedPosition].name == userName) "나"
+            else friendsList[selectedPosition].name
+
         Log.d("현재selectPosition", "${selectedPosition}")
 
         return binding.root
@@ -37,7 +41,10 @@ class FriendsListAdapter (
 
         binding.root.background = ContextCompat.getDrawable(parent.context, R.drawable.spinner_dropdown_background)
 
-        binding.itemSpinnerYearTv.text = friendsList[position].name
+        // 사용자 본인일 경우 "나"로 표시
+        binding.itemSpinnerYearTv.text =
+            if (friendsList[position].name == userName) "나"
+            else friendsList[position].name
 
         return binding.root
     }
