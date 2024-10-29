@@ -16,7 +16,9 @@ import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Date
 
 class AppWidgetProvider : AppWidgetProvider() {
 
@@ -60,12 +62,7 @@ class AppWidgetProvider : AppWidgetProvider() {
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_feed)
             val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
-            /*val uniqueCode = "TN4IJVUNM8cn"*/
             val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
-
-//        val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
-//        val uniqueCode = "G4lpBRGkpSxM" //sharedPreferences.getString("UNIQUE_CODE", null)
-////"G4lpBRGkpSxM"//sharedPreferences.getString("UNIQUE_CODE", n
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
@@ -76,8 +73,6 @@ class AppWidgetProvider : AppWidgetProvider() {
             } else {
                 Log.e("widget", "고유 코드가 존재하지 않습니다.")
             }
-
-
         }
 
         private fun loadFriendList(uniqueCode: String, context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, views: RemoteViews) {
@@ -101,50 +96,57 @@ class AppWidgetProvider : AppWidgetProvider() {
                 }
         }
 
+        // 최근 업로드 정보를 저장할 데이터 클래스
+        data class LatestUpload(val friendCode: String, val emoji: String, val text: String, val uniqueCode: String?, val uploadTime: Timestamp?)
+
         private fun getLatestUploadForFriends(friendCodes: List<String>, context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, views: RemoteViews) {
-            var completedRequests = 0 // 모든 요청 완료 여부 확인을 위한 카운터
+            val latestUploads = mutableListOf<LatestUpload>() // 최신 업로드를 수집할 리스트
+            var completedRequests = 0 // 모든 요청이 완료되었는지 확인하기 위한 카운터
 
             for (friendCode in friendCodes) {
-                val latestUploadRef = FirebaseFirestore.getInstance()
+                FirebaseFirestore.getInstance()
                     .collection("images")
                     .whereEqualTo("uniqueCode", friendCode)
                     .orderBy("uploadTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
                     .limit(1)
-
-                // 최신 업로드 문서를 가져오기
-                latestUploadRef.get().addOnSuccessListener { documents ->
-                    if (!documents.isEmpty) {
-                        val latestDocument = documents.first()
-                        val emoji = latestDocument.getString("emoji") ?: ""
-                        val text = latestDocument.getString("inputText") ?: ""
-                        val uploadImageUrl = latestDocument.getString("uploadImage") // 최신 업로드의 이미지 URL
-                        val uniqueCode = latestDocument.getString("uniqueCode") // 친구의 uniqueCode
-
-                        Log.d("widget", "친구($friendCode)의 텍스트: $text")
-
-                        // 프로필 이미지 URL 가져오기
-                        if (uniqueCode != null) {
-                            fetchUserProfileImage(uniqueCode, context, views, appWidgetId)
+                    .addSnapshotListener { querySnapshot, exception ->
+                        if (exception != null) {
+                            Log.e("widget", "친구($friendCode)의 최신 업로드 조회 실패: ${exception.message}")
+                            return@addSnapshotListener
                         }
 
-                        // 텍스트 가시성 설정
-                        if (text.isNotEmpty()) {
-                            views.setViewVisibility(R.id.upload_text, View.VISIBLE)
-                            views.setTextViewText(R.id.upload_text, text)
-                        } else {
-                            views.setViewVisibility(R.id.upload_text, View.GONE)
+                        if (querySnapshot != null && !querySnapshot.isEmpty) {
+                            val latestDocument = querySnapshot.documents.first()
+                            val emoji = latestDocument.getString("emoji") ?: ""
+                            val text = latestDocument.getString("inputText") ?: ""
+                            val uniqueCode = latestDocument.getString("uniqueCode") // 친구의 uniqueCode
+                            val uploadTime = latestDocument.getTimestamp("uploadTime") // 업로드 시간 가져오기
+
+                            // 최신 업로드를 수집
+                            latestUploads.add(LatestUpload(friendCode, emoji, text, uniqueCode, uploadTime))
                         }
-                        views.setTextViewText(R.id.upload_emoji, emoji)
-                    } else {
-                        //  Log.d("widget", "${friendCode}의 최신 업로드가 없습니다.")
+
+                        completedRequests++ // 요청 완료 카운터 증가
+                        if (completedRequests == friendCodes.size) {
+                            // 모든 요청이 완료되면 위젯 업데이트
+                            updateWidgetWithLatestUploads(latestUploads, views, appWidgetManager, appWidgetId, context)
+                        }
                     }
-                    completedRequests++
-                    if (completedRequests == friendCodes.size) {
-                        // 모든 요청이 완료되면 위젯 업데이트
-                        appWidgetManager.updateAppWidget(appWidgetId, views)
-                    }
-                }
             }
+        }
+
+        // 최신 업로드 정보를 기반으로 위젯 업데이트
+        private fun updateWidgetWithLatestUploads(latestUploads: List<LatestUpload>, views: RemoteViews, appWidgetManager: AppWidgetManager, appWidgetId: Int, context: Context) {
+            val latestUpload = latestUploads.maxByOrNull { it.uploadTime?.toDate() ?: Date(0) }
+            latestUpload?.let {
+                views.setViewVisibility(R.id.upload_text, if (it.text.isNotEmpty()) View.VISIBLE else View.GONE)
+                views.setTextViewText(R.id.upload_text, it.text)
+                views.setTextViewText(R.id.upload_emoji, it.emoji)
+
+                fetchUserProfileImage(it.uniqueCode ?: "", context, views, appWidgetId) // context 전달
+            }
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
         }
 
         private fun fetchUserProfileImage(uniqueCode: String, context: Context, views: RemoteViews, appWidgetId: Int) {
@@ -153,26 +155,20 @@ class AppWidgetProvider : AppWidgetProvider() {
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
                         val profileImageUrl = document.getString("profileImage") ?: ""
-                        //Log.d("widget", "프로필 이미지 URL: $profileImageUrl")
-
-                        // 프로필 이미지 URL이 비어 있지 않을 경우 처리
                         if (profileImageUrl.isNotEmpty()) {
-                            // URI가 content://로 시작하면 Glide를 사용하여 이미지 로드
                             val uri = Uri.parse(profileImageUrl)
                             Glide.with(context)
-                                .asBitmap() // 비트맵으로 로드
+                                .asBitmap()
                                 .load(uri)
                                 .apply(RequestOptions.circleCropTransform())
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                        // 비트맵이 준비되면 RemoteViews에 설정
                                         views.setImageViewBitmap(R.id.profile_image, resource)
-                                        // 위젯 업데이트
                                         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, views)
                                     }
 
                                     override fun onLoadCleared(placeholder: Drawable?) {
-                                        // Placeholder 로드 필요 시 처리
+                                        // Handle placeholder if needed
                                     }
                                 })
                         } else {

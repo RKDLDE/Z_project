@@ -17,6 +17,7 @@ class WidgetUpdateReceiver : BroadcastReceiver() {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val appWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
 
+
             // 위젯 ID가 null이 아닐 경우 각 위젯을 업데이트
             if (appWidgetIds != null) {
                 for (appWidgetId in appWidgetIds) {
