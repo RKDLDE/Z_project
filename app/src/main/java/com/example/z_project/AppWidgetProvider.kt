@@ -60,6 +60,7 @@ class AppWidgetProvider : AppWidgetProvider() {
         fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_feed)
             val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+            /*val uniqueCode = "TN4IJVUNM8cn"*/
             val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -131,7 +132,7 @@ class AppWidgetProvider : AppWidgetProvider() {
                         }
                         views.setTextViewText(R.id.upload_emoji, emoji)
                     } else {
-                       //  Log.d("widget", "${friendCode}의 최신 업로드가 없습니다.")
+                        //  Log.d("widget", "${friendCode}의 최신 업로드가 없습니다.")
                     }
                     completedRequests++
                     if (completedRequests == friendCodes.size) {

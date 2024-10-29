@@ -214,7 +214,7 @@ class RecordFragment : Fragment() {
                                                         .addToBackStack(null)
                                                         .commit()
                                                 }
-                                                }
+                                            }
                                         }
                                     }
                             }
