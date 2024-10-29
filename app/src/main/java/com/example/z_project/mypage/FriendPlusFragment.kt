@@ -11,6 +11,7 @@ import android.widget.Toast
 import com.example.z_project.databinding.FragmentPlusfriendBinding
 import com.example.z_project.databinding.FragmentRenameBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.random.Random
 
 class FriendPlusFragment(
     context: Context,
@@ -74,6 +75,19 @@ class FriendPlusFragment(
     private fun addFriend(userId: String, friendCode: String) {
         val db = FirebaseFirestore.getInstance()
 
+        val chatId = generateRandomCode()
+
+        // 현재 사용자와 친구의 관계 추가
+        val friendData = hashMapOf(
+            "friendCode" to friendCode,
+            "chatId" to chatId
+        )
+
+        val currentUserFriendData = hashMapOf(
+            "friendCode" to userId,
+            "chatId" to chatId
+
+
         // 현재 사용자와 친구의 관계 추가
         val friendData = hashMapOf(
             "friendCode" to friendCode
@@ -81,6 +95,7 @@ class FriendPlusFragment(
 
         val currentUserFriendData = hashMapOf(
             "friendCode" to userId
+
         )
 
         // 현재 사용자 친구 목록에 추가
@@ -104,4 +119,15 @@ class FriendPlusFragment(
                 Log.w("FriendPlus", "Error adding friend to current user's list", e)
             }
     }
+
+
+    //랜덤 코드 생성 함수
+    private fun generateRandomCode(length: Int = 12): String {
+        val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+        return (1..length)
+            .map { chars[Random.nextInt(chars.length)] }
+            .joinToString("")
+    }
+
+
 }

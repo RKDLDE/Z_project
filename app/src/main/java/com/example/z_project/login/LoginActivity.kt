@@ -19,6 +19,7 @@ import kotlin.random.Random
 class LoginActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var db: FirebaseFirestore
+    private var uniqueCode: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         sharedPreferences = getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
 
-        val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
+        uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
         Log.d("Login","고유코드: {$uniqueCode}")
         if (uniqueCode == null) {
             generateUniqueCode() // 고유 코드가 없으면 발급
@@ -193,6 +194,7 @@ class LoginActivity : AppCompatActivity() {
 
             // SharedPreferences에 리프레시 토큰 저장
             sharedPreferences.edit().putString("REFRESH_TOKEN", refreshToken).apply()
+            sharedPreferences.edit().putString("UNIQUE_CODE", uniqueCode).apply()
 
             // 사용자 정보 요청
             UserApiClient.instance.me { user, error ->

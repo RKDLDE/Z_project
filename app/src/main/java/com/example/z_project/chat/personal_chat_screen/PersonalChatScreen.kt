@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -33,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,19 +56,21 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.example.z_project.R
-import com.example.z_project.chat.group_chat_screen.MyChatContent
-import com.example.z_project.chat.group_chat_screen.rememberImeState
 import com.example.z_project.chat.model.Profile
 import com.example.z_project.chat.model.Chat
 import com.example.z_project.chat.model.getDefaultPersonalChats
 import com.example.z_project.chat.ui.theme.ChatUITheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberAsyncImagePainter
 import java.util.Locale
+import coil.compose.rememberImagePainter
 
 @Composable
 fun PersonalChatScreen(
     uiState: PersonalChatUiState,
+    userId: String,
     onNavigateUp: () -> Unit,
     onClickMenu: (Boolean) -> Unit,
     onSwipeSelect: (Chat) -> Unit,
@@ -100,7 +105,7 @@ fun PersonalChatScreen(
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(navigate.end, 16.dp)
-                    end.linkTo(icons.start)
+                    end.linkTo(parent.end)
                     width = Dimension.fillToConstraints
                 },
                 verticalAlignment = Alignment.CenterVertically
@@ -109,8 +114,8 @@ fun PersonalChatScreen(
                     modifier = Modifier
                         .size(42.dp)
                         .clip(CircleShape),
-                    painter = painterResource(
-                        id = uiState.personalChat?.profile?.profileImageRes ?: R.drawable.person1
+                    painter = rememberAsyncImagePainter(//painterResource(
+                        model = uiState.personalChat?.profile?.profileImageRes
                     ),
                     contentDescription = "ProfileImage",
                     contentScale = ContentScale.Crop
@@ -119,21 +124,6 @@ fun PersonalChatScreen(
                 Text(
                     text = uiState.personalChat?.profile?.name ?: "냠",
                     fontSize = 18.sp
-                )
-            }
-            Row(modifier = Modifier.constrainAs(icons) {
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-                end.linkTo(parent.end)
-            }) {
-                Icon(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable {
-                            onClickMenu(!uiState.isExit)
-                        },
-                    painter = painterResource(id = R.drawable.ic_baseline_menu),
-                    contentDescription = "Menu"
                 )
             }
         }
@@ -145,7 +135,8 @@ fun PersonalChatScreen(
                     height = Dimension.fillToConstraints
                 }
                 .padding(start = 12.dp, end = 12.dp),
-            chats = uiState.chats,
+            chats = uiState.chats ?: emptyList(),
+            userId = userId,
             onSwipeSelect = onSwipeSelect
         )
         if (uiState.isExit) {
@@ -180,49 +171,67 @@ fun PersonalChatScreen(
                     .padding(start = 8.dp, end = 8.dp),
                 replyChat = uiState.replyChat,
                 onClickSend = onClickSend,
+                //onClickSend = sendMessage,
                 onClickRemoveReply = onClickRemoveReply
             )
         }
     }
 }
 
+
+
+
+//채팅창
 @Composable
 fun ChatList(
     modifier: Modifier = Modifier,
     chats: List<Chat>,
+    userId: String?,
     onSwipeSelect: (Chat) -> Unit
 ) {
-    val listState = rememberLazyListState()
-    val imeState = rememberImeState()
+//    val listState = rememberLazyListState()
+//    val imeState = rememberImeState()
+//
+//    LaunchedEffect(key1 = chats, imeState, onSwipeSelect) {
+//        if (imeState) {
+//            if (chats.isNotEmpty()) {
+//                listState.scrollToItem(chats.size - 1)
+//            }
+//        }
+//    }
+//    LazyColumn(
+//        modifier = modifier
+//            .fillMaxSize(),
+//        state = listState
+//    ) {
+//        item {
+//            ChatDate()
+//            Spacer(modifier = Modifier.height(20.dp))
+//        }
+//        items(chats) { chat -> // items 블록을 수정합니다.
+//            if (chat.userId == userId) { // userId와 비교
+//                MyChatContent(
+//                    chat = chat,
+//                    onSwipeSelect = onSwipeSelect
+//                )
+//            } else {
+//                ChatContent(
+//                    chat = chat,
+//                    onSwipeSelect = onSwipeSelect
+//                )
+//            }
+//            Spacer(modifier = Modifier.height(12.dp))
+//        }
+//    }
 
-    LaunchedEffect(key1 = chats, imeState, onSwipeSelect) {
-        if (imeState) {
-            if (chats.isNotEmpty()) {
-                listState.scrollToItem(chats.size - 1)
-            }
-        }
-    }
     LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        state = listState
+        modifier = modifier.fillMaxSize()
     ) {
-        item {
-            ChatDate()
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-        items(chats.size) { index ->
-            val chat = chats[index]
-            if (chat.isOther) {
-                ChatContent(
-                    chat = chat,
-                    onSwipeSelect = onSwipeSelect
-                )
+        items(chats) { chat ->
+            if (chat.userId == userId) { // userId와 비교
+                MyChatContent(chat = chat, onSwipeSelect = onSwipeSelect)
             } else {
-                MyChatContent(
-                    chat = chat,
-                    onSwipeSelect = onSwipeSelect
-                )
+                ChatContent(chat = chat, onSwipeSelect = onSwipeSelect)
             }
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -253,6 +262,9 @@ fun ChatDate(modifier: Modifier = Modifier) {
         }
     }
 }
+
+
+//상대방 말풍선  // UI부분 없애기
 @Composable
 fun ChatContent(
     modifier: Modifier = Modifier,
@@ -333,7 +345,7 @@ fun ChatContent(
                 }
             }
         } else {
-            if (chat.time.isNotEmpty()) {
+            if (chat.time != 0L) {
                 Image(
                     modifier = Modifier
                         .constrainAs(profileView) {
@@ -342,7 +354,7 @@ fun ChatContent(
                         }
                         .size(42.dp)
                         .clip(CircleShape),
-                    painter = painterResource(id = chat.profile.profileImageRes),
+                    painter = rememberAsyncImagePainter(model = chat.profile?.profileImageRes),
                     contentDescription = "ProfileImage",
                     contentScale = ContentScale.Crop
                 )
@@ -370,20 +382,24 @@ fun ChatContent(
                     .padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = chat.message)
+                if (chat.message != null) {
+                    Text(text = chat.message)
+                }
             }
             Text(
                 modifier = Modifier.constrainAs(timeView) {
                     start.linkTo(messageView.end, 4.dp)
                     bottom.linkTo(messageView.bottom)
                 },
-                text = chat.time,
+                text = SimpleDateFormat("HH:mm", Locale.KOREA).format(chat.time),
                 style = MaterialTheme.typography.labelMedium.copy(color = Color.Gray)
             )
         }
     }
 }
 
+
+//사용자 본인의 말풍선
 @Composable
 fun MyChatContent(
     modifier: Modifier = Modifier,
@@ -437,20 +453,22 @@ fun MyChatContent(
             if (chat.replyChat != null) {
                 Column {
                     Text(
-                        text = chat.replyChat.profile.name.ifEmpty { "나" } + "에게 답장",
+                        text = (chat.replyChat?.profile?.name?.ifEmpty { "나" } ?: "나") + "에게 답장",// 기본값 설정
                         fontWeight = FontWeight.Bold
                     )
-                    Text(
-                        text = chat.replyChat.message,
-                        maxLines = 1,
-                        color = Color.Black.copy(alpha = 0.6f),
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    chat.replyChat.message?.let {
+                        Text(
+                            text = it,
+                            maxLines = 1,
+                            color = Color.Black.copy(alpha = 0.6f),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(text = chat.message)
+                    Text(text = chat.message!!)
                 }
             } else {
-                Text(text = chat.message)
+                Text(text = chat.message!!)
             }
         }
         Text(
@@ -459,17 +477,18 @@ fun MyChatContent(
                     end.linkTo(messageView.start, 4.dp)
                     bottom.linkTo(messageView.bottom)
                 },
-            text = chat.time,
+            text = SimpleDateFormat("HH:mm", Locale.KOREA).format(chat.time),
             style = MaterialTheme.typography.labelMedium.copy(color = Color.Gray)
         )
     }
 }
 
 
+//텍스트 작성하는 공간
 @Composable
 fun InputChat(
     modifier: Modifier = Modifier,
-    replyChat: Chat?,
+    replyChat: Chat?, // ReplyChat으로 타입 수정
     onClickSend: (String) -> Unit,
     onClickRemoveReply: () -> Unit
 ) {
@@ -487,23 +506,26 @@ fun InputChat(
             ) {
                 val (replyView, closeView) = createRefs()
                 Column(
-                    modifier = Modifier.constrainAs(replyView) {
-                        top.linkTo(parent.top)
-                        start.linkTo(parent.start)
-                        end.linkTo(closeView.start, 8.dp)
-                        bottom.linkTo(parent.bottom)
-
-                        width = Dimension.fillToConstraints
-                    }
+                    modifier = Modifier
+                        .constrainAs(replyView) {
+                            top.linkTo(parent.top)
+                            start.linkTo(parent.start)
+                            end.linkTo(closeView.start, 8.dp)
+                            bottom.linkTo(parent.bottom)
+                            width = Dimension.fillToConstraints
+                        }
+                        .widthIn(max = 250.dp) // replyChat 말풍선 최대 너비 제한
+                        .padding(8.dp) // 패딩 추가로 보기 좋게 조정
                 ) {
                     Text(
-                        text = replyChat.profile.name.ifEmpty { "나" } + "에게 답장",
+                        text = replyChat.replyChat?.profile?.name?.ifEmpty { "나" } ?: ("나" + "에게 답장"),
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = replyChat.message,
+                        text = replyChat.message ?: "",
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.wrapContentSize() // 텍스트 길이에 맞춰 말풍선 조정
                     )
                 }
                 Icon(
@@ -578,9 +600,10 @@ private fun PersonalChatScreenPreview() {
     ChatUITheme {
         PersonalChatScreen(
             uiState = PersonalChatUiState(
+                // 기본 대화 목록 데이터를 생성하고, 일부 데이터의 필드를 수정
                 chats = getDefaultPersonalChats(
                     profile = Profile(
-                        profileImageRes = R.drawable.person1,
+                        profileImageRes = R.drawable.person1.toString(),
                         name = "냠"
                     ),
                     lastMessage = "언제쯤 도착함???",
@@ -589,26 +612,27 @@ private fun PersonalChatScreenPreview() {
                         chat.copy(
                             replyChat = Chat(
                                 profile = Profile(
-                                    profileImageRes = R.drawable.person1,
+                                    profileImageRes = R.drawable.person1.toString().toString(),
                                     name = "냠"
                                 ),
                                 message = "언제쯤 도착함???",
                                 imageRes = null,
                                 isOther = true,
-                                time = "18:00"
-                            )
-                        )
+                                time = System.currentTimeMillis()
+//                            )
+                        ))
                     } else {
                         chat
                     }
                 }
             ),
-            {},
-            {},
-            {},
-            {},
-            {},
-            {}
+            userId = "",
+            onNavigateUp = {},
+            onClickMenu = {},
+            onSwipeSelect = {},
+            onClickExit = {},
+            onClickSend = {},
+            onClickRemoveReply = {}
         )
     }
 }

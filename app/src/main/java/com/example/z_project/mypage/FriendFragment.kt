@@ -1,5 +1,3 @@
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,17 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.FragmentFriendBinding
 import com.example.z_project.mypage.CustomAdapter
-import com.example.z_project.mypage.DeleteFragment
 import com.example.z_project.mypage.FriendData
 import com.example.z_project.mypage.FriendPlusFragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kakao.sdk.share.ShareClient
-import com.kakao.sdk.talk.model.Friend
-import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
-
 
 class FriendFragment : Fragment() {
     lateinit var binding: FragmentFriendBinding
