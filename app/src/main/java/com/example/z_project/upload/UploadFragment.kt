@@ -77,17 +77,6 @@ class UploadFragment : Fragment() {
         cameraLauncher.launch(photoUri)
     }
 
-    // 사진 크기 조정을 위한 함수
-    private fun resizeImage(uri: Uri, width: Int, height: Int): Bitmap? {
-        val inputStream = requireContext().contentResolver.openInputStream(uri)
-        val originalBitmap = BitmapFactory.decodeStream(inputStream)
-        inputStream?.close()
-
-        // Bitmap 크기 조정
-        return originalBitmap?.let {
-            Bitmap.createScaledBitmap(it, width, height, true)
-        }
-    }
 
     private fun openDecoFragment() {
         val fragmentTransaction = parentFragmentManager.beginTransaction()

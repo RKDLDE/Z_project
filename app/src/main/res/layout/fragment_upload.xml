@@ -13,7 +13,7 @@
     <FrameLayout
         android:id="@+id/main_bg"
         android:layout_width="330dp"
-        android:layout_height="520dp"
+        android:layout_height="500dp"
         android:background="@drawable/cam_bg_rec"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@id/main_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         app:srcCompat="@drawable/emoji" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -74,6 +74,7 @@ class FriendPlusFragment(
 
     private fun addFriend(userId: String, friendCode: String) {
         val db = FirebaseFirestore.getInstance()
+
         val chatId = generateRandomCode()
 
         // 현재 사용자와 친구의 관계 추가
@@ -85,6 +86,16 @@ class FriendPlusFragment(
         val currentUserFriendData = hashMapOf(
             "friendCode" to userId,
             "chatId" to chatId
+
+
+        // 현재 사용자와 친구의 관계 추가
+        val friendData = hashMapOf(
+            "friendCode" to friendCode
+        )
+
+        val currentUserFriendData = hashMapOf(
+            "friendCode" to userId
+
         )
 
         // 현재 사용자 친구 목록에 추가
@@ -109,6 +120,7 @@ class FriendPlusFragment(
             }
     }
 
+
     //랜덤 코드 생성 함수
     private fun generateRandomCode(length: Int = 12): String {
         val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -116,4 +128,6 @@ class FriendPlusFragment(
             .map { chars[Random.nextInt(chars.length)] }
             .joinToString("")
     }
+
+
 }

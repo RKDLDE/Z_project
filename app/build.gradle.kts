@@ -117,8 +117,13 @@ android {
 
         implementation("com.google.firebase:firebase-auth")
 
-        //업로드 이모티콘
-//    implementation("androidx.emoji2:emojipicker:$version")
+        //firebase 알림
+        implementation(libs.firebase.messaging)
+        implementation("com.google.firebase:firebase-analytics-ktx")
+        implementation("com.google.firebase:firebase-messaging:23.0.3")
+/*        implementation(libs.androidx.databinding.runtime)*/
+        /*implementation(libs.androidx.library)*/
+        implementation(libs.androidx.work.runtime.ktx)
 
 
         //이모지
@@ -148,15 +153,20 @@ android {
         implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
         implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
         implementation(libs.androidx.navigation.compose)
+
         implementation("io.coil-kt:coil-compose:2.4.0")
+
+
+        implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
+
         //테드 퍼미션
         /*implementation("gun0912.ted:tedpermission:2.2.3")*/
 
         implementation("com.github.bumptech.glide:glide:4.12.0")
         implementation("com.github.bumptech.glide:annotations:4.12.0")
         annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
-
-
     }
 
 

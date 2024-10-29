@@ -26,5 +26,6 @@
 
     <!-- using in UPLOAD -->
     <color name="alpha">#00FFFFFF</color>
+    <color name="chatcol">#D9D9D9</color>
 
 </resources>

@@ -30,9 +30,9 @@ class RecordFragment : Fragment() {
     private lateinit var recordFeedRVAdapter: RecordFeedRVAdapter
     private val firestore = FirebaseFirestore.getInstance()
 
-    // 현재 년도와 월
-    private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
-    private val currentMonth: String = (Calendar.getInstance().get(Calendar.MONTH) + 1).toString()
+//    // 현재 년도와 월
+//    private val currentYear: String = Calendar.getInstance().get(Calendar.YEAR).toString()
+//    private val currentMonth: String = (Calendar.getInstance().get(Calendar.MONTH) + 1).toString()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,9 +47,9 @@ class RecordFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Spinner 초기화
-        initYearSpinner()
-        initMonthSpinner()
+//        // Spinner 초기화
+//        initYearSpinner()
+//        initMonthSpinner()
 
         // RecyclerView 설정
         binding.recordFeedRv.layoutManager = GridLayoutManager(context, 3)
@@ -62,168 +62,173 @@ class RecordFragment : Fragment() {
         return binding.root
     }
 
-    private fun initMonthSpinner() = with(binding) {
-        val months = (1..12).toList() // 1부터 12까지의 월 리스트
-
-        var isMonthInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-        Log.d("현재 달월", "${currentMonth}")
-
-        val monthSpinnerAdapter = YearSpinnerAdapter(requireContext(), R.layout.item_spinner_year, months, currentMonth)
-        binding.recordMonthSpinner.setAdapter(monthSpinnerAdapter)
-        binding.recordMonthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (isMonthInitialSelected) {
-                    monthSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
-
-                    val selectedMonth = months[position]
-                    val value = parent.getItemAtPosition(position).toString()
-                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else {
-                    isMonthInitialSelected = true
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        // Spinner 초기화 시 currentMonth를 기본으로 설정
-        val currentMonthPosition = months.indexOf(currentMonth.toInt())
-        binding.recordMonthSpinner.setSelection(currentMonthPosition)
-    }
-
-    private fun initYearSpinner() = with(binding) {
-        val years = (2024..2050).toList() // 원하는 년도 범위 설정
-        var isYearInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
-        Log.d("현재 년도", "${currentYear}")
-
-        val yearSpinnerAdapter = RecordYearSpinnerAdapter(requireContext(), R.layout.item_record_spinner_year, years, currentYear)
-        binding.recordYearSpinner.setAdapter(yearSpinnerAdapter)
-        binding.recordYearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (isYearInitialSelected) {
-                    yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
-
-                    val selectedYear = years[position]
-                    val value = parent.getItemAtPosition(position).toString()
-                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-                } else {
-                    isYearInitialSelected = true
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {}
-        }
-        // Spinner 초기화 시 currentYear를 기본으로 설정
-        val currentYearPosition = years.indexOf(currentYear.toInt())
-        binding.recordYearSpinner.setSelection(currentYearPosition)
-    }
+//    private fun initMonthSpinner() = with(binding) {
+//        val months = (1..12).toList() // 1부터 12까지의 월 리스트
+//
+//        var isMonthInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+//        Log.d("현재 달월", "${currentMonth}")
+//
+//        val monthSpinnerAdapter = YearSpinnerAdapter(requireContext(), R.layout.item_spinner_year, months, currentMonth)
+//        binding.recordMonthSpinner.setAdapter(monthSpinnerAdapter)
+//        binding.recordMonthSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+//                if (isMonthInitialSelected) {
+//                    monthSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
+//
+//                    val selectedMonth = months[position]
+//                    val value = parent.getItemAtPosition(position).toString()
+//                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+//                } else {
+//                    isMonthInitialSelected = true
+//                }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
+//        // Spinner 초기화 시 currentMonth를 기본으로 설정
+//        val currentMonthPosition = months.indexOf(currentMonth.toInt())
+//        binding.recordMonthSpinner.setSelection(currentMonthPosition)
+//    }
+//
+//    private fun initYearSpinner() = with(binding) {
+//        val years = (2024..2050).toList() // 원하는 년도 범위 설정
+//        var isYearInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
+//        Log.d("현재 년도", "${currentYear}")
+//
+//        val yearSpinnerAdapter = RecordYearSpinnerAdapter(requireContext(), R.layout.item_record_spinner_year, years, currentYear)
+//        binding.recordYearSpinner.setAdapter(yearSpinnerAdapter)
+//        binding.recordYearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+//                if (isYearInitialSelected) {
+//                    yearSpinnerAdapter.setSelectedPosition(position) // 선택한 항목 설정
+//
+//                    val selectedYear = years[position]
+//                    val value = parent.getItemAtPosition(position).toString()
+//                    Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+//                } else {
+//                    isYearInitialSelected = true
+//                }
+//            }
+//
+//            override fun onNothingSelected(parent: AdapterView<*>) {}
+//        }
+//        // Spinner 초기화 시 currentYear를 기본으로 설정
+//        val currentYearPosition = years.indexOf(currentYear.toInt())
+//        binding.recordYearSpinner.setSelection(currentYearPosition)
+//    }
 
     private fun fetchData() {
         // SharedPreferences에서 uniqueCodes 가져오기
         val sharedPreferences = requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
         val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
-        val friendCodes = sharedPreferences.all.keys.filter { (it != "UNIQUE_CODE") && (it != "REFRESH_TOKEN")}
 
-        Log.d("RecordFeed","내 코드: ${uniqueCode}")
-        Log.d("RecordFeed","친구 코드: ${friendCodes}")
+        Log.d("RecordFeed", "내 코드: ${uniqueCode}")
+        // Firestore에서 친구 목록 가져오기
+        firestore.collection("friends")
+            .document(uniqueCode!!)
+            .collection("friendsList")
+            .get()
+            .addOnSuccessListener { friendListSnapshot ->
+                // 친구 코드를 리스트로 저장
+                val friendCodes = friendListSnapshot.documents.mapNotNull { it.getString("friendCode") }
 
-        val uniqueCodes = mutableListOf<String>()
-        uniqueCode?.let { uniqueCodes.add(it) }
-        uniqueCodes.addAll(friendCodes)
-        Log.d("RecordFeed","총 코드: ${uniqueCodes}")
+                // 자신의 uniqueCode와 친구 코드 리스트를 합침
+                val uniqueCodes = mutableListOf(uniqueCode)
+                uniqueCodes.addAll(friendCodes)
 
-        if (uniqueCodes.isNotEmpty()) {
-            firestore.collection("images")
-                .whereIn("uniqueCode", uniqueCodes)
-                .orderBy("uploadTime", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener { result ->
-                    if (result.isEmpty) {
-                        Log.d("RecordFragment", "No documents found.")
-                        return@addOnSuccessListener
-                    }
+                Log.d("RecordFeed", "총 uniqueCodes: $uniqueCodes")
 
-                    val feedItems = mutableListOf<FeedModel>()
-                    val fetchCount = result.size() // 결과 개수 저장
-                    Log.d("RecordFeed","피드 개수: ${fetchCount}")
-
-                    for (document in result) {
-                        val uploadImage = document.getString("UploadImageUrl") ?: ""
-                        val uniqueCode = document.getString("uniqueCode") ?: ""
-                        val uploadEmoji = document.getString("emoji") ?: ""
-                        val feedText = document.getString("inputText") ?: ""
-                        val uploadTime = document.getTimestamp("uploadTime") ?: Timestamp.now()
-                        //Log.d("RecordFeed","uploadTime: ${uploadTime}")
-                        Log.d("RecordFeed","uploadImage: ${uploadImage}")
-                        firestore.collection("users").document(uniqueCode).get()
-                            .addOnSuccessListener { userResult ->
-                                if (userResult.exists()) {
-                                    val profileImage = userResult.getString("profileImage") ?: ""
-                                    val uploadDate = formatTimestampToString(uploadTime)
-                                    val userName = userResult.getString("name")?:""
-                                    //Log.d("RecordFeed","uploadTime String 변환: ${uploadDate}")
-
-                                    val feedItem = FeedModel(
-                                        uniqueCode = uniqueCode,
-                                        userName = userName,
-                                        profileImage = profileImage,
-                                        uploadDate = uploadDate,
-                                        uploadImage = uploadImage,
-                                        uploadEmoji = uploadEmoji,
-                                        feedText = feedText
-                                    )
-                                    feedItems.add(feedItem)
-
-                                    // 모든 친구의 프로필 이미지를 가져오면 Adapter 업데이트
-                                    if (feedItems.size == fetchCount) {
-                                        // 업로드 시간 기준으로 정렬
-                                        feedItems.sortByDescending { it.uploadDate }
-
-                                        // RecyclerView Adapter 업데이트
-                                        recordFeedRVAdapter.updateItems(feedItems)
-                                    }
-
-                                    // 클릭 리스너 설정 (모든 데이터 가져온 후에 설정)
-                                    recordFeedRVAdapter.onItemClick = { feedItem ->
-                                        val bundle = Bundle().apply {
-                                            Log.d("click","uploadEmoji: ${feedItem.uploadEmoji}")
-                                            Log.d("click","feedText: ${feedItem.feedText}")
-                                            Log.d("click","uploadImage: ${feedItem.uploadImage}")
-                                            Log.d("click","userName: ${feedItem.userName}")
-                                            Log.d("click","uploadDate: ${feedItem.uploadDate}")
-                                            Log.d("click","profileImage: ${feedItem.profileImage}")
-
-
-                                            putString("uploadEmoji", feedItem.uploadEmoji)
-                                            putString("feedText", feedItem.feedText)
-                                            putString("uploadImage", feedItem.uploadImage)
-                                            putString("userName", feedItem.userName)
-                                            putString("uploadDate", feedItem.uploadDate)
-                                            putString("profileImage", feedItem.profileImage)
-                                        }
-
-                                        // FeedFinalFragment로 이동
-                                        val feedFinalFragment = FeedFinalFragment().apply {
-                                            arguments = bundle
-                                        }
-
-                                        // Fragment 전환
-                                        parentFragmentManager.beginTransaction()
-                                            .replace(R.id.main_frm, feedFinalFragment) // fragment_container는 실제 Container의 ID로 수정
-                                            .addToBackStack(null)
-                                            .commit()
-                                    }
-                                }
+                if (uniqueCodes.isNotEmpty()) {
+                    firestore.collection("images")
+                        .whereIn("uniqueCode", uniqueCodes)
+                        .orderBy("uploadTime", Query.Direction.DESCENDING)
+                        .get()
+                        .addOnSuccessListener { result ->
+                            if (result.isEmpty) {
+                                Log.d("RecordFragment", "No documents found.")
+                                return@addOnSuccessListener
                             }
 
+                            val feedItems = mutableListOf<FeedModel>()
+                            val fetchCount = result.size() // 결과 개수 저장
+                            Log.d("RecordFeed", "피드 개수: $fetchCount")
 
-                    }
+                            for (document in result) {
+                                val uploadImage = document.getString("UploadImageUrl") ?: ""
+                                val uniqueCode = document.getString("uniqueCode") ?: ""
+                                val uploadEmoji = document.getString("emoji") ?: ""
+                                val feedText = document.getString("inputText") ?: ""
+                                val uploadTime = document.getTimestamp("uploadTime") ?: Timestamp.now()
+
+                                // 사용자 프로필 이미지를 가져오기 위해 Firestore 호출
+                                firestore.collection("users").document(uniqueCode).get()
+                                    .addOnSuccessListener { userResult ->
+                                        if (userResult.exists()) {
+                                            val profileImage = userResult.getString("profileImage") ?: ""
+                                            val uploadDate = formatTimestampToString(uploadTime)
+                                            val userName = userResult.getString("name") ?: ""
+
+                                            val feedItem = FeedModel(
+                                                uniqueCode = uniqueCode,
+                                                userName = userName,
+                                                profileImage = profileImage,
+                                                uploadDate = uploadDate,
+                                                uploadImage = uploadImage,
+                                                uploadEmoji = uploadEmoji,
+                                                feedText = feedText
+                                            )
+                                            feedItems.add(feedItem)
+
+                                            // 모든 친구의 프로필 이미지를 가져오면 Adapter 업데이트
+                                            // 모든 친구의 프로필 이미지를 가져오면 Adapter 업데이트
+                                            if (feedItems.size == fetchCount) {
+                                                feedItems.sortByDescending { it.uploadDate }
+                                                recordFeedRVAdapter.updateItems(feedItems)
+
+                                                // 클릭 리스너 설정
+                                                recordFeedRVAdapter.onItemClick = { feedItem ->
+                                                    val bundle = Bundle().apply {
+                                                        Log.d("click", "uploadEmoji: ${feedItem.uploadEmoji}")
+                                                        Log.d("click", "feedText: ${feedItem.feedText}")
+                                                        Log.d("click", "uploadImage: ${feedItem.uploadImage}")
+                                                        Log.d("click", "userName: ${feedItem.userName}")
+                                                        Log.d("click", "uploadDate: ${feedItem.uploadDate}")
+                                                        Log.d("click", "profileImage: ${feedItem.profileImage}")
+
+                                                        putString("uploadEmoji", feedItem.uploadEmoji)
+                                                        putString("feedText", feedItem.feedText)
+                                                        putString("uploadImage", feedItem.uploadImage)
+                                                        putString("userName", feedItem.userName)
+                                                        putString("uploadDate", feedItem.uploadDate)
+                                                        putString("profileImage", feedItem.profileImage)
+                                                    }
+
+                                                    // FeedFinalFragment로 이동
+                                                    val feedFinalFragment = FeedFinalFragment().apply {
+                                                        arguments = bundle
+                                                    }
+
+                                                    // Fragment 전환
+                                                    parentFragmentManager.beginTransaction()
+                                                        .replace(R.id.main_frm, feedFinalFragment) // fragment_container는 실제 Container의 ID로 수정
+                                                        .addToBackStack(null)
+                                                        .commit()
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("RecordFragment", "Error getting documents: ", e)
+                        }
+                } else {
+                    Log.w("RecordFragment", "No unique codes available for query.")
                 }
-                .addOnFailureListener { e ->
-                    Log.w("RecordFragment", "Error getting documents: ", e)
-                }
-        } else {
-            Log.w("RecordFragment", "No unique codes available for query.")
-        }
+            }
+            .addOnFailureListener { e ->
+                Log.w("RecordFragment", "Error getting friend list: ", e)
+            }
     }
 
     // Timestamp를 문자열로 변환하는 함수

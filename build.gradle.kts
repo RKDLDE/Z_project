@@ -9,8 +9,6 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.51.1" apply false
 
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0" apply false
-
-
 }
 
 //allprojects {
@@ -24,14 +22,12 @@ plugins {
 
 
 
-buildscript{
-    dependencies{
-        classpath ("com.google.gms:google-services:4.4.2")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1")
-    }
-}
-
-
+//buildscript{
+//    dependencies{
+//        classpath ("com.google.gms:google-services:4.4.2")
+//        classpath("com.google.dagger:hilt-android-gradle-plugin:2.51.1")
+//    }
+//}
 
 //task clean(type: Delete) {
 //    delete rootProject.buildDir

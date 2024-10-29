@@ -105,10 +105,10 @@ class LoginActivity : AppCompatActivity() {
                     Log.e("Login error", error?.message.toString())
 
                     // 1. 애뮬레이터 용
-                    //kakaologin()
+                    kakaologin()
 
                     // 2. 카톡 설치된 안드로이드 용 (애뮬레이터 사용 시 주석처리 부탁)
-                    goToMainActivity(token)
+                   // goToMainActivity(token)
 
                 } else if (token != null) {
                     Log.d("Login new AccessToken", token.accessToken)
