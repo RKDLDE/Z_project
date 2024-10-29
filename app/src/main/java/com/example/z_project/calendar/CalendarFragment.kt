@@ -94,8 +94,10 @@ class CalendarFragment : Fragment() {
                             loadData(selectCode)  // 선택한 친구의 캘린더 데이터로 갱신
                         }
 
-                        val value = parent.getItemAtPosition(position).toString()
-                        Toast.makeText(requireContext(), value, Toast.LENGTH_SHORT).show()
+                        val value = friendList[position].name
+                        if(selectCode != uniqueCode){
+                            Toast.makeText(requireContext(), "${value}의 캘린더를 조회", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         isInitialSelected = true
                     }
