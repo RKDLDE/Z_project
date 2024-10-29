@@ -303,6 +303,13 @@ class CalendarFragment : Fragment() {
         // 선택된 친구의 코드와 사용자 ID가 같을 경우에만 아이콘을 보이게 설정
         dialogEventDetails.setAddCalendarIconVisibility(selectCode == uniqueCode)
 
+        // 조건 추가: selectCode와 uniqueCode가 같지 않고 filteredEvents가 비어있는 경우
+        if (selectCode != uniqueCode && filteredEvents.isEmpty()) {
+            // 아무것도 하지 않고 함수를 종료
+            binding.calendarView.clearSelection()
+            return
+        }
+
         //Dialog 표시
         dialogEventDetails.show(filteredEvents, selectedDate) {
             showSelectCategoryDialog(selectedDate)
