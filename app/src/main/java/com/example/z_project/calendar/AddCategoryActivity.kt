@@ -1,7 +1,6 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.z_project.databinding.ActivityAddCategoryBinding
-import com.example.z_project.record.RecordFeedRVAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AddCategoryActivity : AppCompatActivity() {
@@ -58,12 +56,11 @@ class AddCategoryActivity : AppCompatActivity() {
         // 저장하기 버튼 클릭 리스너
         binding.addCategorySave.setOnClickListener {
             val authId = uniqueCode
-            val groupId = "1"
             val name = binding.addCategoryNameContent.text.toString() // 카테고리 이름
             val color = selectedCategory // 선택한 카테고리의 색상
 
             // Category 객체 생성
-            val category = Categories(authId, groupId, "", name, color.toString())
+            val category = Categories(authId, "", name, color.toString())
 
             // Firestore에 저장
             saveCategoryToFirestore(category)

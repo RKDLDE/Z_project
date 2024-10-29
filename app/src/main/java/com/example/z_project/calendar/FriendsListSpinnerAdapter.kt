@@ -1,8 +1,7 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.content.Context
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,12 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemSpinnerYearBinding
+import com.example.z_project.mypage.FriendData
 
-import java.util.Calendar
-
-class YearSpinnerAdapter (
+class FriendsListAdapter (
     context: Context, @LayoutRes private val resId: Int,
-    private val yearList: List<Int>, private val currentYear: String,
-) : ArrayAdapter<String>(context, resId, yearList.map { it.toString() }) {
+    private val friendsList: List<FriendData>, private val userName: String,
+) : ArrayAdapter<String>(context, resId, friendsList.map { it.code }) {
 
     private var selectedPosition = -1 // 선택된 항목의 위치를 저장할 변수
 
@@ -26,15 +24,11 @@ class YearSpinnerAdapter (
         val binding =
             ItemSpinnerYearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        if(yearList.size > 12){
-            binding.itemSpinnerYearTv.text =
-                if (selectedPosition == -1) "${currentYear}년" else "${yearList[selectedPosition]}년"
-        } else{
-            binding.itemSpinnerYearTv.text =
-                if (selectedPosition == -1) "${currentYear}월" else "${yearList[selectedPosition]}월"
-        }
+        // 사용자 본인일 경우 "나"로 표시
+        binding.itemSpinnerYearTv.text =
+            if (selectedPosition == -1 || friendsList[selectedPosition].name == userName) "나"
+            else friendsList[selectedPosition].name
 
-        Log.d("현재년도", "${currentYear}")
         Log.d("현재selectPosition", "${selectedPosition}")
 
         return binding.root
@@ -47,14 +41,17 @@ class YearSpinnerAdapter (
 
         binding.root.background = ContextCompat.getDrawable(parent.context, R.drawable.spinner_dropdown_background)
 
-        binding.itemSpinnerYearTv.text = yearList[position].toString()
+        // 사용자 본인일 경우 "나"로 표시
+        binding.itemSpinnerYearTv.text =
+            if (friendsList[position].name == userName) "나"
+            else friendsList[position].name
 
         return binding.root
     }
 
-    override fun getCount() = yearList.size
+    override fun getCount() = friendsList.size
 
-    override fun getItem(position: Int) = yearList[position].toString()
+    override fun getItem(position: Int) = friendsList[position].toString()
 
     override fun getItemId(position: Int) = position.toLong()
 

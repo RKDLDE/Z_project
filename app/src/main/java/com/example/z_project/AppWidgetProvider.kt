@@ -63,6 +63,9 @@ class AppWidgetProvider : AppWidgetProvider() {
             /*val uniqueCode = "TN4IJVUNM8cn"*/
             val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
+        val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+        val uniqueCode = "G4lpBRGkpSxM" //sharedPreferences.getString("UNIQUE_CODE", null)
+//"G4lpBRGkpSxM"//sharedPreferences.getString("UNIQUE_CODE", n
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
             Log.d("widget", "내 코드: $uniqueCode")

@@ -99,11 +99,11 @@
             android:resource="@array/preloaded_fonts" />
 
         <activity
-            android:name=".chat.calendar.GroupCalendarActivity"
+            android:name=".calendar.GroupCalendarActivity"
             android:exported="false" />
 
         <activity
-            android:name=".chat.calendar.AddCategoryActivity"
+            android:name=".calendar.AddCategoryActivity"
             android:exported="false" />
 
         <provider

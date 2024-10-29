@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.z_project.calendar.CalendarFragment
 import com.example.z_project.chat.ChatFragment
 //import com.example.z_project.chatting2.ChatFragment
 import com.example.z_project.databinding.ActivityMainBinding
@@ -108,6 +109,12 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, ChatFragment())
                         //.replace(R.id.main_frm, QuestionFeedFragment())
+                        .commitAllowingStateLoss()
+                    return@setOnItemSelectedListener true
+                }
+                R.id.calendarFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, CalendarFragment())
                         .commitAllowingStateLoss()
                     return@setOnItemSelectedListener true
                 }

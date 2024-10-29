@@ -1,4 +1,4 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import androidx.annotation.StringRes
 import com.example.z_project.R

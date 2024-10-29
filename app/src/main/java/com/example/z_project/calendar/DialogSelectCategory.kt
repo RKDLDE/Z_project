@@ -1,24 +1,19 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.z_project.databinding.DialogAddEventBinding
 import com.example.z_project.databinding.DialogSelectCategoryBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class DialogSelectCategory (
     private val context: Context,

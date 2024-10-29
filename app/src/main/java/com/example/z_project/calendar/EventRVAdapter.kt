@@ -1,16 +1,14 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -24,8 +22,9 @@ class EventRVAdapter (
 ) : RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
 
     private val firestore = FirebaseFirestore.getInstance()
+    private lateinit var sharedPreferences: SharedPreferences
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventRVAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // itemview 객체 생성
         val binding: ItemCalendarEventBinding = ItemCalendarEventBinding.inflate(
             LayoutInflater.from(parent.context), parent, false)
@@ -55,7 +54,7 @@ class EventRVAdapter (
         val userId = sharedPreferences.getString("UNIQUE_CODE", null)
         val event = events[position]
 
-        if (event.authId == userId && event.groupId == "1") {
+        if (event.authId == userId) {
             firestore.collection("events")
                 .document(event.documentId!!)
                 .delete()
@@ -78,6 +77,10 @@ class EventRVAdapter (
 
         @SuppressLint("ResourceType")
         fun bind(event: ScheduleModel) {
+            // 본인 고유코드 가져오기
+            sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
+            val userId = sharedPreferences.getString("UNIQUE_CODE", null)
+
             binding.calendarEventContent.text = event.title
             Log.d("일정내용", "${event.title}")
             Log.d("카테고리색상", "categoryColor: ${event.category.color}")
@@ -100,9 +103,12 @@ class EventRVAdapter (
                 binding.calendarEventTime.visibility = View.GONE
             }
 
-            // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
-            itemView.setOnClickListener {
-                showEditDialog(event)
+
+            if(event.authId == userId){
+                // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
+                itemView.setOnClickListener {
+                    showEditDialog(event)
+                }
             }
         }
         private fun showEditDialog(event: ScheduleModel) {

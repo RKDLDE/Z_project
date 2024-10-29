@@ -1,4 +1,4 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,9 +13,7 @@ import android.view.View
 import android.widget.TimePicker
 import com.example.z_project.R
 import com.example.z_project.databinding.DialogAddEventBinding
-import com.example.z_project.databinding.DialogEditEventBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
@@ -23,10 +21,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import com.google.firebase.firestore.FirebaseFirestore
 
-class DialogEditEvent (private val context: Context){
+
+class DialogAddEvent (private val context: Context, private val calendarClearSelection: () -> Unit){
     private val dialog = BottomSheetDialog(context)
-    val bindingDialog = DialogEditEventBinding.inflate(LayoutInflater.from(context))
+    val bindingDialog = DialogAddEventBinding.inflate(LayoutInflater.from(context))
 
     private lateinit var dayDecorator: DayViewDecorator
     private lateinit var todayDecorator: DayViewDecorator
@@ -44,7 +44,7 @@ class DialogEditEvent (private val context: Context){
     private lateinit var sharedPreferences: SharedPreferences
 
     @SuppressLint("ClickableViewAccessibility")
-    fun show(selectedEvent: ScheduleModel) {
+    fun show(date: CalendarDay, selectedCategory: Categories) {
         dialog.setContentView(bindingDialog.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
@@ -52,50 +52,37 @@ class DialogEditEvent (private val context: Context){
         sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
         val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
-        startCalendarView = dialog.findViewById(R.id.dialog_edit_start_calendar_view)!!
-        endCalendarView = dialog.findViewById(R.id.dialog_edit_end_calendar_view)!!
+        startCalendarView = dialog.findViewById(R.id.dialog_start_calendar_view)!!
+        endCalendarView = dialog.findViewById(R.id.dialog_end_calendar_view)!!
 
-        startTimePicker = dialog.findViewById(R.id.dialog_edit_calendar_start_timepicker)!!
-        endTimePicker = dialog.findViewById(R.id.dialog_edit_calendar_end_timepicker)!!
+        startTimePicker = dialog.findViewById(R.id.dialog_calendar_start_timepicker)!!
+        endTimePicker = dialog.findViewById(R.id.dialog_calendar_end_timepicker)!!
 
-        // 선택한 카테고리와 제목으로 초기화
-        bindingDialog.dialogEventEditCategoryName.text = selectedEvent.category.name
-        bindingDialog.dialogEventEditContent.setText(selectedEvent.title)
+        // 선택된 날짜 텍스트로 표시
+        selectedDate = date
+        bindingDialog.dialogEventDetailsDate.text = formatDateWithE(selectedDate)
 
-        // 시작 날짜와 종료 날짜 텍스트 설정
-        bindingDialog.editStartDate.text = selectedEvent.startDate
-        bindingDialog.editEndDate.text = selectedEvent.endDate
+        // 선택한 카테고리로 초기화
+        bindingDialog.dialogEventDetailsCategoryName.text = selectedCategory.name
 
-        // 시작 시간과 종료 시간 설정
-        bindingDialog.editStartTime.text = selectedEvent.startTime
-        bindingDialog.editEndTime.text = selectedEvent.endTime
+        // 다이얼로그가 닫힐 때 날짜 선택 해제
+        dialog.setOnDismissListener {
+            calendarClearSelection()
+        }
 
-
-        // selectedEvent의 startDate를 CalendarDay로 변환하여 selectedDate를 초기화
-        selectedDate = parseStringToCalendarDay(selectedEvent.startDate!!)
         initView()
 
-        // 토글 초기화
-        if(selectedEvent.startTime == ""){
-            dateToggle(isSelected = true)
-        } else{
-            dateToggle(isSelected = false)
-            initTimePickers(selectedEvent)
-        }
-
         // 하루종일 토글 선택 시 반응
-        bindingDialog.dialogEventEditToggleOff.setOnClickListener {
+        bindingDialog.dialogEventDetailsToggleOff.setOnClickListener {
             dateToggle(isSelected = true)
-            showCheckIconOn() // 토글 변경 시 체크 아이콘 업데이트
         }
-        bindingDialog.dialogEventEditToggleOn.setOnClickListener {
+        bindingDialog.dialogEventDetailsToggleOn.setOnClickListener {
             dateToggle(isSelected = false)
-            initTimePickers(selectedEvent)
-            showCheckIconOn() // 토글 변경 시 체크 아이콘 업데이트
+            initTimePickers()
         }
 
         // 시작 날짜 선택
-        bindingDialog.dialogEventEditStartdateSelect.setOnClickListener{
+        bindingDialog.dialogEventDetailsStartdateSelect.setOnClickListener{
             if (startCalendarView.visibility == View.VISIBLE) {
                 startCalendarView.visibility = View.GONE
             } else {
@@ -105,7 +92,7 @@ class DialogEditEvent (private val context: Context){
         }
 
         // 종료 날짜 선택
-        bindingDialog.dialogEventEditEnddateSelect.setOnClickListener{
+        bindingDialog.dialogEventDetailsEnddateSelect.setOnClickListener{
             if (endCalendarView.visibility == View.VISIBLE) {
                 endCalendarView.visibility = View.GONE
             } else {
@@ -114,10 +101,10 @@ class DialogEditEvent (private val context: Context){
             }
         }
 
-        initTimePickers(selectedEvent)
+        initTimePickers()
 
         // 시작 시간 선택
-        bindingDialog.dialogEventEditStarttimeSelect.setOnClickListener {
+        bindingDialog.dialogEventDetailsStarttimeSelect.setOnClickListener {
             if (startTimePicker.visibility == View.VISIBLE) {
                 startTimePicker.visibility = View.GONE
             } else {
@@ -127,7 +114,7 @@ class DialogEditEvent (private val context: Context){
         }
 
         // 종료 시간 선택
-        bindingDialog.dialogEventEditEndtimeSelect.setOnClickListener {
+        bindingDialog.dialogEventDetailsEndtimeSelect.setOnClickListener {
             if (endTimePicker.visibility == View.VISIBLE) {
                 endTimePicker.visibility = View.GONE
             } else {
@@ -137,7 +124,7 @@ class DialogEditEvent (private val context: Context){
         }
 
         // EditText에 업데이트에 따른 체크 아이콘 반응
-        bindingDialog.dialogEventEditContent.addTextChangedListener(object : TextWatcher {
+        bindingDialog.dialogEventDetailsContent.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // 텍스트 변경 전 처리
             }
@@ -145,15 +132,12 @@ class DialogEditEvent (private val context: Context){
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 // 텍스트가 변경될 때 호출되는 메서드
                 // EditText가 비어 있지 않은 경우
-//                if (!s.isNullOrEmpty()) {
-//                    bindingDialog.dialogEventEditCheckIconOff.visibility = View.GONE
-//                    bindingDialog.dialogEventEditCheckIconOn.visibility = View.VISIBLE
-//                } else{
-//                    bindingDialog.dialogEventEditCheckIconOff.visibility = View.VISIBLE
-//                    bindingDialog.dialogEventEditCheckIconOn.visibility = View.GONE
-//                }
                 if (!s.isNullOrEmpty()) {
-                    showCheckIconOn() // 내용이 변경되면 체크 아이콘 업데이트
+                    bindingDialog.dialogEventDetailsCheckIconOff.visibility = View.GONE
+                    bindingDialog.dialogEventDetailsCheckIconOn.visibility = View.VISIBLE
+                } else{
+                    bindingDialog.dialogEventDetailsCheckIconOff.visibility = View.VISIBLE
+                    bindingDialog.dialogEventDetailsCheckIconOn.visibility = View.GONE
                 }
             }
 
@@ -163,39 +147,25 @@ class DialogEditEvent (private val context: Context){
         })
 
         // 체크 버튼 (저장 버튼)
-        bindingDialog.dialogEventEditCheckIconOn.setOnClickListener {
-            // 수정된 데이터 저장
-            val updatedEvent = selectedEvent.copy(
-                title = bindingDialog.dialogEventEditContent.text.toString(),
-                startDate = bindingDialog.editStartDate.text.toString(),
-                endDate = bindingDialog.editEndDate.text.toString(),
-                startTime = bindingDialog.editStartTime.text.toString(),
-                endTime = bindingDialog.editEndTime.text.toString()
-            )
+        bindingDialog.dialogEventDetailsCheckIconOn.setOnClickListener {
+            // 확인 버튼 클릭 시 수행할 작업
+            val title = bindingDialog.dialogEventDetailsContent.text.toString()
+            val startDate = bindingDialog.selectStartDate.text.toString()
+            val endDate = bindingDialog.selectEndDate.text.toString()
+            val startTime = bindingDialog.selectStartTime.text.toString()
+            val endTime = bindingDialog.selectEndTime.text.toString()
 
-            // Firebase에 업데이트
-            updateEventInFirestore(updatedEvent)
+            // Event 객체 생성
+            val event = ScheduleModel(uniqueCode, "", title, startDate, endDate, startTime, endTime, selectedCategory)
+
+            // Firestore에 저장
+            saveEventToFirestore(event)
 
             dialog.dismiss() // 다이얼로그 닫기
         }
 
         // 다이얼로그 보여주기
         dialog.show()
-    }
-    // 체크 아이콘을 보이게 하는 함수
-    private fun showCheckIconOn() {
-        bindingDialog.dialogEventEditCheckIconOff.visibility = View.GONE
-        bindingDialog.dialogEventEditCheckIconOn.visibility = View.VISIBLE
-    }
-
-
-    // String을 CalendarDay로 변환하는 함수
-    private fun parseStringToCalendarDay(dateString: String): CalendarDay {
-        val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.getDefault())
-        val date = dateFormat.parse(dateString) ?: throw IllegalArgumentException("Invalid date format")
-
-        val calendar = Calendar.getInstance().apply { time = date }
-        return CalendarDay.from(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH))
     }
 
     private fun initView() = with(bindingDialog) {
@@ -210,11 +180,11 @@ class DialogEditEvent (private val context: Context){
             todayDecorator = CalendarDecorators.todayDecorator(context)
             otherMonthDecorator = CalendarDecorators.otherMonthDecorator(
                 context,
-                java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1
+                Calendar.getInstance().get(Calendar.MONTH) + 1
             )
             selectedMonthDecorator = CalendarDecorators.selectedMonthDecorator(
                 context,
-                java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1
+                Calendar.getInstance().get(Calendar.MONTH) + 1
             )
 
             // 데코레이터 추가
@@ -233,7 +203,8 @@ class DialogEditEvent (private val context: Context){
                     date.month
                 )
                 addDecorators(dayDecorator, todayDecorator, selectedMonthDecorator,
-                    CalendarDecorators.otherMonthDecorator(context, date.month))
+                    CalendarDecorators.otherMonthDecorator(context, date.month)
+                )
 
                 // 이벤트 필터링 (해당 Dialog에는 필요 x)
             }
@@ -242,19 +213,18 @@ class DialogEditEvent (private val context: Context){
             }
 
             // 선택 전 날짜 초기화
-            bindingDialog.editStartDate.text = formatDate(selectedDate)
-            bindingDialog.editEndDate.text = formatDate(selectedDate)
+            bindingDialog.selectStartDate.text = formatDate(selectedDate)
+            bindingDialog.selectEndDate.text = formatDate(selectedDate)
         }
     }
 
     private fun updateSelectedDate(date: CalendarDay, isStartDate: Boolean) {
         val selectedDate = formatDate(date)
         if (isStartDate) {
-            bindingDialog.editStartDate.text = selectedDate
+            bindingDialog.selectStartDate.text = selectedDate
         } else {
-            bindingDialog.editEndDate.text = selectedDate
+            bindingDialog.selectEndDate.text = selectedDate
         }
-        showCheckIconOn()
     }
 
     private fun formatDate(date: CalendarDay): String {
@@ -265,60 +235,51 @@ class DialogEditEvent (private val context: Context){
         return format.format(calendar.time)
     }
 
-    // 시간 parse
-    private fun parseTime(timeString: String): Pair<Int, Int> {
-        val timeParts = timeString.split(" ")
-        val amPm = timeParts[0]
-        val time = timeParts[1].split(":")
-        var hour = time[0].toInt()
-        val minute = time[1].toInt()
-
-        // "오전" 또는 "오후"에 따라 12시간제를 24시간제로 변환
-        if (amPm == "오후" && hour < 12) {
-            hour += 12
-        } else if (amPm == "오전" && hour == 12) {
-            hour = 0
-        }
-
-        return Pair(hour, minute)
-    }
-
-
-    private fun initTimePickers(selectedEvent: ScheduleModel) {
-        // startTime과 endTime을 selectedEvent에서 가져와서 TimePicker에 설정
+    private fun initTimePickers() {
+        // 현재 시간 가져오기
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"))
-        val startTimePair: Pair<Int, Int>
-        val endTimePair: Pair<Int, Int>
+        Log.d("현재 시간", "${calendar.time}")
 
-        if(selectedEvent.startTime.isNullOrEmpty() || selectedEvent.endTime.isNullOrEmpty()){
-            // 현재 시간을 startTime으로 설정
-            startTimePair = Pair(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+        // 시작 시간을 현재 시간으로 설정하고 10분 단위로 맞춤
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = calendar.get(Calendar.MINUTE)
 
-            // endTime은 startTime에 1시간 더한 값으로 설정
-            calendar.add(Calendar.HOUR_OF_DAY, 1)
-            endTimePair = Pair(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
+        // 10분 단위로 설정 (10분을 초과한 경우에는 10분 단위로 올림)
+        val roundedMinute = (currentMinute + 9) / 10 * 10 % 60
+        val hourAdjustment = if (roundedMinute == 0) 1 else 0
+        val adjustedHour = currentHour + hourAdjustment
 
-            // 다이얼로그에 표시할 초기 시간 설정
-            bindingDialog.editStartTime.text = formatTime(startTimePair.first, startTimePair.second)
-            bindingDialog.editEndTime.text = formatTime(endTimePair.first, endTimePair.second)
-        } else{
-            // 기존 startTime과 endTime을 설정
-            startTimePair = parseTime(selectedEvent.startTime!!)
-            endTimePair = parseTime(selectedEvent.endTime!!)
+        startTimePicker.hour = adjustedHour
+        startTimePicker.minute = roundedMinute
 
-            // 다이얼로그에 기존 시간을 표시
-            bindingDialog.editStartTime.text = selectedEvent.startTime
-            bindingDialog.editEndTime.text = selectedEvent.endTime
-        }
+        // 현재 시간을 기준으로 포맷팅하여 selectStartTime 초기화
+        val startamPm = if (adjustedHour < 12) "오전" else "오후"
+        val formattedStartHour = if (adjustedHour == 0 || adjustedHour == 12) 12 else adjustedHour % 12
+        val formattedStartTime = String.format("%s %d:%02d", startamPm, formattedStartHour, roundedMinute)
 
-        startTimePicker.hour = startTimePair.first
-        startTimePicker.minute = startTimePair.second
+        // 시작 시간을 다이얼로그에 표시
+        bindingDialog.selectStartTime.text = formattedStartTime
+        Log.d("시작하는시간", "${formattedStartTime}")
 
-        endTimePicker.hour = endTimePair.first
-        endTimePicker.minute = endTimePair.second
+        // 종료 시간을 시작 시간에서 1시간 더한 값으로 설정
+        calendar.set(Calendar.HOUR_OF_DAY, adjustedHour)
+        calendar.set(Calendar.MINUTE, roundedMinute)
+        calendar.add(Calendar.HOUR_OF_DAY, 1)
 
-        Log.d("시작하는시간", "${selectedEvent.startTime}")
-        Log.d("끝나는시간", "${selectedEvent.endTime}")
+        val endHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val endMinute = calendar.get(Calendar.MINUTE)
+
+        endTimePicker.hour = endHour
+        endTimePicker.minute = endMinute
+
+        val endAmPm = if (endHour < 12) "오전" else "오후"
+        val formattedEndHour = if (endHour == 0 || endHour == 12) 12 else endHour % 12
+        val formattedEndTime = String.format("%s %d:%02d", endAmPm, formattedEndHour, endMinute)
+
+        Log.d("끝나는시간", "${formattedEndTime}")
+
+        // 종료 시간을 다이얼로그에 표시
+        bindingDialog.selectEndTime.text = formattedEndTime
 
         // 시작 시간 선택 로직
         startTimePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
@@ -327,7 +288,7 @@ class DialogEditEvent (private val context: Context){
             val formattedTime = String.format("%s %d:%02d", amPm, formattedHour, minute)
 
             // 시작 시간 텍스트 업데이트
-            bindingDialog.editStartTime.text = formattedTime
+            bindingDialog.selectStartTime.text = formattedTime
 
             // 종료 시간을 시작 시간에 1시간 더한 값으로 자동 설정
             val newEndCalendar = Calendar.getInstance().apply {
@@ -346,8 +307,7 @@ class DialogEditEvent (private val context: Context){
             val newFormattedEndTime = String.format("%s %d:%02d", newEndAmPm, newFormattedEndHour, newEndMinute)
 
             // 종료 시간 텍스트 업데이트
-            bindingDialog.editEndTime.text = newFormattedEndTime
-            showCheckIconOn()
+            bindingDialog.selectEndTime.text = newFormattedEndTime
         }
 
         // 종료 시간 선택 로직
@@ -356,35 +316,53 @@ class DialogEditEvent (private val context: Context){
             val formattedHour = if (hourOfDay == 0 || hourOfDay == 12) 12 else hourOfDay % 12
             val formattedTime = String.format("%s %d:%02d", amPm, formattedHour, minute)
 
-            bindingDialog.editEndTime.text = formattedTime
-            showCheckIconOn()
+            bindingDialog.selectEndTime.text = formattedTime
         }
     }
 
-    // 시간 포맷팅 함수
-    private fun formatTime(hourOfDay: Int, minute: Int): String {
-        val amPm = if (hourOfDay < 12) "오전" else "오후"
-        val formattedHour = if (hourOfDay == 0 || hourOfDay == 12) 12 else hourOfDay % 12
-        return String.format("%s %d:%02d", amPm, formattedHour, minute)
+    private fun formatDateWithE(date: CalendarDay): String {
+        val calendar = Calendar.getInstance().apply {
+            set(date.year, date.month - 1, date.day)  // MaterialCalendarView uses 1-based months
+        }
+        val format = SimpleDateFormat("M월 d일 EEEE", Locale("ko", "KR"))
+        return format.format(calendar.time)
     }
 
     // 하루종일 토글 상태 변경 함수
     private fun dateToggle(isSelected: Boolean){
         if(isSelected){
-            bindingDialog.dialogEventEditToggleOff.visibility = View.GONE
-            bindingDialog.dialogEventEditToggleOn.visibility = View.VISIBLE
-            bindingDialog.dialogEventEditStarttimeSelect.visibility = View.GONE
-            bindingDialog.dialogEventEditEndtimeSelect.visibility = View.GONE
+            bindingDialog.dialogEventDetailsToggleOff.visibility = View.GONE
+            bindingDialog.dialogEventDetailsToggleOn.visibility = View.VISIBLE
+            bindingDialog.dialogEventDetailsStarttimeSelect.visibility = View.GONE
+            bindingDialog.dialogEventDetailsEndtimeSelect.visibility = View.GONE
 
-            bindingDialog.editStartTime.text = ""
-            bindingDialog.editEndTime.text = ""
+            bindingDialog.selectStartTime.text = ""
+            bindingDialog.selectEndTime.text = ""
 
         } else{
-            bindingDialog.dialogEventEditToggleOff.visibility = View.VISIBLE
-            bindingDialog.dialogEventEditToggleOn.visibility = View.GONE
-            bindingDialog.dialogEventEditStarttimeSelect.visibility = View.VISIBLE
-            bindingDialog.dialogEventEditEndtimeSelect.visibility = View.VISIBLE
+            bindingDialog.dialogEventDetailsToggleOff.visibility = View.VISIBLE
+            bindingDialog.dialogEventDetailsToggleOn.visibility = View.GONE
+            bindingDialog.dialogEventDetailsStarttimeSelect.visibility = View.VISIBLE
+            bindingDialog.dialogEventDetailsEndtimeSelect.visibility = View.VISIBLE
         }
+    }
+
+    // firebase 일정 데이터 업로드
+    private fun saveEventToFirestore(event: ScheduleModel) {
+        val db = FirebaseFirestore.getInstance()
+        val eventsCollection = db.collection("events") // "events"라는 컬렉션에 저장
+
+        eventsCollection.add(event)
+            .addOnSuccessListener { documentReference ->
+                Log.d("Firestore", "Event added with ID: ${documentReference.id}")
+
+                // 생성된 문서 ID를 ScheduleModel에 설정
+                event.documentId = documentReference.id
+                updateEventInFirestore(event)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error adding event", e)
+            }
     }
 
     // ScheduleModel을 Firestore에 업데이트하는 함수

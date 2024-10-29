@@ -1,15 +1,12 @@
-package com.example.z_project.chat.calendar
+package com.example.z_project.calendar
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.example.z_project.R
 import com.example.z_project.databinding.ItemCalendarCategoryBinding
@@ -23,7 +20,7 @@ class CalendarCategoryRVAdapter(
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarCategoryRVAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         // itemview 객체 생성
         val binding: ItemCalendarCategoryBinding = ItemCalendarCategoryBinding.inflate(
             LayoutInflater.from(parent.context), parent, false)
@@ -48,7 +45,7 @@ class CalendarCategoryRVAdapter(
         val userId = sharedPreferences.getString("UNIQUE_CODE", null)
         val category = categories[position]
 
-        if (category.authId == userId && category.groupId == "1") {
+        if (category.authId == userId) {
             firestore.collection("categories")
                 .document(category.categoryId!!)
                 .delete()
