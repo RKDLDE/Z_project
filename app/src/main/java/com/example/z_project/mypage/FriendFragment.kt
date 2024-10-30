@@ -16,15 +16,17 @@ import com.example.z_project.mypage.CustomAdapter
 import com.example.z_project.mypage.FriendData
 import com.example.z_project.mypage.FriendPlusFragment
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.kakao.sdk.share.ShareClient
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
 
 class FriendFragment : Fragment() {
-    lateinit var binding: FragmentFriendBinding
+    private lateinit var binding: FragmentFriendBinding
     private lateinit var customAdapter: CustomAdapter
-    private val friendList: MutableList<FriendData> = ArrayList() // FriendData 객체를 저장할 리스트
+    private val friendList: MutableList<FriendData> = ArrayList()
+    private var friendListListener: ListenerRegistration? = null  // Firestore 리스너
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,41 +34,26 @@ class FriendFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFriendBinding.inflate(inflater, container, false)
-
-//        val testDataSet: MutableList<String> = ArrayList()
-//        for (i in 0..9) {
-//            testDataSet.add("친구$i")
-//        }
-//
-//        val recyclerView: RecyclerView = binding.rcvFriendList
-//        recyclerView.layoutManager = LinearLayoutManager(context)
-//
-//        val customAdapter = CustomAdapter(testDataSet, requireContext())
-//        recyclerView.adapter = customAdapter
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // RecyclerView 설정
         val recyclerView: RecyclerView = binding.rcvFriendList
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // 친구 목록 가져오기
-        loadFriendList()
+        // 친구 목록 실시간 업데이트 리스너 등록
+        observeFriendList()
+
         customAdapter = CustomAdapter(friendList, requireContext())
         recyclerView.adapter = customAdapter
 
-        // 뒤로가기 버튼
         val backButton = view.findViewById<ImageButton>(R.id.ib_back)
-        // 이미지 버튼 클릭 이벤트 처리
         backButton.setOnClickListener {
-            // 이전 Fragment로 이동
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        // ll_kakao 클릭 시 카카오톡 링크 보내기
         val llKakao = view.findViewById<FrameLayout>(R.id.ll_kakao)
         llKakao.setOnClickListener {
             sendKakaoTalkInvite()
@@ -82,88 +69,87 @@ class FriendFragment : Fragment() {
         FriendPlusFragment(requireContext()).show()
     }
 
-    private fun loadFriendList() {
+    private fun observeFriendList() {
         val sharedPreferences =
             requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
         val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
 
-        //friendList.clear() // 기존 리스트 초기화
-
         if (uniqueCode != null) {
             Log.d("FriendList", "사용자 고유코드: ${uniqueCode}")
 
-            // Firestore에서 현재 사용자의 친구 목록을 가져옵니다.
-            FirebaseFirestore.getInstance().collection("friends")
+            // Firestore 실시간 리스너 설정
+            friendListListener = FirebaseFirestore.getInstance().collection("friends")
                 .document(uniqueCode)
-                .collection("friendsList")  // friendList 컬렉션을 가져옵니다.
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    Log.d("FriendList", "친구 목록 문서 수: ${querySnapshot.size()}")
+                .collection("friendsList")
+                .addSnapshotListener { querySnapshot, error ->
+                    if (error != null) {
+                        Log.e("FriendList", "친구 목록 실시간 조회 실패: ${error.message}")
+                        return@addSnapshotListener
+                    }
 
-                    for (document in querySnapshot.documents) {
-                        val friendCode = document.getString("friendCode") // 친구 코드 가져오기
-                        if (friendCode != null) {
-                            // 친구 코드에 해당하는 사용자 정보를 Firestore에서 가져오기
-                            FirebaseFirestore.getInstance().collection("users").document(friendCode)
-                                .get()
-                                .addOnSuccessListener { userDocument ->
-                                    if (userDocument != null && userDocument.exists()) {
-                                        val friendName = userDocument.getString("name") ?: "이름 없음"
-                                        val friendProfileImage =
-                                            userDocument.getString("profileImage") ?: "" // 프로필 이미지 URL
+                    if (querySnapshot != null) {
+                        friendList.clear() // 기존 리스트 초기화
 
-                                        // FriendData 객체 생성 후 리스트에 추가
-                                        friendList.add(FriendData(friendCode, friendName, friendProfileImage))
+                        for (document in querySnapshot.documents) {
+                            val friendCode = document.getString("friendCode")
+                            if (friendCode != null) {
+                                FirebaseFirestore.getInstance().collection("users")
+                                    .document(friendCode)
+                                    .get()
+                                    .addOnSuccessListener { userDocument ->
+                                        if (userDocument.exists()) {
+                                            val friendName = userDocument.getString("name") ?: "이름 없음"
+                                            val friendProfileImage = userDocument.getString("profileImage") ?: ""
 
-                                        // 로그로 친구 목록 출력
-                                        Log.d("FriendList", "친구 코드: ${friendCode}, 이름: ${friendName}")
+                                            friendList.add(FriendData(friendCode, friendName, friendProfileImage))
 
-                                        customAdapter.notifyDataSetChanged() // 데이터 변경 알리기
+                                            customAdapter.notifyDataSetChanged()
+                                        }
                                     }
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.e("FriendList", "친구 데이터 로드 실패: ${exception.message}")
-                                }
-                        } else {
-                            Log.e("FriendList", "친구 코드가 null입니다.")
+                                    .addOnFailureListener { exception ->
+                                        Log.e("FriendList", "친구 데이터 로드 실패: ${exception.message}")
+                                    }
+                            } else {
+                                Log.e("FriendList", "친구 코드가 null입니다.")
+                            }
                         }
                     }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("FriendList", "친구 목록 조회 실패: ${exception.message}")
                 }
         } else {
             Log.e("FriendList", "고유 코드가 존재하지 않습니다.")
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // 리스너 제거하여 메모리 누수 방지
+        friendListListener?.remove()
+    }
+
     private fun sendKakaoTalkInvite() {
-        // SharedPreferences에서 고유 코드 가져오기
         val sharedPreferences =
             requireContext().getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
         val uniqueCode = sharedPreferences.getString("UNIQUE_CODE", null)
         Log.d("Friendkakao", "uniqueCode: ${uniqueCode}")
 
         if (uniqueCode != null) {
-            // Firebase에서 사용자 이름과 프로필 이미지 URL 가져오기
             FirebaseFirestore.getInstance().collection("users").document(uniqueCode)
                 .get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
                         val userName = document.getString("name") ?: "이름 없음"
 
-                        // FeedTemplate을 사용하여 초대 링크 생성
                         val feedTemplate = FeedTemplate(
                             content = Content(
                                 title = "${userName}님이 보낸 초대코드를 확인하세요!",
                                 description = "초대코드: ${uniqueCode}",
-                                imageUrl = "",  // 프로필 이미지 URL 추가
-                                link = Link(  // 빈 링크 설정
+                                imageUrl = "",
+                                link = Link(
                                     webUrl = "",
                                     mobileWebUrl = ""
                                 )
                             )
                         )
-                        // 카카오톡 링크 전송
                         ShareClient.instance.shareDefault(
                             requireContext(),
                             feedTemplate
@@ -176,10 +162,8 @@ class FriendFragment : Fragment() {
                                 ).show()
                                 Log.d("Friendkakao", "초대 링크 전송 실패")
                             } else if (linkResult != null) {
-                                // 초대 링크가 성공적으로 전송됨
                                 startActivity(linkResult.intent)
                                 Log.d("Friendkakao", "초대 링크 전송 성공")
-//                                copyToClipboard(uniqueCode)
                             }
                         }
                     }
@@ -189,12 +173,4 @@ class FriendFragment : Fragment() {
                 }
         }
     }
-
-    // 고유 코드를 클립보드에 저장하는 함수
-//    private fun copyToClipboard(uniqueCode: String) {
-//        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-//        val clip = ClipData.newPlainText("Unique Code", uniqueCode)
-//        clipboard.setPrimaryClip(clip)
-//        Toast.makeText(requireContext(), "친구코드가 클립보드에 저장되었습니다.", Toast.LENGTH_SHORT).show()
-//    }
 }
