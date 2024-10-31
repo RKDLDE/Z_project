@@ -146,7 +146,12 @@ class MypageFragment : Fragment(), BottomsheetFragment.ImageSelectionListener {
                     Log.d("Mypage", "이름 불러오기: ${userName}")
 
                     if (!profileImage.isNullOrEmpty()) {
-                        loadProfileImage(profileImage) // URL 형식으로 이미지 로드
+                        if(profileImage == "https://img1.kakaocdn.net/thumb/R110x110.q70/?fname=https://t1.kakaocdn.net/account_images/default_profile.jpeg"){
+                            onImageDeleted()
+                        }else{
+                            loadProfileImage(profileImage) // URL 형식으로 이미지 로드
+
+                        }
                     } else {
                         profileImageView.setImageResource(R.drawable.profile) // 기본 이미지
                     }

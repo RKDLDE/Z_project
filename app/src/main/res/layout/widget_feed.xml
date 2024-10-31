@@ -54,11 +54,12 @@
         <TextView
             android:background="@drawable/background_upload_text"
             android:id="@+id/upload_text"
-            android:padding="3dp"
+            android:padding="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textSize="14sp"
+            android:textAlignment="center"
+            android:textSize="13sp"
             android:textColor="@android:color/black" />/>
     </LinearLayout>
 
