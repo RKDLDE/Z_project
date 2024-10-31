@@ -29,10 +29,10 @@ import java.util.Locale
 import kotlin.random.Random
 
 @HiltViewModel
-class PersonalChatViewModel @Inject constructor (
+class PersonalChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     application: Application
-): ViewModel() {
+) : ViewModel() {
 
     //firebase 테스트
     private val firestore = FirebaseFirestore.getInstance() //Cloud DB
@@ -43,6 +43,48 @@ class PersonalChatViewModel @Inject constructor (
         application.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
     val userId: String? = sharedPreferences.getString("UNIQUE_CODE", null)
     var chatRoomId: String = ""
+
+    private val listener = object : ValueEventListener {
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            val chatList = mutableListOf<Chat>()
+            for (snapshot in dataSnapshot.children) {
+                // 각 messageId 아래의 데이터 읽기
+                val chat = snapshot.getValue(Chat::class.java)
+                if (chat?.chatRoomId == _uiState.value.personalChat?.id) {
+                    chat?.let { chatList.add(it) }
+                }
+            }
+
+            val unReadChatList = chatList.filter { it.userId != userId && !it.read }
+            if(unReadChatList.isNotEmpty()) {
+                unReadChatList.forEach { c ->
+                    messagesRef.child(c.messageId?:"").setValue(c.copy(read = true))
+                        .addOnSuccessListener {
+                            Log.d("Firebase", "Message sent successfully")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("Firebase", "Failed to send message", e)
+                        }
+                }
+            } else {
+                // UI 상태 업데이트 (가져온 메시지로)
+                _uiState.update {
+                    it.copy(chats = chatList)
+                }
+                updateCheckTime()
+            }
+        }
+
+        override fun onCancelled(databaseError: DatabaseError) {
+            // 오류 처리 로직
+            Log.e("Firebase", "Failed to read messages", databaseError.toException())
+        }
+    }
+
+    fun updateCheckTime() {
+        val editor = sharedPreferences.edit()
+        editor.putLong("CHECK_TIME_${_uiState.value.personalChat?.id}", System.currentTimeMillis()).apply()
+    }
 
     // 메시지를 Realtime Firebase에 전송하는 함수
     fun sendMessage(message: String, message1: String) {
@@ -57,11 +99,10 @@ class PersonalChatViewModel @Inject constructor (
             userId = userId,
             message = message,
             time = timestamp,
-            profile = Profile(
-                profileImageRes = profile?.profileImageRes,
-                name = profile?.name
-            ),
-            isOther = false
+            profile = profile,
+            replyChat = _uiState.value.replyChat,
+            isOther = false,
+            read = false
         )
 
         // Firebase Realtime Database에 메시지 저장
@@ -74,7 +115,11 @@ class PersonalChatViewModel @Inject constructor (
 //                    saveChatRoomToFirestore(chatRoomId)
 
                     // 메시지 전송 후 UI 상태 업데이트 (채팅방 ID로 조회)
-                    fetchMessages(chatRoomId)
+                    _uiState.update {
+                        it.copy(
+                            replyChat = null
+                        )
+                    }
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firebase", "Failed to send message", e)
@@ -101,28 +146,11 @@ class PersonalChatViewModel @Inject constructor (
     // Firebase에서 메시지를 읽어오는 함수
     fun fetchMessages(chatRoomId: String) {
         // chatRooms/<chatRoomId>/ 메시지 경로 참조
-        messagesRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val chatList = mutableListOf<Chat>()
-                for (snapshot in dataSnapshot.children) {
-                    // 각 messageId 아래의 데이터 읽기
-                    val chat = snapshot.getValue(Chat::class.java)
-                    if(chat?.chatRoomId == _uiState.value.personalChat?.id) {
-                        chat?.let { chatList.add(it) }
-                    }
-                }
+        messagesRef.addValueEventListener(listener)
+    }
 
-                // UI 상태 업데이트 (가져온 메시지로)
-                _uiState.update {
-                    it.copy(chats = chatList)
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // 오류 처리 로직
-                Log.e("Firebase", "Failed to read messages", databaseError.toException())
-            }
-        })
+    fun removeListener() {
+        messagesRef.removeEventListener(listener)
     }
 
     // UI State
@@ -140,24 +168,27 @@ class PersonalChatViewModel @Inject constructor (
             val decodedJson = URLDecoder.decode(personalChatJson, "UTF-8")
             val personalChat: PersonalChat =
                 Json.decodeFromString(PersonalChat.serializer(), decodedJson)
-            val chatList = mutableListOf<Chat>()
 
-            messagesRef.get().addOnSuccessListener { doc ->
-                for (snapshot in doc.children) {
-                    // 각 messageId 아래의 데이터 읽기
-                    val chat = snapshot.getValue(Chat::class.java)
-                    if(chat?.chatRoomId == personalChat.id) {
-                        chat?.let { chatList.add(it) }
-                    }
-                }
-
-                _uiState.update {
-                    it.copy(
-                        personalChat = personalChat,
-                        chats = chatList
-                    )
-                }
+            fetchMessages(chatRoomId)
+            _uiState.update {
+                it.copy(personalChat = personalChat)
             }
+//            messagesRef.get().addOnSuccessListener { doc ->
+//                for (snapshot in doc.children) {
+//                    // 각 messageId 아래의 데이터 읽기
+//                    val chat = snapshot.getValue(Chat::class.java)
+//                    if(chat?.chatRoomId == personalChat.id) {
+//                        chat?.let { chatList.add(it) }
+//                    }
+//                }
+//
+//                _uiState.update {
+//                    it.copy(
+//                        personalChat = personalChat,
+//                        chats = chatList
+//                    )
+//                }
+//            }
         }
     }
 

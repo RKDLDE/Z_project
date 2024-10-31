@@ -156,8 +156,11 @@ android {
 
         implementation("io.coil-kt:coil-compose:2.4.0")
 
-
+        implementation ("com.google.accompanist:accompanist-insets:0.30.1") // 최신 버전을 사용할 수 있음
         implementation("de.hdodenhof:circleimageview:3.1.0")
+        implementation ("androidx.compose.ui:ui:1.4.0") // 예시 버전
+        implementation ("androidx.compose.material:material:1.4.0")
+        implementation ("androidx.compose.ui:ui-tooling-preview:1.4.0")
 
 
 
