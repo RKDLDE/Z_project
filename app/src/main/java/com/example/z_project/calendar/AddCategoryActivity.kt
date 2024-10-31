@@ -59,6 +59,12 @@ class AddCategoryActivity : AppCompatActivity() {
             val name = binding.addCategoryNameContent.text.toString() // 카테고리 이름
             val color = selectedCategory // 선택한 카테고리의 색상
 
+            // 카테고리 이름이 비어 있을 경우 저장을 막음
+            if (name.isBlank() || !::selectedCategory.isInitialized) {
+                Toast.makeText(this, "카테고리 이름과 색상을 모두 선택해야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener // 저장 로직을 실행하지 않음
+            }
+
             // Category 객체 생성
             val category = Categories(authId, "", name, color.toString())
 

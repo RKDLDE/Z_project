@@ -1,6 +1,7 @@
 package com.example.z_project.calendar
 
 import android.content.Context
+import android.graphics.Color
 import java.util.Date
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -10,6 +11,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.TitleFormatter
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -257,33 +259,23 @@ object CalendarDecorators {
 
             override fun decorate(view: DayViewFacade?) {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
-                //view.addSpan(DotSpan(10F, ContextCompat.getColor(context, R.color.black)))
-
-                // 일정 정보가 총합되어서 찍힘.. - 보류ㅠㅠ
-//                eventMap.forEach {(calendarDay, colors) ->
-//                    val colorList = mutableListOf<Int>()
-//
-//                    colors.forEach { colorId ->
-//                        val colorValue = ContextCompat.getColor(context, colorId) // 색상 ID에서 색상 값으로 변환
-//                        colorList.addAll(listOf(colorValue))
-//                    }
-//                    eventColors = colorList.toIntArray()
-//
-//                    if (eventColors.isNotEmpty()) {
-//                        Log.d("색상들....", "${colorList}")
-//                        view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
-//                    } else {
-//                        Log.d("DotSpan", "No colors to draw.")
-//                    }
-//                }
+//                view!!.addSpan(DotSpan(6F, ContextCompat.getColor(context, R.color.red)))
                 val colorList = mutableListOf<Int>()
-                colorList.addAll(listOf(
-                    ContextCompat.getColor(context, R.color.calendar_color_blue),
-                    ContextCompat.getColor(context, R.color.calendar_color_yellow),
-                    ContextCompat.getColor(context, R.color.calendar_color_orange),
-                ))
+                val color = Color.parseColor("#5CAAF1")
+                colorList.add(color)
                 eventColors = colorList.toIntArray()
-                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
+
+                view!!.addSpan(CustomMultipleDotSpan(7f, eventColors))
+
+                // CustomMultiple Dot
+//                val colorList = mutableListOf<Int>()
+//                colorList.addAll(listOf(
+//                    ContextCompat.getColor(context, R.color.calendar_color_blue),
+//                    ContextCompat.getColor(context, R.color.calendar_color_yellow),
+//                    ContextCompat.getColor(context, R.color.calendar_color_orange),
+//                ))
+//                eventColors = colorList.toIntArray()
+//                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
 
             }
 
