@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.z_project.chat.main_screen.DisposableEffectWithLifeCycle
 
 @Composable
 fun PersonalChatRoute(
@@ -22,7 +24,11 @@ fun PersonalChatRoute(
     val sharedPreferences = context.getSharedPreferences("MY_PREFS", Context.MODE_PRIVATE)
     val userId = sharedPreferences.getString("UNIQUE_CODE", null) ?: ""
 
-    Surface {
+    DisposableEffectWithLifeCycle {
+        viewModel.removeListener()
+    }
+
+    Surface(color = Color.White) {
         PersonalChatScreen(
             uiState = uiState, // PersonalChatScreen에 전달되는 UI 상태,
             userId = userId,

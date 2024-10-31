@@ -13,7 +13,8 @@ data class Chat(
     val imageRes: Int? = null, // 추가된 프로필 이미지 리소스 ID
     val replyChat: Chat? = null,
     val profile: Profile? = null,
-    val isOther: Boolean = false
+    val isOther: Boolean = false,
+    val read: Boolean = false
 )
 
 
