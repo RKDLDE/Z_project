@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.z_project.mypage.ListdeleteFragment
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 class CustomAdapter(private val friendList: MutableList<FriendData>, private val context: Context) :
@@ -56,42 +57,73 @@ class CustomAdapter(private val friendList: MutableList<FriendData>, private val
 
         ListdeleteFragment(context, object : OnDeleteListener {
             override fun onDelete(pos: Int) {
-                // 해당 아이템 삭제 후 어댑터에 반영
                 val db = FirebaseFirestore.getInstance()
 
-                // 내 친구 목록에서 삭제
+                // 친구의 chatId를 가져오기 위한 쿼리
                 db.collection("friends")
-                    .document(userId!!)
-                    .collection("friendsList")
                     .document(friendCode)
-                    .delete()
-                    .addOnSuccessListener {
-                        // 친구의 친구 목록에서 내 코드를 삭제
-                        db.collection("friends")
-                            .document(friendCode)
-                            .collection("friendsList")
-                            .document(userId!!)
-                            .delete()
-                            .addOnSuccessListener {
-                                // 어댑터에 반영
-                                friendList.removeAt(pos)
-                                notifyItemRemoved(pos)
-                                notifyItemRangeChanged(pos, friendList.size)
+                    .collection("friendsList")
+                    .document(userId!!)
+                    .get()
+                    .addOnSuccessListener { document ->
+                        if (document.exists()) {
+                            // chatId 가져오기
+                            val chatId = document.getString("chatId") // chatId 필드가 있다고 가정
 
-                                Toast.makeText(context, "친구가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener { e ->
-                                Log.w("CustomAdapter", "친구 목록에서 삭제 실패: ", e)
-                                Toast.makeText(context, "친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
-                            }
+                            // 내 친구 목록에서 삭제
+                            db.collection("friends")
+                                .document(userId!!)
+                                .collection("friendsList")
+                                .document(friendCode)
+                                .delete()
+                                .addOnSuccessListener {
+                                    // 친구의 친구 목록에서 내 코드를 삭제
+                                    db.collection("friends")
+                                        .document(friendCode)
+                                        .collection("friendsList")
+                                        .document(userId!!)
+                                        .delete()
+                                        .addOnSuccessListener {
+                                            // chatId도 함께 삭제
+                                            db.collection("friends")
+                                                .document(friendCode)
+                                                .update("friends.${userId}.chatId", FieldValue.delete())
+                                                .addOnSuccessListener {
+                                                    // 어댑터에 반영
+                                                    if (pos < friendList.size) { // pos가 유효한 인덱스인지 확인
+                                                        friendList.removeAt(pos)
+                                                        notifyItemRemoved(pos)
+                                                        notifyItemRangeChanged(pos, friendList.size)
+                                                    }
+
+                                                    Toast.makeText(context, "친구가 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+                                                }
+                                                .addOnFailureListener { e ->
+                                                    //Log.w("CustomAdapter", "chatId 삭제 실패: ", e)
+                                                    //.makeText(context, "채팅 ID 삭제 실패", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.w("CustomAdapter", "친구 목록에서 삭제 실패: ", e)
+                                            Toast.makeText(context, "친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                .addOnFailureListener { e ->
+                                    //Log.w("CustomAdapter", "내 친구 목록에서 삭제 실패: ", e)
+                                    //Toast.makeText(context, "내 친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
+                                }
+                        } else {
+                            Toast.makeText(context, "친구 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        }
                     }
                     .addOnFailureListener { e ->
-                        Log.w("CustomAdapter", "내 친구 목록에서 삭제 실패: ", e)
-                        Toast.makeText(context, "내 친구 목록에서 삭제 실패", Toast.LENGTH_SHORT).show()
+                        Log.w("CustomAdapter", "친구의 chatId 가져오기 실패: ", e)
+                        Toast.makeText(context, "친구의 chatId 가져오기 실패", Toast.LENGTH_SHORT).show()
                     }
             }
         }, position).show()
     }
+
 
 
     override fun getItemCount(): Int {
