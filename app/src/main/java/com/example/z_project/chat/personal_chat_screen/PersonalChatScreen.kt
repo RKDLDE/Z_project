@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -34,8 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +43,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+//import androidx.compose.ui.node.CanFocusChecker.end
+//import androidx.compose.ui.node.CanFocusChecker.start
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -62,11 +63,11 @@ import com.example.z_project.chat.model.getDefaultPersonalChats
 import com.example.z_project.chat.ui.theme.ChatUITheme
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import java.util.Locale
-import coil.compose.rememberImagePainter
 
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PersonalChatScreen(
     uiState: PersonalChatUiState,
@@ -78,7 +79,13 @@ fun PersonalChatScreen(
     onClickSend: (String) -> Unit,
     onClickRemoveReply: () -> Unit
 ) {
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+        //.imePadding() // 전체 레이아웃에 imePadding 적용
+        //.navigationBarsPadding().imePadding() // 키보드가 나타날 때 스크롤 가능하게 설정
+        //.imeNestedScroll()    // 키보드에 맞춰 스크롤 가능하게 설정
+    ) {// 배경색을 흰색으로 설정
         val (topBar, chatList, bottomBar) = createRefs()
         ConstraintLayout(
             modifier = Modifier
@@ -127,6 +134,7 @@ fun PersonalChatScreen(
                 )
             }
         }
+        // 채팅 리스트
         ChatList(
             modifier = Modifier
                 .constrainAs(chatList) {
@@ -135,10 +143,13 @@ fun PersonalChatScreen(
                     height = Dimension.fillToConstraints
                 }
                 .padding(start = 12.dp, end = 12.dp),
+
             chats = uiState.chats ?: emptyList(),
             userId = userId,
+            profile = uiState.personalChat?.profile,
             onSwipeSelect = onSwipeSelect
         )
+        // 채팅 입력 부분
         if (uiState.isExit) {
             Box(
                 modifier = Modifier
@@ -167,18 +178,19 @@ fun PersonalChatScreen(
         } else {
             InputChat(
                 modifier = Modifier
-                    .constrainAs(bottomBar) { bottom.linkTo(parent.bottom, 12.dp) }
+                    .constrainAs(bottomBar) { bottom.linkTo(parent.bottom) }
                     .padding(start = 8.dp, end = 8.dp),
+
                 replyChat = uiState.replyChat,
                 onClickSend = onClickSend,
-                //onClickSend = sendMessage,
+                //onClickSend = sendMessage,,
+                userId = userId,
+                profile = uiState.personalChat?.profile,
                 onClickRemoveReply = onClickRemoveReply
             )
         }
     }
 }
-
-
 
 
 //채팅창
@@ -187,6 +199,7 @@ fun ChatList(
     modifier: Modifier = Modifier,
     chats: List<Chat>,
     userId: String?,
+    profile: Profile?,
     onSwipeSelect: (Chat) -> Unit
 ) {
 //    val listState = rememberLazyListState()
@@ -225,13 +238,28 @@ fun ChatList(
 //    }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize()
+
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color.White) // 배경색을 흰색으로 설정
+            .imePadding() // LazyColumn에 imePadding 추가
+
     ) {
         items(chats) { chat ->
             if (chat.userId == userId) { // userId와 비교
-                MyChatContent(chat = chat, onSwipeSelect = onSwipeSelect)
+                MyChatContent(
+                    chat = chat,
+                    userId = userId ?: "",
+                    profile = profile,
+                    onSwipeSelect = onSwipeSelect
+                )
             } else {
-                ChatContent(chat = chat, onSwipeSelect = onSwipeSelect)
+                ChatContent(
+                    chat = chat,
+                    userId = userId ?: "",
+                    profile = profile,
+                    onSwipeSelect = onSwipeSelect
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
         }
@@ -268,7 +296,9 @@ fun ChatDate(modifier: Modifier = Modifier) {
 @Composable
 fun ChatContent(
     modifier: Modifier = Modifier,
+    userId: String,
     chat: Chat,
+    profile: Profile?,
     onSwipeSelect: (Chat) -> Unit
 ) {
     val offsetX = remember { Animatable(0f) }
@@ -354,7 +384,7 @@ fun ChatContent(
                         }
                         .size(42.dp)
                         .clip(CircleShape),
-                    painter = rememberAsyncImagePainter(model = chat.profile?.profileImageRes),
+                    painter = rememberAsyncImagePainter(model = profile?.profileImageRes),
                     contentDescription = "ProfileImage",
                     contentScale = ContentScale.Crop
                 )
@@ -382,8 +412,30 @@ fun ChatContent(
                     .padding(10.dp),
                 contentAlignment = Alignment.Center
             ) {
-                if (chat.message != null) {
-                    Text(text = chat.message)
+                if (chat.replyChat != null) {
+                    Column {
+                        Text(
+                            text = (
+                                    if (chat.replyChat.userId != userId) {
+                                        profile?.name
+                                    } else {
+                                        "나"
+                                    } + "에게 답장"),
+                            fontWeight = FontWeight.Bold
+                        )
+                        chat.replyChat.message?.let {
+                            Text(
+                                text = it,
+                                maxLines = 1,
+                                color = Color.Black.copy(alpha = 0.6f),
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(text = chat.message ?: "")
+                    }
+                } else {
+                    Text(text = chat.message ?: "")
                 }
             }
             Text(
@@ -403,6 +455,8 @@ fun ChatContent(
 @Composable
 fun MyChatContent(
     modifier: Modifier = Modifier,
+    userId: String,
+    profile: Profile?,
     chat: Chat,
     onSwipeSelect: (Chat) -> Unit
 ) {
@@ -433,7 +487,7 @@ fun MyChatContent(
             )
             .offset(x = offsetX.value.dp)
     ) {
-        val (messageView, timeView) = createRefs()
+        val (messageView, timeView, countView) = createRefs()
         val maxWidth = LocalConfiguration.current.screenWidthDp.dp
 
 
@@ -453,7 +507,12 @@ fun MyChatContent(
             if (chat.replyChat != null) {
                 Column {
                     Text(
-                        text = (chat.replyChat?.profile?.name?.ifEmpty { "나" } ?: "나") + "에게 답장",// 기본값 설정
+                        text = (
+                                if (chat.replyChat.userId != userId) {
+                                    profile?.name
+                                } else {
+                                    "나"
+                                } + "에게 답장"),
                         fontWeight = FontWeight.Bold
                     )
                     chat.replyChat.message?.let {
@@ -470,6 +529,18 @@ fun MyChatContent(
             } else {
                 Text(text = chat.message!!)
             }
+
+        }
+        if(!chat.read) {
+            Text(
+                modifier = Modifier
+                    .constrainAs(countView) {
+                        end.linkTo(messageView.start, 4.dp)
+                        bottom.linkTo(timeView.top, 2.dp)
+                    },
+                text = "읽지 않음",
+                style = MaterialTheme.typography.labelMedium.copy(color = Color.Magenta)
+            )
         }
         Text(
             modifier = Modifier
@@ -489,20 +560,24 @@ fun MyChatContent(
 fun InputChat(
     modifier: Modifier = Modifier,
     replyChat: Chat?, // ReplyChat으로 타입 수정
-    onClickSend: (String) -> Unit,
+    userId: String,
+    profile: Profile?,
+    onClickSend: (String) -> Unit, // 여기수정함
     onClickRemoveReply: () -> Unit
 ) {
     var text by remember { mutableStateOf("") }
     Column(
-        modifier
+        modifier = modifier
             .fillMaxWidth()
-            .imePadding()
+            //.imePadding() // 여기에 imePadding 추가
+            .background(Color.White) // 배경색을 흰색으로 설정
     ) {
         if (replyChat != null) {
+            // 답장 내용 표시
             ConstraintLayout(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(4.dp)
+                    .padding(horizontal = 4.dp)
             ) {
                 val (replyView, closeView) = createRefs()
                 Column(
@@ -518,7 +593,11 @@ fun InputChat(
                         .padding(8.dp) // 패딩 추가로 보기 좋게 조정
                 ) {
                     Text(
-                        text = replyChat.replyChat?.profile?.name?.ifEmpty { "나" } ?: ("나" + "에게 답장"),
+                        text = if (replyChat.userId != userId) {
+                            profile?.name
+                        } else {
+                            "나"
+                        } + "에게 답장",
                         fontWeight = FontWeight.Bold
                     )
                     Text(
@@ -541,6 +620,7 @@ fun InputChat(
                 )
             }
         }
+        // 메시지 입력 UI
         Row(
             modifier = Modifier,
             verticalAlignment = Alignment.CenterVertically
@@ -577,8 +657,8 @@ fun InputChat(
                         shape = CircleShape
                     )
                     .clickable {
-                        onClickSend(text)
-                        text = ""
+                        onClickSend(text) // 답장 정보 포함하여 메시지 전송
+                        text = "" // 입력 필드 초기화
                     },
                 contentAlignment = Alignment.Center
             ) {
@@ -594,9 +674,9 @@ fun InputChat(
 }
 
 
-@Preview
+//    @Preview
 @Composable
-private fun PersonalChatScreenPreview() {
+fun PersonalChatScreenPreview() {
     ChatUITheme {
         PersonalChatScreen(
             uiState = PersonalChatUiState(
@@ -620,7 +700,8 @@ private fun PersonalChatScreenPreview() {
                                 isOther = true,
                                 time = System.currentTimeMillis()
 //                            )
-                        ))
+                            )
+                        )
                     } else {
                         chat
                     }

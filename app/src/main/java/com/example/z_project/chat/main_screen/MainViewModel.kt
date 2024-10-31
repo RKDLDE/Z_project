@@ -48,35 +48,37 @@ class MainViewModel @Inject constructor(application: Application) : ViewModel() 
     )
 
     init {
-        viewModelScope.launch {
-            fetchPersonalChats()
-        }
 
         messagesRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val personalChats = _uiState.value.personalChats
+                val chatList = mutableListOf<Chat>()
+
+                for (snapshot in dataSnapshot.children) {
+                    // 각 messageId 아래의 데이터 읽기
+                    val chat = snapshot.getValue(Chat::class.java)
+                    chat?.let { c -> chatList.add(c) }
+                }
+
                 val updateChats = personalChats.map {
-                    val chatList = mutableListOf<Chat>()
-                    for (snapshot in dataSnapshot.children) {
-                        // 각 messageId 아래의 데이터 읽기
-                        val chat = snapshot.getValue(Chat::class.java)
-                        if (chat?.chatRoomId == it.id) {
-                            chat?.let { c -> chatList.add(c) }
-                        }
-                    }
+                    val checkTime = sharedPreferences.getLong("CHECK_TIME_${it.id}", 0)
+                    val filteredList = chatList.filter { c -> c.chatRoomId == it.id }
 
                     PersonalChat(
                         id = it.id,
-                        previewMessage = if (chatList.isNotEmpty()) {
-                            chatList.last().message
+                        previewMessage = if (filteredList.isNotEmpty()) {
+                            filteredList.last().message
                         } else {
                             ""
                         },
-                        chatCount = chatList.size,
+                        chatCount = filteredList.filter { c ->
+                            (c.userId != userId)
+                                    && (c.time ?: 0) > checkTime
+                        }.size,
                         profile = it.profile,
-                        chats = chatList,
-                        timestamp = if (chatList.isNotEmpty()) {
-                            chatList.last().time ?: 0L
+                        chats = filteredList,
+                        timestamp = if (filteredList.isNotEmpty()) {
+                            filteredList.last().time ?: 0L
                         } else {
                             0L
                         }
@@ -97,7 +99,7 @@ class MainViewModel @Inject constructor(application: Application) : ViewModel() 
     }
 
     // 친구 목록을 가져오는 함수
-    suspend fun fetchPersonalChats() {
+    fun fetchPersonalChats() = viewModelScope.launch {
         val personalChats = mutableListOf<PersonalChat>()
         val chats = messagesRef.get()
             .await()
@@ -114,6 +116,8 @@ class MainViewModel @Inject constructor(application: Application) : ViewModel() 
             for (friend in friendDocuments.documents) {
                 val friendId = friend.id // 각 친구의 고유 코드
                 val chatId = friend.get("chatId")?.toString() ?: ""
+                val checkTime = sharedPreferences.getLong("CHECK_TIME_${chatId}", 0)
+
                 val filteredList = chats.filter { it?.chatRoomId == chatId }
                 val previewMessage = if (filteredList.isNotEmpty()) {
                     filteredList.last()?.message ?: ""
@@ -145,7 +149,10 @@ class MainViewModel @Inject constructor(application: Application) : ViewModel() 
                     val personalChat = PersonalChat(
                         id = chatId, // 고유한 ID 생성
                         previewMessage = previewMessage, // 기본 메시지
-                        chatCount = 0, // 기본 카운트
+                        chatCount = filteredList.filter { c ->
+                            (c?.userId != userId)
+                                    && (c?.time ?: 0) > checkTime
+                        }.size, // 기본 카운트
                         profile = Profile(
                             profileImageRes = profileImage, // 친구 프로필 이미지
                             name = friendName // 친구 이름
@@ -175,6 +182,10 @@ class MainViewModel @Inject constructor(application: Application) : ViewModel() 
 //        }
 //    }
 
+    fun updateCheckTime(chatId: String) {
+        val editor = sharedPreferences.edit()
+        editor.putLong("CHECK_TIME_${chatId}", System.currentTimeMillis()).apply()
+    }
 
     fun openChatTypeMenu(isOpen: Boolean) {
         if (_uiState.value.isOpenMenu != isOpen) {
