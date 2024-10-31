@@ -24,7 +24,10 @@ import java.util.TimeZone
 import com.google.firebase.firestore.FirebaseFirestore
 
 
-class DialogAddEvent (private val context: Context, private val calendarClearSelection: () -> Unit){
+class DialogAddEvent (
+    private val context: Context,
+    private val calendarClearSelection: () -> Unit,
+){
     private val dialog = BottomSheetDialog(context)
     val bindingDialog = DialogAddEventBinding.inflate(LayoutInflater.from(context))
 

@@ -117,6 +117,10 @@ class CalendarFragment : Fragment() {
     }
 
     private fun loadData(uniqueCode: String) {
+        // 초기화 작업
+        categoryList.clear()
+        calendarEventList.clear()
+
         // 캘린더를 잠시 숨김
         binding.fragmentCalendar.visibility = View.GONE
 
@@ -131,6 +135,7 @@ class CalendarFragment : Fragment() {
                 calendarEventList = events.toMutableList()
                 Log.d("일정목록들22", "$calendarEventList")
                 eventsDeferred.complete(events)
+                updateCalendarDecorators() // 캘린더 데코레이터 업데이트
             }
 
             fetchCategories(uniqueCode) { categories ->
@@ -145,8 +150,17 @@ class CalendarFragment : Fragment() {
 
             // 데이터 로드 후 initView 호출
             initView()
+            Log.d("데이터로드", "${calendarEventList.size}")
             binding.fragmentCalendar.visibility = View.VISIBLE
         }
+    }
+    private fun updateCalendarDecorators() {
+        // 캘린더의 dotSpan 업데이트하는 로직
+        // 기존 데코레이터를 제거하고 새로 추가
+        binding.calendarView.removeDecorators()
+        eventDecorator = CalendarDecorators.eventDecorator(
+            requireContext(), calendarEventList)
+        binding.calendarView.addDecorator(eventDecorator)
     }
 
     private fun initView() = with(binding) {
@@ -155,11 +169,11 @@ class CalendarFragment : Fragment() {
             Log.d("일정 잘 들어왔니", "$calendarEventList")
 
             // 일정 초기화!
-            calendarView.clearSelection() // 캘린더 위젯에서 현재 선택된 날짜를 모두 선택 해제
-            calendarView.removeDecorators() // 캘린더 위젯에 적용된 모든 데코레이터를 제거
-            calendarView.invalidateDecorators() // 데코레이터가 제거되고 위젯이 다시 그려지도록
+            clearSelection() // 캘린더 위젯에서 현재 선택된 날짜를 모두 선택 해제
+            removeDecorators() // 캘린더 위젯에 적용된 모든 데코레이터를 제거
+            invalidateDecorators() // 데코레이터가 제거되고 위젯이 다시 그려지도록
 
-            // 데코레이터 초기화
+            // 데코레이터 생성
             dayDecorator = CalendarDecorators.dayDecorator(requireContext())
             todayDecorator = CalendarDecorators.todayDecorator(requireContext())
             sundayDecorator = CalendarDecorators.sundayDecorator(requireContext())
@@ -170,6 +184,7 @@ class CalendarFragment : Fragment() {
                 requireContext(), Calendar.getInstance().get(Calendar.MONTH) + 1)
             eventDecorator = CalendarDecorators.eventDecorator(
                 requireContext(), calendarEventList)
+
 
             // 캘린더뷰에 데코레이터 추가
             addDecorators(
@@ -331,6 +346,7 @@ class CalendarFragment : Fragment() {
             // '추가' 클릭시 카테고리 추가 activity 이동
             val intent = Intent(requireContext(), AddCategoryActivity::class.java)
             startActivity(intent)
+
         }) { selectedCategory ->
             showAddEventDialog(selectedDate, selectedCategory)
         }
@@ -340,9 +356,12 @@ class CalendarFragment : Fragment() {
     //일정 작성 dialog
     private fun showAddEventDialog(selectedDate: CalendarDay, selectedCategory: Categories) {
         //Dialog 정의
-        val dialogAddEvent = DialogAddEvent(requireContext()) {
-            binding.calendarView.clearSelection() // 선택 날짜 해제
-        }
+        val dialogAddEvent = DialogAddEvent(requireContext(),
+            calendarClearSelection = {
+                binding.calendarView.clearSelection() // 선택 날짜 해제
+            }
+        )
+
 
         //Dialog 표시
         dialogAddEvent.show(selectedDate, selectedCategory)
@@ -388,29 +407,6 @@ class CalendarFragment : Fragment() {
             } ?: false
         }
     }
-
-
-//    // Firestore에서 이벤트 비동기 로딩 함수
-//    private fun fetchEventsAsync(uniqueCode: String): Deferred<List<ScheduleModel>> = lifecycleScope.async {
-//        val events = mutableListOf<ScheduleModel>()
-//        db.collection("events").whereEqualTo("code", uniqueCode).get().addOnSuccessListener { querySnapshot ->
-//            for (document in querySnapshot) {
-//                events.add(document.toObject(ScheduleModel::class.java))
-//            }
-//        }
-//        events
-//    }
-//
-//    // Firestore에서 카테고리 비동기 로딩 함수
-//    private fun fetchCategoriesAsync(uniqueCode: String): Deferred<List<Categories>> = lifecycleScope.async {
-//        val categories = mutableListOf<Categories>()
-//        db.collection("categories").whereEqualTo("code", uniqueCode).get().addOnSuccessListener { querySnapshot ->
-//            for (document in querySnapshot) {
-//                categories.add(document.toObject(Categories::class.java))
-//            }
-//        }
-//        categories
-//    }
 
 
     // Firebase에서 이벤트 정보를 실시간으로 가져오는 메서드

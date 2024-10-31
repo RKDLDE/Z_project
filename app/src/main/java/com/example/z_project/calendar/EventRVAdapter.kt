@@ -18,7 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class EventRVAdapter (
     private var events: ArrayList<ScheduleModel>,
-    private val context: Context
+    private val context: Context,
+    private val dismissDialog: () -> Unit,
 ) : RecyclerView.Adapter<EventRVAdapter.ViewHolder>(){
 
     private val firestore = FirebaseFirestore.getInstance()
@@ -107,6 +108,7 @@ class EventRVAdapter (
             if(event.authId == userId){
                 // 아이템 클릭 시 텍스트 입력을 위한 EditText로 변경
                 itemView.setOnClickListener {
+                    dismissDialog()
                     showEditDialog(event)
                 }
             }

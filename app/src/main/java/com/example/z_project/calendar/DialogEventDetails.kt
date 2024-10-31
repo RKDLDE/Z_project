@@ -19,11 +19,18 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class DialogEventDetails(private val context: Context, private val calendarClearSelection: () -> Unit) {
+class DialogEventDetails(
+    private val context: Context,
+    private val calendarClearSelection: () -> Unit,
+){
     private val dialog = Dialog(context)
     private lateinit var sharedPreferences: SharedPreferences
     val bindingDialog = DialogEventDetailsBinding.inflate(LayoutInflater.from(context))
     private val db = FirebaseFirestore.getInstance() // Firestore 인스턴스 생성
+
+    fun dismissDialog() {
+        dialog.dismiss()
+    }
 
     fun setAddCalendarIconVisibility(isVisible: Boolean) {
         bindingDialog.addCalendarIcon.visibility = if (isVisible) View.VISIBLE else View.GONE
@@ -43,7 +50,7 @@ class DialogEventDetails(private val context: Context, private val calendarClear
 
         // RecyclerView 설정 & Adapter 연결
         bindingDialog.addCalendarEventContentRv.layoutManager = LinearLayoutManager(context)
-        val eventAdapter = EventRVAdapter(events as ArrayList<ScheduleModel>, context)
+        val eventAdapter = EventRVAdapter(events as ArrayList<ScheduleModel>, context, this::dismissDialog)
         bindingDialog.addCalendarEventContentRv.adapter = eventAdapter
 
         // 리사이클러뷰에 스와이프 기능 달기
@@ -105,7 +112,8 @@ class DialogEventDetails(private val context: Context, private val calendarClear
 
         //추가 버튼(+버튼) 클릭 시 AddCategory 호출
         bindingDialog.addCalendarIcon.setOnClickListener {
-            onAddEventClick() // 카테고리 추가 다이얼로그 호출
+            dialog.dismiss()
+            onAddEventClick() // 카테고리 선택 다이얼로그 호출
         }
 
         bindingDialog.addCalendarIcon.visibility

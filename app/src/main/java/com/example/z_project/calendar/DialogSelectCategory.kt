@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -40,11 +41,11 @@ class DialogSelectCategory (
 
         // 카테고리 리스트가 비어있지 않은 경우에만 어댑터 설정
         if (categoryList.isNotEmpty()) {
-//            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>) { selectedCategory: Categories ->
-//                dialog.dismiss()
-//                onCategorySelected(selectedCategory)
-//            }
-            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>, onCategorySelected, context)
+            val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>, { selectedCategory ->
+                onCategorySelected(selectedCategory)
+                dialog.dismiss() // 카테고리 선택 시 다이얼로그 닫기
+            }, context)
+            //val categoryAdapter = CalendarCategoryRVAdapter(categoryList as ArrayList<Categories>, onCategorySelected, context)
 
             bindingDialog.selectCategoryList.adapter = categoryAdapter
             bindingDialog.selectCategoryList.visibility = View.VISIBLE
@@ -88,6 +89,7 @@ class DialogSelectCategory (
 
         // 추가 버튼 클릭 시 AddCategoryActivity 호출
         bindingDialog.selectCategoryAdd.setOnClickListener {
+            dialog.dismiss()
             onAddEventClick() // 카테고리 추가 창으로 이동
         }
 
@@ -99,21 +101,4 @@ class DialogSelectCategory (
         // 다이얼로그 보여주기
         dialog.show()
     }
-
-//    // DB 데이터 가져오기 (firebase)
-//    private fun fetchCategories(selectedDate: CalendarDay) {
-//        val formattedDate = formatDateWithE(selectedDate) // 원하는 형식으로 날짜 포맷팅
-//        db.collection("events") // "events"는 Firestore의 컬렉션 이름
-//            .whereEqualTo("startDate", formattedDate) // 날짜로 필터링
-//            .addSnapshotListener { querySnapshot, exception ->
-//                if (exception != null) {
-//                    Log.w("DialogEventDetails", "Listen failed.", exception)
-//                    return@addSnapshotListener
-//                }
-//
-//                // 새로운 이벤트 리스트 가져오기
-//                val events = querySnapshot?.toObjects(ScheduleModel::class.java) ?: emptyList()
-//                eventAdapter.updateEvents(events) // 어댑터의 데이터를 업데이트
-//            }
-//    }
 }

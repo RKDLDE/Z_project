@@ -1,6 +1,7 @@
 package com.example.z_project.calendar
 
 import android.content.Context
+import android.graphics.Color
 import java.util.Date
 import android.text.style.ForegroundColorSpan
 import android.util.Log
@@ -259,17 +260,22 @@ object CalendarDecorators {
             override fun decorate(view: DayViewFacade?) {
                 // 이벤트가 있는 날짜에 점을 추가하여 표시
 //                view!!.addSpan(DotSpan(6F, ContextCompat.getColor(context, R.color.red)))
+                val colorList = mutableListOf<Int>()
+                val color = Color.parseColor("#5CAAF1")
+                colorList.add(color)
+                eventColors = colorList.toIntArray()
+
+                view!!.addSpan(CustomMultipleDotSpan(7f, eventColors))
 
                 // CustomMultiple Dot
-                val colorList = mutableListOf<Int>()
-                colorList.addAll(listOf(
+//                val colorList = mutableListOf<Int>()
+//                colorList.addAll(listOf(
 //                    ContextCompat.getColor(context, R.color.calendar_color_blue),
 //                    ContextCompat.getColor(context, R.color.calendar_color_yellow),
 //                    ContextCompat.getColor(context, R.color.calendar_color_orange),
-                    ContextCompat.getColor(context, R.color.red),
-                ))
-                eventColors = colorList.toIntArray()
-                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
+//                ))
+//                eventColors = colorList.toIntArray()
+//                view!!.addSpan(CustomMultipleDotSpan(6f, eventColors))
 
             }
 
