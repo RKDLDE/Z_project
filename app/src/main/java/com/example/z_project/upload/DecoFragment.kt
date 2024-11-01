@@ -45,10 +45,17 @@ class DecoFragment : Fragment(), View.OnClickListener {
         // 이전 상태 저장 (글자 입력이나 다른 동작이 이루어지기 전에)
         saveState()
 
-        binding.colorButtonsLayout.visibility = View.GONE
+
         binding.drawBtn.setOnClickListener{
             binding.photo.enableDrawingMode(true)
-            binding.colorButtonsLayout.visibility = View.VISIBLE
+            if (binding.colorButtonsLayout.visibility == View.VISIBLE) {
+                binding.colorButtonsLayout.visibility = View.GONE
+                binding.aaBtn.visibility = View.VISIBLE
+                binding.photo.enableDrawingMode(false)
+            } else {
+                binding.colorButtonsLayout.visibility = View.VISIBLE
+                binding.aaBtn.visibility = View.GONE
+            }
             /*drawCanvas = DrawFragment.DrawCanvas(requireContext())
             canvasContainer.addView(drawCanvas)*/
             saveState()
@@ -70,6 +77,18 @@ class DecoFragment : Fragment(), View.OnClickListener {
         }
         binding.btnBlack.setOnClickListener {
             currentColor = Color.BLACK
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+
+        binding.btnYellow.setOnClickListener {
+            currentColor = Color.YELLOW
+            binding.photo.setColor(currentColor)
+            saveState()
+        }
+
+        binding.btnWhite.setOnClickListener {
+            currentColor = Color.WHITE
             binding.photo.setColor(currentColor)
             saveState()
         }

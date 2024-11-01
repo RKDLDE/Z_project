@@ -9,7 +9,7 @@
 
     <FrameLayout
         android:id="@+id/emoji_bg"
-        android:layout_width="330dp"
+        android:layout_width="320dp"
         android:layout_height="520dp"
         android:background="@drawable/cam_bg_rec"
         android:contentDescription="background"

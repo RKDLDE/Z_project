@@ -12,7 +12,7 @@
 
     <FrameLayout
         android:id="@+id/main_bg"
-        android:layout_width="330dp"
+        android:layout_width="320dp"
         android:layout_height="500dp"
         android:background="@drawable/cam_bg_rec"
         app:layout_constraintTop_toTopOf="parent"
