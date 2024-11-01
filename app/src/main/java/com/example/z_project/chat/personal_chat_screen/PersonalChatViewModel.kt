@@ -2,6 +2,7 @@ package com.example.z_project.chat.personal_chat_screen
 
 import android.app.Application
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kakao.sdk.common.util.KakaoJson.base
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -165,9 +167,10 @@ class PersonalChatViewModel @Inject constructor(
         val personalChatJson = savedStateHandle.get<String>("personalChat")
         if (personalChatJson != null) {
 //            val personalChat = Json.decodeFromString(PersonalChat.serializer(), personalChatJson)
-            val decodedJson = URLDecoder.decode(personalChatJson, "UTF-8")
+            val base64EncodedJson = String(Base64.decode(personalChatJson.toByteArray(), Base64.NO_WRAP))
+//            val decodedJson = URLDecoder.decode(base64EncodedJson, "UTF-8")
             val personalChat: PersonalChat =
-                Json.decodeFromString(PersonalChat.serializer(), decodedJson)
+                Json.decodeFromString(PersonalChat.serializer(), base64EncodedJson)
 
             fetchMessages(chatRoomId)
             _uiState.update {

@@ -1,6 +1,7 @@
 package com.example.z_project.chat
 
 import android.os.Bundle
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,9 +49,11 @@ class ChatFragment : Fragment() {
                                 navigateToPersonalChatScreen = {
                                     val personalChatJson =
                                         Json.encodeToString(PersonalChat.serializer(), it)
-                                    val encodedJson = URLEncoder.encode(personalChatJson, "UTF-8")  // URL-safe encoding
+                                    val base64EncodedJson = Base64.encodeToString(personalChatJson.toByteArray(), Base64.NO_WRAP)
+//                                    val encodedJson = URLEncoder.encode(personalChatJson, "UTF-8")  // URL-safe encoding
+
                                     navController.navigate(
-                                        UiScreen.PersonalChatScreen.route + "?personalChat=${encodedJson}"
+                                        UiScreen.PersonalChatScreen.route + "?personalChat=${base64EncodedJson}"
                                     )
                                 }
                             )
