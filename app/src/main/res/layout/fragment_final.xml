@@ -21,33 +21,41 @@
             android:layout_marginTop="110dp"
             android:background="@drawable/cam_bg_rec">
 
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="300dp"
-                android:layout_height="400dp"
-                android:scaleType="centerCrop"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card_view"
+                android:layout_width="320dp"
+                android:layout_height="470dp"
+                app:cardCornerRadius="16dp"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="40dp"
-                tools:ignore="ContentDescription" />
+                android:layout_marginBottom="6dp">
 
-            <EditText
-                android:visibility="gone"
-                android:id="@+id/myEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_margin="50dp"
-                android:gravity="center"
-                android:enabled="false"
-                android:textSize="28dp"
-                android:minWidth="50dp"
-                android:background="@drawable/background_upload_text"
-                android:inputType="text"
-                android:padding="6dp"
-                android:textColor="@android:color/black"
-                android:maxLength="10"
-                android:alpha="1"
-                />
+                <ImageView
+                    android:id="@+id/photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="center_horizontal|bottom"
+                    tools:ignore="ContentDescription" />
+
+                <EditText
+                    android:visibility="gone"
+                    android:id="@+id/myEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:layout_margin="50dp"
+                    android:gravity="center"
+                    android:enabled="false"
+                    android:textSize="28dp"
+                    android:minWidth="50dp"
+                    android:background="@drawable/background_upload_text"
+                    android:inputType="text"
+                    android:padding="6dp"
+                    android:textColor="@android:color/black"
+                    android:maxLength="10"
+                    android:alpha="1" />
+
+            </androidx.cardview.widget.CardView>
 
         </FrameLayout>
 
