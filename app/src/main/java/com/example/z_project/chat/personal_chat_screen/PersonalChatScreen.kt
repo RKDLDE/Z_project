@@ -117,21 +117,23 @@ fun PersonalChatScreen(
                 },
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(CircleShape),
-                    painter = rememberAsyncImagePainter(//painterResource(
-                        model = uiState.personalChat?.profile?.profileImageRes
-                    ),
-                    contentDescription = "ProfileImage",
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = uiState.personalChat?.profile?.name ?: "냠",
-                    fontSize = 18.sp
-                )
+                if(uiState.personalChat?.profile != null) {
+                    Image(
+                        modifier = Modifier
+                            .size(42.dp)
+                            .clip(CircleShape),
+                        painter = rememberAsyncImagePainter(
+                            model = uiState.personalChat.profile.profileImageRes
+                        ),
+                        contentDescription = "ProfileImage",
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = uiState.personalChat.profile.name ?: "냠",
+                        fontSize = 18.sp
+                    )
+                }
             }
         }
         // 채팅 리스트
