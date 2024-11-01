@@ -1,5 +1,6 @@
 package com.example.z_project.chat.personal_chat_screen
 
+import android.view.ViewTreeObserver
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -28,6 +29,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -35,6 +37,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,6 +53,7 @@ import androidx.compose.ui.layout.ContentScale
 //import androidx.compose.ui.node.CanFocusChecker.end
 //import androidx.compose.ui.node.CanFocusChecker.start
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,6 +61,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.z_project.R
 import com.example.z_project.chat.model.Profile
 import com.example.z_project.chat.model.Chat
@@ -145,7 +152,6 @@ fun PersonalChatScreen(
                     height = Dimension.fillToConstraints
                 }
                 .padding(start = 12.dp, end = 12.dp),
-
             chats = uiState.chats ?: emptyList(),
             userId = userId,
             profile = uiState.personalChat?.profile,
@@ -204,16 +210,16 @@ fun ChatList(
     profile: Profile?,
     onSwipeSelect: (Chat) -> Unit
 ) {
-//    val listState = rememberLazyListState()
-//    val imeState = rememberImeState()
-//
-//    LaunchedEffect(key1 = chats, imeState, onSwipeSelect) {
-//        if (imeState) {
-//            if (chats.isNotEmpty()) {
-//                listState.scrollToItem(chats.size - 1)
-//            }
-//        }
-//    }
+    val listState = rememberLazyListState()
+    val imeState = rememberImeState()
+
+    LaunchedEffect(key1 = chats, onSwipeSelect) {
+        if (imeState) {
+            if (chats.isNotEmpty()) {
+                listState.scrollToItem(chats.size - 1)
+            }
+        }
+    }
 //    LazyColumn(
 //        modifier = modifier
 //            .fillMaxSize(),
@@ -244,8 +250,8 @@ fun ChatList(
         modifier = modifier
             .fillMaxSize()
             .background(Color.White) // 배경색을 흰색으로 설정
-            .imePadding() // LazyColumn에 imePadding 추가
-
+            .imePadding(), // LazyColumn에 imePadding 추가
+        state = listState
     ) {
         items(chats) { chat ->
             if (chat.userId == userId) { // userId와 비교
@@ -675,6 +681,26 @@ fun InputChat(
     }
 }
 
+@Composable
+fun rememberImeState(): Boolean {
+    var imeState by remember {
+        mutableStateOf(false)
+    }
+
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val isKeyboardOpen =
+                ViewCompat.getRootWindowInsets(view)?.isVisible(WindowInsetsCompat.Type.ime())
+                    ?: true
+            imeState = isKeyboardOpen
+        }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+        onDispose { view.viewTreeObserver.removeOnGlobalLayoutListener(listener) }
+    }
+    return imeState
+}
 
 //    @Preview
 @Composable
