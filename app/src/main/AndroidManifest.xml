@@ -26,13 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Z_project"
         tools:targetApi="31">
-<!--        <activity-->
-<!--            android:name=".notification.SplashActivity"-->
-<!--            android:exported="false" />-->
+
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="0085468296286e234b8814817168c6e7" /> <!-- 카카오 로그인, 인가코드를 받기 위한 액티비티 -->
+            android:value="0085468296286e234b8814817168c6e7" />
+
+        <!-- 카카오 로그인, 인가코드를 받기 위한 액티비티 -->
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -46,58 +46,55 @@
                     android:host="oauth"
                     android:scheme="kakao0085468296286e234b8814817168c6e7" />
             </intent-filter>
-        </activity> <!-- android:name=".upload.MyApplication" -->
-        <!-- <activity -->
-        <!-- android:name=".chat.ChatFragment" -->
-        <!-- <activity -->
-        <!-- android:name=".chat.ChatActivity" -->
-        <!-- android:exported="true"> -->
-        <!-- &lt;!&ndash;            <intent-filter>&ndash;&gt; -->
-        <!-- &lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt; -->
-        <!-- &lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt; -->
-        <!-- &lt;!&ndash;            </intent-filter>&ndash;&gt; -->
-        <!-- </activity> -->
-        <!-- <activity -->
-        <!-- android:name=".login.LoginActivity" -->
-        <!-- android:exported="true" -->
-        <!-- android:launchMode="singleTask"/> -->
+        </activity>
 
-<!--        <activity-->
-<!--            android:name=".notification.SplashActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.AppCompat.NoActionBar">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <!--        android:name=".upload.MyApplication"-->
+        <!--        <activity-->
+        <!--            android:name=".chat.ChatFragment"-->
+
+        <!--        <activity-->
+        <!--            android:name=".chat.ChatActivity"-->
+
+        <!--            android:exported="true">-->
+        <!--&lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
+        <!--&lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;-->
+        <!--&lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--        </activity>-->
+
+
+        <!--        <activity-->
+        <!--            android:name=".login.LoginActivity"-->
+        <!--            android:exported="true"-->
+        <!--            android:launchMode="singleTask"/>-->
+
         <activity
             android:name=".login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".chat.ChatFragment"
-            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
 
-        </activity> <!-- <activity -->
-        <!-- android:name=".MainActivity" -->
-        <!-- android:exported="true"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+        <!--        <activity-->
+        <!--            android:name=".MainActivity"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.MAIN" />-->
+        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
 
         <activity
             android:name=".calendar.AddCategoryActivity"
@@ -120,6 +117,8 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
         <service
             android:name=".WidgetFirebase"
             android:enabled="true"
@@ -133,18 +132,18 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name=".AppWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/appwidgetproviderinfo" />
         </receiver>
 
-    </application>
 
+    </application>
 </manifest>

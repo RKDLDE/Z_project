@@ -52,6 +52,7 @@ class CalendarFragment : Fragment() {
     private lateinit var userProfile : String
     private lateinit var selectCode : String
 
+    private lateinit var sortedFriendsList: List<FriendData>
     private var categoryList = mutableListOf<Categories>()
     private var calendarEventList = mutableListOf<ScheduleModel>()
     private var friendList = mutableListOf<FriendData>()
@@ -82,8 +83,23 @@ class CalendarFragment : Fragment() {
 
             Log.d("CalendarFragment", "friendList: $friendList")
 
+            // 로그로 userName과 friendsList 내용을 확인
+            Log.d("FriendsListAdapter", "userName: $userName")
+            Log.d("FriendsListAdapter", "friendList: $friendList")
+            friendList.forEach { Log.d("FriendsListAdapter", "Friend: ${it.name}") }
+
+            // "나" 항목을 첫 번째로, 나머지 항목을 가나다순으로 정렬
+            val userItem = friendList.find { it.name.trim() == userName.trim() }
+            val otherFriends = friendList.filter { it.name.trim() != userName.trim() }.sortedBy { it.name }
+
+            Log.d("FriendsListAdapter", "userItem: ${userItem?.name}")
+            Log.d("FriendsListAdapter", "otherFriends: ${otherFriends.map { it.name }}")
+
+            // userItem이 null이 아닌 경우에만 리스트에 추가
+            sortedFriendsList = listOfNotNull(userItem) + otherFriends
+
             val friendsListAdapter = FriendsListAdapter(
-                requireContext(), R.layout.item_spinner_year, friendList, userName
+                requireContext(), R.layout.item_spinner_year, sortedFriendsList, userName
             )
             binding.friendsListSpinner.adapter = friendsListAdapter
             binding.friendsListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -91,13 +107,13 @@ class CalendarFragment : Fragment() {
                     if (isInitialSelected) {
                         friendsListAdapter.setSelectedPosition(position) // 선택한 항목 설정
 
-                        selectCode = friendList[position].code
+                        selectCode = sortedFriendsList[position].code
 
                         lifecycleScope.launch {
                             loadData(selectCode)  // 선택한 친구의 캘린더 데이터로 갱신
                         }
 
-                        val value = friendList[position].name
+                        val value = sortedFriendsList[position].name
                         if(selectCode != uniqueCode){
                             Toast.makeText(requireContext(), "${value}의 캘린더를 조회", Toast.LENGTH_SHORT).show()
                         }
