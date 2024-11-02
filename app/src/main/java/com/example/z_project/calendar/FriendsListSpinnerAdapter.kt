@@ -14,31 +14,31 @@ import com.example.z_project.mypage.FriendData
 
 class FriendsListAdapter(
     context: Context, @LayoutRes private val resId: Int,
-    friendsList: List<FriendData>, private val userName: String,
-) : ArrayAdapter<String>(context, resId) {
+    private val friendsList: List<FriendData>, private val userName: String,
+) : ArrayAdapter<String>(context, resId, friendsList.map { it.code }) {
 
-    private var sortedFriendsList: List<FriendData>
+    //private var sortedFriendsList: List<FriendData>
     private var selectedPosition = -1 // 선택된 항목의 위치를 저장할 변수
 
-    init {
-        // 로그로 userName과 friendsList 내용을 확인
-        Log.d("FriendsListAdapter", "userName: $userName")
-        Log.d("FriendsListAdapter", "friendList: $friendsList")
-        friendsList.forEach { Log.d("FriendsListAdapter", "Friend: ${it.name}") }
-
-        // "나" 항목을 첫 번째로, 나머지 항목을 가나다순으로 정렬
-        val userItem = friendsList.find { it.name.trim() == userName.trim() }
-        val otherFriends = friendsList.filter { it.name.trim() != userName.trim() }.sortedBy { it.name }
-
-        Log.d("FriendsListAdapter", "userItem: ${userItem?.name}")
-        Log.d("FriendsListAdapter", "otherFriends: ${otherFriends.map { it.name }}")
-
-        // userItem이 null이 아닌 경우에만 리스트에 추가
-        sortedFriendsList = listOfNotNull(userItem) + otherFriends
-
-        // 어댑터에 정렬된 리스트의 코드로 초기화
-        addAll(sortedFriendsList.map { it.code })
-    }
+//    init {
+//        // 로그로 userName과 friendsList 내용을 확인
+//        Log.d("FriendsListAdapter", "userName: $userName")
+//        Log.d("FriendsListAdapter", "friendList: $friendsList")
+//        friendsList.forEach { Log.d("FriendsListAdapter", "Friend: ${it.name}") }
+//
+//        // "나" 항목을 첫 번째로, 나머지 항목을 가나다순으로 정렬
+//        val userItem = friendsList.find { it.name.trim() == userName.trim() }
+//        val otherFriends = friendsList.filter { it.name.trim() != userName.trim() }.sortedBy { it.name }
+//
+//        Log.d("FriendsListAdapter", "userItem: ${userItem?.name}")
+//        Log.d("FriendsListAdapter", "otherFriends: ${otherFriends.map { it.name }}")
+//
+//        // userItem이 null이 아닌 경우에만 리스트에 추가
+//        sortedFriendsList = listOfNotNull(userItem) + otherFriends
+//
+//        // 어댑터에 정렬된 리스트의 코드로 초기화
+//        addAll(sortedFriendsList.map { it.code })
+//    }
 
     // 드롭다운하지 않은 상태의 Spinner 항목의 뷰
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -47,8 +47,8 @@ class FriendsListAdapter(
 
         // 사용자 본인일 경우 "나"로 표시
         binding.itemSpinnerYearTv.text =
-            if (sortedFriendsList[position].name == userName) "나"
-            else sortedFriendsList[position].name
+            if (selectedPosition == -1 || friendsList[selectedPosition].name == userName) "나"
+            else friendsList[position].name
 
         Log.d("현재selectedPosition", "$selectedPosition")
 
@@ -65,15 +65,15 @@ class FriendsListAdapter(
 
         // 사용자 본인일 경우 "나"로 표시
         binding.itemSpinnerYearTv.text =
-            if (sortedFriendsList[position].name == userName) "나"
-            else sortedFriendsList[position].name
+            if (friendsList[position].name == userName) "나"
+            else friendsList[position].name
 
         return binding.root
     }
 
-    override fun getCount() = sortedFriendsList.size
+    override fun getCount() = friendsList.size
 
-    override fun getItem(position: Int) = sortedFriendsList[position].toString()
+    override fun getItem(position: Int) = friendsList[position].toString()
 
     override fun getItemId(position: Int) = position.toLong()
 
