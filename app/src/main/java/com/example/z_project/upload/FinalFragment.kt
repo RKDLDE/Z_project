@@ -18,6 +18,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.z_project.AppWidgetProvider
@@ -28,6 +29,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Source
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,6 +46,11 @@ class FinalFragment : Fragment() {
     private val storage = FirebaseStorage.getInstance()
 
     private var imageUri: Uri? = null // imageUri를 클래스 수준에서 선언
+
+
+    private var lastFeedText: String = "" // 업로드 텍스트 저장 변수
+    private var lastFeedEmoji: String = "" // 업로드 이모지 저장 변수
+    private lateinit var lastFeedTime: Timestamp // 업로드 시간 저장 변수
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,16 +111,26 @@ class FinalFragment : Fragment() {
             saveDataToFirestoreWithoutImage(currentTime, emoji, textToSave)
         }
 
-        // 초기 텍스트 저장 - 관찰자가 호출되지 않을 때
-        if (sharedViewModel.inputText.value.isNullOrEmpty()) {
-            saveDataToFirestoreWithoutImage(currentTime, emoji, "")
-        }
+//        // 초기 텍스트 저장 - 관찰자가 호출되지 않을 때
+//        if (sharedViewModel.inputText.value.isNullOrEmpty()) {
+//            saveDataToFirestoreWithoutImage(currentTime, emoji, "")
+//        }
 
-        if (userId != null) {
-            fetchUserInfo()
-            fetchLatestUserData()
-        } else {
-            Log.e("Final", "userId가 null입니다.")
+        lifecycleScope.launch {
+            if (userId != null) {
+                fetchUserInfo()
+                fetchLatestUserData()
+
+//                // 최신 데이터로 binding
+//                if (lastFeedText.isNotEmpty()) {
+//                    binding.myEditText.visibility = View.VISIBLE // myEditText를 보이게 설정
+//                    binding.myEditText.setText(lastFeedText)
+//                }
+//                binding.myEmoji.setText(lastFeedEmoji)
+//                binding.time.text = formatTimestampToString(lastFeedTime)
+            } else {
+                Log.e("Final", "userId가 null입니다.")
+            }
         }
 
         val backButton = view.findViewById<ImageButton>(R.id.ib_back)
@@ -215,37 +233,101 @@ class FinalFragment : Fragment() {
     }
 
     // 최신 사용자 데이터를 가져오는 메소드
+//    private fun fetchLatestUserData() {
+//        Log.d("Final", "사용자 ID: $userId")
+//        firestore.collection("images")
+//            .whereEqualTo("uniqueCode", userId!!)
+//            .orderBy("uploadTime", com.google.firebase.firestore.Query.Direction.DESCENDING) // 최신 순으로 정렬
+//            .limit(1) // 최신 데이터 한 개만 가져오기
+//            .get()
+//            .addOnSuccessListener { documents ->
+//                Log.d("Final", "문서 개수: ${documents.size()}")
+//                if (!documents.isEmpty) {
+//                    val latestDocument = documents.first()
+//                    Log.d("Final", "문서 정보: ${latestDocument}")
+//                    val uploadTime = latestDocument.getTimestamp("uploadTime") // 시간 가져오기
+//
+//                    binding.time.text = formatTimestampToString(uploadTime!!)
+//
+//                    val text = latestDocument.getString("inputText")
+//                    Log.d("Final", "최종피드텍스트: ${text}")
+//                    if (!text.isNullOrEmpty()) {
+//                        binding.myEditText.visibility = View.VISIBLE // myEditText를 보이게 설정
+//                        binding.myEditText.setText(text)
+//                    }
+//
+//                    binding.myEmoji.setText(latestDocument.getString("emoji")) // 이모티콘 가져오기
+//                    Log.d("Final", "최신 시간:  ${latestDocument.getTimestamp("uploadTime")}")
+//                } else {
+//                    Log.d("Final", "사용자의 데이터가 없습니다.")
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("Final", "최신 데이터 가져오기 실패", exception)
+//            }
+//    }
+
+
     private fun fetchLatestUserData() {
         Log.d("Final", "사용자 ID: $userId")
+
+        // UI를 초기화
+        binding.myEditText.visibility = View.GONE
+        binding.myEditText.setText("")
+        binding.myEmoji.setText("")
+        binding.time.text = ""
+
         firestore.collection("images")
-            .whereEqualTo("uniqueCode", userId!!)
-            .orderBy("uploadTime", com.google.firebase.firestore.Query.Direction.DESCENDING) // 최신 순으로 정렬
-            .limit(1) // 최신 데이터 한 개만 가져오기
-            .get()
-            .addOnSuccessListener { documents ->
-                Log.d("Final", "문서 개수: ${documents.size()}")
-                if (!documents.isEmpty) {
-                    val latestDocument = documents.first()
-                    val uploadTime = latestDocument.getTimestamp("uploadTime") // 시간 가져오기
+            .whereEqualTo("uniqueCode", userId)
+            .orderBy("uploadTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(1)
+            .addSnapshotListener { snapshot, exception ->
+                exception?.let {
+                    Log.e("Final", "실시간 데이터 가져오기 실패", it)
+                    return@addSnapshotListener
+                }
 
-                    binding.time.text = formatTimestampToString(uploadTime!!)
+                snapshot?.let {
+                    if (!it.isEmpty) {
+                        val latestDocument = it.documents.first()
+                        Log.d("Final", "${latestDocument}")
+                        lastFeedText = latestDocument.getString("inputText") ?: ""
+                        lastFeedEmoji = latestDocument.getString("emoji") ?: ""
+                        lastFeedTime = latestDocument.getTimestamp("uploadTime")!!
 
-                    val text = latestDocument.getString("inputText")
-                    if (!text.isNullOrEmpty()) {
-                        binding.myEditText.visibility = View.VISIBLE // myEditText를 보이게 설정
-                        binding.myEditText.setText(text)
+//                        // 최신 데이터로 binding
+//                        if (lastFeedText.isNotEmpty()) {
+//                            binding.myEditText.apply {
+//                                visibility = View.VISIBLE
+//                                setText(lastFeedText)
+//                            }
+//                        } else {
+//                            binding.myEditText.visibility = View.GONE
+//                        }
+//                        binding.myEmoji.setText(lastFeedEmoji)
+//                        binding.time.text = formatTimestampToString(lastFeedTime!!)
+                    } else {
+                        Log.d("Final", "사용자의 데이터가 없습니다.")
                     }
-
-                    binding.myEmoji.setText(latestDocument.getString("emoji")) // 이모티콘 가져오기
-                    Log.d("Final", "최신 시간:  ${latestDocument.getTimestamp("uploadTime")}")
-                } else {
-                    Log.d("Final", "사용자의 데이터가 없습니다.")
+                    // 최신 데이터로 binding
+                    if (lastFeedText.isNotEmpty()) {
+                        binding.myEditText.apply {
+                            visibility = View.VISIBLE
+                            setText(lastFeedText)
+                        }
+                    } else {
+                        binding.myEditText.visibility = View.GONE
+                    }
+                    binding.myEmoji.setText(lastFeedEmoji)
+                    binding.time.text = formatTimestampToString(lastFeedTime!!)
                 }
             }
-            .addOnFailureListener { exception ->
-                Log.e("Final", "최신 데이터 가져오기 실패", exception)
-            }
     }
+
+
+
+
+
 
     // Timestamp를 문자열로 변환하는 함수
     private fun formatTimestampToString(timestamp: Timestamp): String {

@@ -64,7 +64,7 @@
         android:layout_marginEnd="230dp"
         android:fontFamily="@font/noto_sans_kr_semibold"
         android:includeFontPadding="false"
-        android:text="초대링크 보내기"
+        android:text="초대코드 공유하기"
         android:textColor="#757575"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

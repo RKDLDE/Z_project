@@ -420,6 +420,7 @@ class CalendarFragment : Fragment() {
             .addSnapshotListener { documents, error ->
                 if (error != null) {
                     Log.w("fetchEvents", "Listen failed.", error)
+                    onSuccess(emptyList()) // 오류 발생 시 빈 리스트 반환
                     return@addSnapshotListener
                 }
 
@@ -445,6 +446,7 @@ class CalendarFragment : Fragment() {
             .addSnapshotListener { documents, error ->
                 if (error != null) {
                     Log.w("fetchCategories", "Listen failed.", error)
+                    onSuccess(emptyList()) // 오류 발생 시 빈 리스트 반환
                     return@addSnapshotListener
                 }
 
