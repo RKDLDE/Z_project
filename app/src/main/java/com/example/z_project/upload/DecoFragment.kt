@@ -36,6 +36,10 @@ class DecoFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // ViewModel 초기화
+        sharedViewModel.imageUri.value = null
+        sharedViewModel.inputText.value = ""
+
         photoUri = arguments?.getString("photoUri")?.let { Uri.parse(it) }
         if (photoUri != null) {
             val resizedBitmap = resizeImage(photoUri!!, 300, 400) // 고정 크기 300x400
