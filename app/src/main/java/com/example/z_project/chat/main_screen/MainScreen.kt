@@ -65,9 +65,9 @@ fun MainScreen(
                 }
             }
             BottomBar(
-               modifier = Modifier.constrainAs(bottomBar) {
+                modifier = Modifier.constrainAs(bottomBar) {
                     bottom.linkTo(parent.bottom)
-               }
+                }
             )
         }
     }
