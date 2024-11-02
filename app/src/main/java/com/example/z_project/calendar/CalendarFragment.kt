@@ -16,6 +16,7 @@ import com.example.z_project.R
 import com.example.z_project.calendar.CalendarDecorators.otherMonthDecorator
 import com.example.z_project.databinding.FragmentCalendarBinding
 import com.example.z_project.mypage.FriendData
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -79,8 +80,10 @@ class CalendarFragment : Fragment() {
             Log.d("사용자이름을말해라!", "${userName}")
             var isInitialSelected = false // Spinner의 초기값 설정을 위한 플래그
 
+            Log.d("CalendarFragment", "friendList: $friendList")
+
             val friendsListAdapter = FriendsListAdapter(
-                requireContext(), R.layout.item_spinner_year, friendList, userName!!
+                requireContext(), R.layout.item_spinner_year, friendList, userName
             )
             binding.friendsListSpinner.adapter = friendsListAdapter
             binding.friendsListSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -242,68 +245,52 @@ class CalendarFragment : Fragment() {
     // 친구 목록 불러오는 함수
     fun fetchFriendList(uniqueCode: String, onComplete: (String) -> Unit) {
         if (uniqueCode.isNotEmpty()) {
-            Log.d("FriendList", "사용자 고유코드: $uniqueCode")
-
-            // 사용자 본인 코드 List에 추가
             db.collection("users").document(uniqueCode).get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
                         userName = document.getString("name") ?: "이름 없음"
                         userProfile = document.getString("profileImage") ?: ""
 
+                        // 본인 데이터를 friendList에 추가
                         friendList.add(FriendData(uniqueCode, userName, userProfile))
 
-                        Log.d("Mypage", "이름 불러오기: $userName")
+                        db.collection("friends").document(uniqueCode)
+                            .collection("friendsList")
+                            .get()
+                            .addOnSuccessListener { querySnapshot ->
+                                val loadTasks = querySnapshot.documents.map { document ->
+                                    val friendCode = document.getString("friendCode") ?: return@map null
 
-                        // userName 초기화 후 콜백 호출
-                        onComplete(userName)
+                                    db.collection("users").document(friendCode)
+                                        .get()
+                                        .continueWith { task ->
+                                            val userDocument = task.result
+                                            if (userDocument != null && userDocument.exists()) {
+                                                val friendName = userDocument.getString("name") ?: "이름 없음"
+                                                val friendProfileImage = userDocument.getString("profileImage") ?: ""
+                                                friendList.add(FriendData(friendCode, friendName, friendProfileImage))
+                                            }
+                                        }
+                                }.filterNotNull() // null 값 제거
+
+                                // 모든 친구 데이터를 불러온 후 콜백 호출
+                                Tasks.whenAll(loadTasks).addOnSuccessListener {
+                                    onComplete(userName)
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                Log.e("FriendList", "친구 목록 조회 실패: ${exception.message}")
+                            }
                     }
                 }
                 .addOnFailureListener { exception ->
                     Log.e("userInfo", "데이터 가져오기 실패", exception)
                 }
-
-            // Firestore에서 현재 사용자의 친구 목록 추가
-            db.collection("friends")
-                .document(uniqueCode)
-                .collection("friendsList")  // friendList 컬렉션을 가져옵니다.
-                .get()
-                .addOnSuccessListener { querySnapshot ->
-                    Log.d("FriendList", "친구 목록 문서 수: ${querySnapshot.size()}")
-
-                    for (document in querySnapshot.documents) {
-                        val friendCode = document.getString("friendCode") // 친구 코드 가져오기
-                        if (friendCode != null) {
-                            // 친구 코드에 해당하는 사용자 정보를 Firestore에서 가져오기
-                            db.collection("users").document(friendCode)
-                                .get()
-                                .addOnSuccessListener { userDocument ->
-                                    if (userDocument != null && userDocument.exists()) {
-                                        val friendName = userDocument.getString("name") ?: "이름 없음"
-                                        val friendProfileImage =
-                                            userDocument.getString("profileImage") ?: "" // 프로필 이미지 URL
-
-                                        friendList.add(FriendData(friendCode, friendName, friendProfileImage))
-
-                                        Log.d("FriendList", "친구 코드: $friendCode, 이름: $friendName")
-                                    }
-                                    Log.d("전체친구목록", "$friendList")
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.e("FriendList", "친구 데이터 로드 실패: ${exception.message}")
-                                }
-                        } else {
-                            Log.e("FriendList", "친구 코드가 null입니다.")
-                        }
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("FriendList", "친구 목록 조회 실패: ${exception.message}")
-                }
         } else {
             Log.e("FriendList", "고유 코드가 존재하지 않습니다.")
         }
     }
+
 
     //일정 목록 확인 Dialog
     private fun showEventDetailsDialog() {
