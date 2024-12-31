@@ -25,7 +25,7 @@ class GlobalApplication : Application() {
         Log.d("Hash", keyHash)
 
         // Kakao SDK 초기화
-        KakaoSdk.init(this, "0085468296286e234b8814817168c6e7")
+        KakaoSdk.init(this, "kakaSdk")
 
         // Firebase 초기화
         FirebaseApp.initializeApp(this)
