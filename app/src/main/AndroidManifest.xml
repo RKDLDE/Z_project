@@ -30,7 +30,7 @@
 
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="0085468296286e234b8814817168c6e7" />
+            android:value="Appkey" />
 
         <!-- 카카오 로그인, 인가코드를 받기 위한 액티비티 -->
         <activity
@@ -44,7 +44,7 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="kakao0085468296286e234b8814817168c6e7" />
+                    android:scheme="oauth" />
             </intent-filter>
         </activity>
 
